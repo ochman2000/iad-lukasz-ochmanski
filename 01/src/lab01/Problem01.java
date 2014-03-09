@@ -1,9 +1,7 @@
 package lab01;
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Problem01 {
@@ -23,7 +21,6 @@ public class Problem01 {
 			outputStream = new FileWriter(filename);
 			for (int i = 0; i < amount; i++) {
 				double liczba = rn.nextDouble();
-//				System.out.println(liczba);
 				outputStream.write(liczba + "\r\n");
 			}
 			outputStream.close();
@@ -34,7 +31,6 @@ public class Problem01 {
 
 	public static void main(String[] args) {
 		Problem01 lab = new Problem01();
-//		lab.generateNumbers(20, "liczby.txt");
 		lab.generateNumbers(Integer.parseInt(args[0]), args[1]);
 	}
 }
