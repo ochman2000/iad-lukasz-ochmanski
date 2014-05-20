@@ -1,9 +1,5 @@
 package pl.lodz.p.iad;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import pl.lodz.p.iad.structure.Edge;
 import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 
@@ -25,34 +21,34 @@ public class XOR {
 	public XOR() {
 
 		Network network = new Network();
-		network.setInputLayer(2);
-		network.setOutputLayer(1);
-		network.addHiddenLayer(3);
+		network.addLayer(2);
+		network.addLayer(3);
+		network.addLayer(1);
 		this.initializeStructure();
 	}
 	
 	private void initializeStructure() {
-		Neuron neuron00 = makeNeuron();
-		Neuron neuron01 = makeNeuron();
+		//INPUT LAYER
+		Neuron neuron_0_0 = new Neuron(1,3);
+		Neuron neuron_0_1 = new Neuron(1,3);
+		//HIDDEN LAYER
+		Neuron neuron_1_0 = new Neuron(2,1);
+		Neuron neuron_1_1 = new Neuron(2,1);
+		Neuron neuron_1_2 = new Neuron(2,1);
+		//OUTPUT LAYER
+		Neuron neuron_2_0 = new Neuron(3,1);
 		
-		Neuron neuron10 = makeNeuron();
-		Neuron neuron11 = makeNeuron();
-		Neuron neuron12 = makeNeuron();
-
-		Neuron neuron20 = makeNeuron();
+		//CONNECTIONS
+		neuron_0_0.addNeuronOut(neuron_1_0);
+		neuron_0_0.addNeuronOut(neuron_1_1);
+		neuron_0_0.addNeuronOut(neuron_1_2);
 		
-	}
-	
-	private Neuron makeNeuron() {
+		neuron_0_1.addNeuronOut(neuron_1_0);
+		neuron_0_1.addNeuronOut(neuron_1_1);
+		neuron_0_1.addNeuronOut(neuron_1_2);
 		
-		List<Edge> edges = new ArrayList<Edge>(NUMBER_OF_CLASSES);				
-		for (int i=0; i<NUMBER_OF_CLASSES; i++) {
-			Edge edge = new Edge();
-			edge.setWeight(0.0);
-			edges.set(i, edge);
-		}
-		Neuron n1 = new Neuron();
-		n1.setInputs(edges);
-		return n1;
+		neuron_1_0.addNeuronOut(neuron_2_0);
+		neuron_1_1.addNeuronOut(neuron_2_0);
+		neuron_1_2.addNeuronOut(neuron_2_0);
 	}
 }
