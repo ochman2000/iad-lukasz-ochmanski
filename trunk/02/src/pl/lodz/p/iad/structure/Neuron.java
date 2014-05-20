@@ -1,22 +1,42 @@
 package pl.lodz.p.iad.structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Neuron {
 	private List<Edge> input;
-	private Edge output;
+	private List<Edge> output;
 	
-	public Edge getOutput() {
-		return output;
+	
+	public Neuron() {
+		this(2,2);
 	}
-	public void setOutput(Edge out) {
-		this.output = out;
+	public Neuron(int in, int out) {
+		input = new ArrayList<Edge>(in);
+		output = new ArrayList<Edge>(out);
 	}
-	public List<Edge> getInputs() {
+
+	public List<Edge> getInput() {
 		return input;
 	}
-	public void setInputs(List<Edge> input2) {
-		this.input = input2;
+
+	public void setInput(List<Edge> input) {
+		this.input = input;
+	}
+
+	public List<Edge> getOutput() {
+		return output;
+	}
+
+	public void setOutput(List<Edge> output) {
+		this.output = output;
+	}
+	
+	public void addNeuronOut(Neuron neuron) {
+		Edge edge = new Edge();
+		neuron.getInput().add(edge);
+		int lastIndex = neuron.getInput().size()-1;
+		this.getOutput().add(neuron.getInput().get(lastIndex));
 	}
 }

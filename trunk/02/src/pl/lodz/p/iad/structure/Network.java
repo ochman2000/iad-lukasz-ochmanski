@@ -12,13 +12,26 @@ public class Network {
 //    Our error gradients
 
 
+	public List<Layer> getLayers() {
+		return layers;
+	}
+
+	public void setLayers(List<Layer> layers) {
+		this.layers = layers;
+	}
+
 	public Network() {
 		layers = new LinkedList<Layer>();
 	}
 	
-	private void addLayer(int index, int neurons) {
+	public void addLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
-		layers.add(index, newLayer);
+		layers.add(newLayer);
+	}
+	
+	public void setLayer(int index, int neurons) {
+		Layer newLayer = new Layer(neurons);
+		layers.set(index, newLayer);
 	}
 	
 	public void setInputLayer(int neurons) {
@@ -38,8 +51,9 @@ public class Network {
 	}
 	
 	public void addHiddenLayer(int neurons) {
+		Layer newLayer = new Layer(neurons);
 		int index = this.getNumberOfLayers() - 2;
-		this.addLayer(index, neurons);
+		this.getLayers().add(index, newLayer);
 	}
 	
 	public Layer getLayer(int index) {
