@@ -1,6 +1,6 @@
 package pl.lodz.p.iad.structure;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Network {
@@ -13,12 +13,33 @@ public class Network {
 
 
 	public Network() {
-		layers = new ArrayList<Layer>(3);
+		layers = new LinkedList<Layer>();
 	}
 	
-	public void addLayer(int neurons) {
+	private void addLayer(int index, int neurons) {
 		Layer newLayer = new Layer(neurons);
-		layers.add(newLayer);
+		layers.add(index, newLayer);
+	}
+	
+	public void setInputLayer(int neurons) {
+		Layer newLayer = new Layer(neurons);
+		if (getNumberOfLayers()==0)
+			layers.add(newLayer);
+		else
+			layers.set(0, newLayer);
+	}
+	
+	public void setOutputLayer(int neurons) {
+		Layer newLayer = new Layer(neurons);
+		if (getNumberOfLayers()<2)
+			layers.add(newLayer);
+		else
+			layers.set(getNumberOfLayers()-1, newLayer);
+	}
+	
+	public void addHiddenLayer(int neurons) {
+		int index = this.getNumberOfLayers() - 2;
+		this.addLayer(index, neurons);
 	}
 	
 	public Layer getLayer(int index) {

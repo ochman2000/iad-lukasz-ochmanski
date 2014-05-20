@@ -8,10 +8,6 @@ public class Edge {
 		return input;
 	}
 
-	public void setInput(double input) {
-		this.input = input;
-	}
-
 	public double getWeight() {
 		return weight;
 	}
