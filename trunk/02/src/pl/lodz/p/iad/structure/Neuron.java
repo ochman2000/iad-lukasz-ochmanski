@@ -1,20 +1,22 @@
 package pl.lodz.p.iad.structure;
 
+import java.util.List;
+
 
 public class Neuron {
-	private Edge[] input;
-	private double output;
+	private List<Edge> input;
+	private Edge output;
 	
-	public double getOutput() {
+	public Edge getOutput() {
 		return output;
 	}
-	public void setOutput(double output) {
-		this.output = output;
+	public void setOutput(Edge out) {
+		this.output = out;
 	}
-	public Edge[] getInputs() {
+	public List<Edge> getInputs() {
 		return input;
 	}
-	public void setInputs(Edge[] input2) {
+	public void setInputs(List<Edge> input2) {
 		this.input = input2;
 	}
 }
