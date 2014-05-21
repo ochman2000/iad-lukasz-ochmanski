@@ -19,11 +19,6 @@ public class XOR {
 	public static double XOR_IDEAL[] = { 0.0, 1.0, 1.0, 0.0 };
 	
 	public XOR() {
-
-		Network network = new Network();
-		network.addLayer(2);
-		network.addLayer(3);
-		network.addLayer(1);
 		this.initializeStructure();
 	}
 	
