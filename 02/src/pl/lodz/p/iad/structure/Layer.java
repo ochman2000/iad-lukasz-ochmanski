@@ -17,4 +17,8 @@ public class Layer {
 	public void setNeurons(List<Neuron> neurons) {
 		this.neurons = neurons;
 	}
+
+	public void add(Neuron neuron) {
+		this.getNeurons().add(neuron);
+	}
 }
