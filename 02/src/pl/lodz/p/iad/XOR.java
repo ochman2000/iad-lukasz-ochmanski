@@ -1,6 +1,7 @@
 package pl.lodz.p.iad;
 
-import pl.lodz.p.iad.structure.Network;
+import pl.lodz.p.iad.structure.HiddenLayerNeuron;
+import pl.lodz.p.iad.structure.InputLayerNeuron;
 import pl.lodz.p.iad.structure.Neuron;
 
 public class XOR {
@@ -24,14 +25,14 @@ public class XOR {
 	
 	private void initializeStructure() {
 		//INPUT LAYER
-		Neuron neuron_0_0 = new Neuron(1,3);
-		Neuron neuron_0_1 = new Neuron(1,3);
+		Neuron neuron_0_0 = new InputLayerNeuron(1,3);
+		Neuron neuron_0_1 = new InputLayerNeuron(1,3);
 		//HIDDEN LAYER
-		Neuron neuron_1_0 = new Neuron(2,1);
-		Neuron neuron_1_1 = new Neuron(2,1);
-		Neuron neuron_1_2 = new Neuron(2,1);
+		Neuron neuron_1_0 = new HiddenLayerNeuron(2,1);
+		Neuron neuron_1_1 = new HiddenLayerNeuron(2,1);
+		Neuron neuron_1_2 = new HiddenLayerNeuron(2,1);
 		//OUTPUT LAYER
-		Neuron neuron_2_0 = new Neuron(3,1);
+		Neuron neuron_2_0 = new HiddenLayerNeuron(3,1);
 		
 		//CONNECTIONS
 		neuron_0_0.addNeuronOut(neuron_1_0);

@@ -68,4 +68,20 @@ public class Network {
 	public Layer getOutputLayer() {
 		return layers.get(layers.size());
 	}
+	
+	public void setBias(double bias) {
+		for (Layer layer : this.getLayers()) {
+			for (Neuron neuron : layer.getNeurons()) {
+				neuron.setBias(bias);
+			}
+		}
+	}
+	
+	public void setMomentum(double momentum) {
+		for (Layer layer : this.getLayers()) {
+			for (Neuron neuron : layer.getNeurons()) {
+				neuron.setBias(momentum);
+			}
+		}
+	}
 }
