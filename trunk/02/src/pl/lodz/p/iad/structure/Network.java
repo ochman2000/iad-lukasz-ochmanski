@@ -5,12 +5,7 @@ import java.util.List;
 
 public class Network {
 
-//    Our neuron values
 	private List<Layer> layers;
-//    Our weights
-//    Our weight changes
-//    Our error gradients
-
 
 	public List<Layer> getLayers() {
 		return layers;
@@ -26,7 +21,11 @@ public class Network {
 	
 	public void addLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
-		layers.add(newLayer);
+		this.getLayers().add(newLayer);
+	}
+	
+	public void addLayer(Layer layer) {
+		this.getLayers().add(layer);
 	}
 	
 	public void setLayer(int index, int neurons) {
