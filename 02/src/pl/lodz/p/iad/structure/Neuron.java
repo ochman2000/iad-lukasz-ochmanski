@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface Neuron {
 
-	public List<Neuron> getInputs();
+	public List<Edge> getInputs();
 
-	public void setInputs(List<Neuron> input);
+	public void setInputs(List<Edge> input);
 
-	public List<Neuron> getOutputs();
+	public List<Edge> getOutputs();
 
-	public void setOutputs(List<Neuron> output);
+	public void setOutputs(List<Edge> output);
 
 	public void addNeuronOut(Neuron neuron);
 
@@ -31,5 +31,8 @@ public interface Neuron {
 	public double getMomentum();
 
 	public void setMomentum(double momentum);
-
+	
+	public String getID();
+	
+	public void setID(String id);
 }
