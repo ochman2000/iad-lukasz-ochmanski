@@ -11,7 +11,10 @@ public class Sample {
 	private boolean PRE_DEFINED_WEIGHTS = true;
 
 	public Sample() {
-		this.initializeStructure();
+		Network network = this.initializeStructure();
+		System.out.println(network);
+		System.out.println(network.getOutputLayer().getNeurons().get(0));
+		System.out.println(network.getOutputLayer().getNeurons().get(1));
 	}
 	
 	private Network initializeStructure() {
@@ -20,19 +23,22 @@ public class Sample {
 		
 		//INPUT LAYER
 		Layer layer0 = new Layer(3);
-		Neuron neuron_0_0 = new InputLayerNeuron();
-		Neuron neuron_0_1 = new InputLayerNeuron();
-		Neuron neuron_0_2 = new InputLayerNeuron();
+		Neuron neuron_0_0 = new InputLayerNeuron(); neuron_0_0.setID("[0-0]");
+		Neuron neuron_0_1 = new InputLayerNeuron(); neuron_0_1.setID("[0-1]");
+		Neuron neuron_0_2 = new InputLayerNeuron(); neuron_0_2.setID("[0-2]");
+		neuron_0_0.setLocalOut(1.0);
+		neuron_0_1.setLocalOut(2.0);
+		neuron_0_2.setLocalOut(3.0);
 		layer0.add(neuron_0_0);
 		layer0.add(neuron_0_1);
 		layer0.add(neuron_0_2);
 		
 		//HIDDEN LAYER
 		Layer layer1 = new Layer(4);
-		Neuron neuron_1_0 = new HiddenLayerNeuron();
-		Neuron neuron_1_1 = new HiddenLayerNeuron();
-		Neuron neuron_1_2 = new HiddenLayerNeuron();
-		Neuron neuron_1_3 = new HiddenLayerNeuron();
+		Neuron neuron_1_0 = new HiddenLayerNeuron(); neuron_1_0.setID("[1-0]");
+		Neuron neuron_1_1 = new HiddenLayerNeuron(); neuron_1_1.setID("[1-1]");
+		Neuron neuron_1_2 = new HiddenLayerNeuron(); neuron_1_2.setID("[1-2]");
+		Neuron neuron_1_3 = new HiddenLayerNeuron(); neuron_1_3.setID("[1-3]");
 		layer1.add(neuron_1_0);
 		layer1.add(neuron_1_1);
 		layer1.add(neuron_1_2);
@@ -40,8 +46,8 @@ public class Sample {
 		
 		//OUTPUT LAYER
 		Layer layer2 = new Layer(2);
-		Neuron neuron_2_0 = new HiddenLayerNeuron();
-		Neuron neuron_2_1 = new HiddenLayerNeuron();
+		Neuron neuron_2_0 = new HiddenLayerNeuron(); neuron_2_0.setID("[2-0]");
+		Neuron neuron_2_1 = new HiddenLayerNeuron(); neuron_2_1.setID("[2-1]");
 		layer2.add(neuron_2_0);
 		layer2.add(neuron_2_1);
 		
@@ -74,11 +80,8 @@ public class Sample {
 		neuron_1_3.addNeuronOut(neuron_2_1);
 		
 		if (PRE_DEFINED_WEIGHTS) {
-			neuron_0_0.setLocalOut(1.0);
 			neuron_0_0.setWeightOut(0.4);
-			neuron_0_1.setLocalOut(2.0);
 			neuron_0_1.setWeightOut(0.8);
-			neuron_0_2.setLocalOut(3.0);
 			neuron_0_2.setWeightOut(1.2);
 		}
 		
@@ -90,5 +93,9 @@ public class Sample {
 		network.setMomentum(1.0);
 		
 		return network;
+	}
+	
+	public static void main(String[] args) {
+		new Sample();
 	}
 }

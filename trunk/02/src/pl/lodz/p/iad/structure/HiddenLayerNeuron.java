@@ -2,53 +2,62 @@ package pl.lodz.p.iad.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 
 public class HiddenLayerNeuron implements Neuron {
-	private List<Neuron> input;
-	private List<Neuron> output;
-	private double weightOut;
+	private List<Edge> input;
+	private List<Edge> output;
 	private double bias;
 	private double momentum;
+	private String ID;
 	
+	@Override
+	public String getID() {
+		return ID;
+	}
+
+	@Override
+	public void setID(String iD) {
+		ID = iD;
+	}
 
 	public HiddenLayerNeuron() {
 		this(2,2);
 	}
 
 	public HiddenLayerNeuron(int in, int out) {
-		input = new ArrayList<Neuron>(in);
-		output = new ArrayList<Neuron>(out);
-		Random random = new Random();
-		double rnd = random.nextDouble();
-		this.setWeightOut(rnd);
+		input = new ArrayList<Edge>(in);
+		output = new ArrayList<Edge>(out);
 	}
 
 	@Override
-	public List<Neuron> getInputs() {
+	public List<Edge> getInputs() {
 		return input;
 	}
 
 	@Override
-	public void setInputs(List<Neuron> input) {
+	public void setInputs(List<Edge> input) {
 		this.input = input;
 	}
 
 	@Override
-	public List<Neuron> getOutputs() {
+	public List<Edge> getOutputs() {
 		return output;
 	}
 
 	@Override
-	public void setOutputs(List<Neuron> output) {
+	public void setOutputs(List<Edge> output) {
 		this.output = output;
 	}
 	
 	@Override
 	public void addNeuronOut(Neuron neuron) {
-		neuron.getInputs().add(this);
-		this.getOutputs().add(neuron);
+		Edge edge = new Edge();
+		
+		neuron.getInputs().add(edge);
+		edge.setNext(neuron);
+			
+		this.getOutputs().add(edge);
+		edge.setPrev(this);
 	}
 	
 	/* (non-Javadoc)
@@ -57,9 +66,9 @@ public class HiddenLayerNeuron implements Neuron {
 	@Override
 	public double getLocalIn() {
 		double localIn = 0.0;
-		for (Neuron input : this.getInputs()) {
-			double prevOut = input.getLocalOut();
-			double weight = input.getWeightOut();
+		for (Edge input : this.getInputs()) {
+			double prevOut = input.getPrev().getLocalOut();
+			double weight = input.getWeight();
 			double product = prevOut * weight;
 			localIn+=product;
 		}
@@ -83,20 +92,6 @@ public class HiddenLayerNeuron implements Neuron {
 			return 1.0;
 		else
 			return 1.0 / (1.0 + Math.exp(-x));
-	}
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#getWeightOut()
-	 */
-	@Override
-	public double getWeightOut() {
-		return weightOut;
-	}
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#setWeightOut(double)
-	 */
-	@Override
-	public void setWeightOut(double weightOut) {
-		this.weightOut = weightOut;
 	}
 
 	@Override
@@ -122,5 +117,29 @@ public class HiddenLayerNeuron implements Neuron {
 	@Override
 	public void setBias(double bias) {
 		this.bias = bias;
+	}
+	
+	public String toString() {
+		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
+		String bias = "Bias: " +this.getBias() + "\n";
+		String momentum = "Momentum: " + this.getMomentum() + "\n";
+		String in = "Wejście: " + this.getLocalIn() + "\n";
+		String out = "Wyjście: " + this.getLocalOut() + "\n";
+		
+		return 	"=======================================\n" +
+				id+bias+momentum+in+out+		
+				"=======================================\n";
+	}
+
+	@Override
+	public double getWeightOut() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setWeightOut(double weightOut) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -16,7 +16,7 @@ public class Network {
 	}
 
 	public Network() {
-		layers = new LinkedList<Layer>();
+		this.setLayers(new LinkedList<Layer>());
 	}
 	
 	public void addLayer(int neurons) {
@@ -30,23 +30,23 @@ public class Network {
 	
 	public void setLayer(int index, int neurons) {
 		Layer newLayer = new Layer(neurons);
-		layers.set(index, newLayer);
+		this.getLayers().set(index, newLayer);
 	}
 	
 	public void setInputLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
 		if (getNumberOfLayers()==0)
-			layers.add(newLayer);
+			this.getLayers().add(newLayer);
 		else
-			layers.set(0, newLayer);
+			this.getLayers().set(0, newLayer);
 	}
 	
 	public void setOutputLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
 		if (getNumberOfLayers()<2)
-			layers.add(newLayer);
+			this.getLayers().add(newLayer);
 		else
-			layers.set(getNumberOfLayers()-1, newLayer);
+			this.getLayers().set(getNumberOfLayers()-1, newLayer);
 	}
 	
 	public void addHiddenLayer(int neurons) {
@@ -56,17 +56,17 @@ public class Network {
 	}
 	
 	public Layer getLayer(int index) {
-		return layers.get(index);
+		return this.getLayers().get(index);
 	}
 	
 	public int getNumberOfLayers() {
-		return layers.size();
+		return this.getLayers().size();
 	}
 	public Layer getInputLayer() {
-		return layers.get(0);
+		return this.getLayers().get(0);
 	}
 	public Layer getOutputLayer() {
-		return layers.get(layers.size());
+		return this.getLayers().get(layers.size()-1);
 	}
 	
 	public void setBias(double bias) {
@@ -83,5 +83,26 @@ public class Network {
 				neuron.setBias(momentum);
 			}
 		}
+	}
+	
+	public List<Layer> getHiddenLayers() {
+		LinkedList<Layer> hlayers = new LinkedList<Layer>();
+		for (Layer layer : this.getLayers()) {
+			hlayers.add(layer);
+		}
+		hlayers.remove(0);
+		return hlayers;
+	}
+	
+	public String toString() {
+		String s = "";
+		for (Layer layer : this.getLayers()) {
+			for (Neuron n : layer.getNeurons()) {
+				s+=n.getID() + "\tIN: " + (String.format("%.2f", n.getLocalIn())) + "\t"+
+						"OUT: " + (String.format("%.2f", n.getLocalOut())) + "\n";
+			}
+		}
+		return s;
+		
 	}
 }
