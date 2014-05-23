@@ -25,4 +25,10 @@ public class Layer {
 	public Neuron getNeuron(int index) {
 		return this.getNeurons().get(index);
 	}
+	
+	public void setBias(double bias) {
+		for (Neuron neuron : this.getNeurons()) {
+			neuron.setBias(bias);
+		}
+	}
 }

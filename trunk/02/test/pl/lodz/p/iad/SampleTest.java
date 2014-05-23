@@ -153,10 +153,11 @@ public class SampleTest {
 		neuron_1_3.addNeuronOut(neuron_2_1);
 		
 		network.addLayer(layer0);
+		layer1.setBias(-7.0);
 		network.addLayer(layer1);
+		layer2.setBias(-7.0);
 		network.addLayer(layer2);
 		
-		network.setBias(-7.0);
 		network.setMomentum(1.0);
 		
 		return network;

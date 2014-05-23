@@ -10,7 +10,6 @@ public class InputLayerNeuron implements Neuron {
 	private double localIn;
 	private double localOut;
 	private double momentum;
-	private double bias;
 	private String ID;
 	
 	@Override
@@ -90,12 +89,12 @@ public class InputLayerNeuron implements Neuron {
 	
 	@Override
 	public double getBias() {
-		return bias;
+		throw new UnsupportedOperationException("Nie ma BIASu w warstwie wejściowej.");
 	}
 	
 	@Override
 	public void setBias(double bias) {
-		this.bias = bias;
+		throw new UnsupportedOperationException("Nie można ustawić BIASu dla warstwy wejściowej.");
 	}
 	
 	public String toString() {

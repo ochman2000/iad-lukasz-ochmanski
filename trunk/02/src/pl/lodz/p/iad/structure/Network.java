@@ -69,18 +69,10 @@ public class Network {
 		return this.getLayers().get(layers.size()-1);
 	}
 	
-	public void setBias(double bias) {
-		for (Layer layer : this.getLayers()) {
-			for (Neuron neuron : layer.getNeurons()) {
-				neuron.setBias(bias);
-			}
-		}
-	}
-	
 	public void setMomentum(double momentum) {
 		for (Layer layer : this.getLayers()) {
 			for (Neuron neuron : layer.getNeurons()) {
-				neuron.setBias(momentum);
+				neuron.setMomentum(momentum);
 			}
 		}
 	}
@@ -99,7 +91,14 @@ public class Network {
 		for (Layer layer : this.getLayers()) {
 			for (Neuron n : layer.getNeurons()) {
 				s+=n.getID() + "\tIN: " + (String.format("%.2f", n.getLocalIn())) + "\t"+
-						"OUT: " + (String.format("%.2f", n.getLocalOut())) + "\n";
+						"OUT: " + (String.format("%.2f", n.getLocalOut())) + "\t";
+				if (n instanceof HiddenLayerNeuron) {
+					s+= "BIAS: " + (String.format("%.2f", n.getBias())) + "\t";
+				}
+				else {
+					s+= "BIAS: null" + "\t";
+				}
+				s+= "MOMENTUM: " + (String.format("%.2f", n.getMomentum()))+"\n";
 			}
 		}
 		return s;
