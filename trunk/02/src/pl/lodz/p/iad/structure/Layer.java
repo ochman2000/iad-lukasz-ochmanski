@@ -21,4 +21,8 @@ public class Layer {
 	public void add(Neuron neuron) {
 		this.getNeurons().add(neuron);
 	}
+	
+	public Neuron getNeuron(int index) {
+		return this.getNeurons().get(index);
+	}
 }

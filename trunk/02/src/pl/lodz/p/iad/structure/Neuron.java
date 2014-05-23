@@ -5,10 +5,14 @@ import java.util.List;
 public interface Neuron {
 
 	public List<Edge> getInputs();
+	
+	public Edge getInput(int index);
 
 	public void setInputs(List<Edge> input);
 
 	public List<Edge> getOutputs();
+	
+	public Edge getOutput(int index);
 
 	public void setOutputs(List<Edge> output);
 

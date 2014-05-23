@@ -8,13 +8,13 @@ import pl.lodz.p.iad.structure.Neuron;
 
 public class Sample {
 	
-	private boolean PRE_DEFINED_WEIGHTS = true;
+	private boolean PRE_DEFINED_WEIGHTS = false;
 
 	public Sample() {
 		Network network = this.initializeStructure();
 		System.out.println(network);
-		System.out.println(network.getOutputLayer().getNeurons().get(0));
-		System.out.println(network.getOutputLayer().getNeurons().get(1));
+		System.out.println(network.getOutputLayer().getNeuron(0));
+		System.out.println(network.getOutputLayer().getNeuron(1));
 	}
 	
 	private Network initializeStructure() {

@@ -75,13 +75,10 @@ public class HiddenLayerNeuron implements Neuron {
 		return localIn+this.getBias();
 	}
 
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#getLocalOut()
-	 */
 	@Override
 	public double getLocalOut() {
 		double x = this.getLocalIn();
-		double localOut = this.sigmoidFunction(x) * x;
+		double localOut = this.sigmoidFunction(x);
 		return localOut;
 	}
 	
@@ -96,7 +93,7 @@ public class HiddenLayerNeuron implements Neuron {
 
 	@Override
 	public void setLocalOut(double localOut) {
-		throw new UnknownError("You should never call this function on hidden layer.");
+		throw new UnsupportedOperationException("You should never call this function on hidden layer.");
 	}
 	
 	@Override
@@ -133,13 +130,21 @@ public class HiddenLayerNeuron implements Neuron {
 
 	@Override
 	public double getWeightOut() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setWeightOut(double weightOut) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Edge getInput(int index) {
+		return this.getInputs().get(index);
+	}
+
+	@Override
+	public Edge getOutput(int index) {
+		return this.getOutputs().get(index);
 	}
 }
