@@ -63,17 +63,11 @@ public class InputLayerNeuron implements Neuron {
 		edge.setPrev(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#getLocalIn()
-	 */
 	@Override
 	public double getLocalIn() {
 		return localIn;
 	}
 
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#getLocalOut()
-	 */
 	@Override
 	public double getLocalOut() {
 		return localOut;
@@ -118,13 +112,21 @@ public class InputLayerNeuron implements Neuron {
 
 	@Override
 	public double getWeightOut() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setWeightOut(double weightOut) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Edge getInput(int index) {
+		return this.getInputs().get(index);
+	}
+
+	@Override
+	public Edge getOutput(int index) {
+		return this.getOutputs().get(index);
 	}
 }
