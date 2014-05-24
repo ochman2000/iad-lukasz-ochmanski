@@ -6,6 +6,11 @@ import java.util.List;
 public class Layer {
 	private List<Neuron> neurons;
 	private double bias;
+	private Network network;
+
+	public Network getNetwork() {
+		return network;
+	}
 
 	public Layer(int liczbaNeuronow) {
 		neurons = new ArrayList<Neuron>(liczbaNeuronow);
@@ -34,6 +39,10 @@ public class Layer {
 
 	public void setBias(double bias) {
 		this.bias = bias;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 	
 }

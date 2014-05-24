@@ -9,7 +9,6 @@ public class InputLayerNeuron implements Neuron {
 	private List<Edge> output;
 	private double localIn;
 	private double localOut;
-	private double momentum;
 	private String ID;
 	private Layer layer;
 	
@@ -77,21 +76,11 @@ public class InputLayerNeuron implements Neuron {
 	public void setLocalOut(double localOut) {
 		this.localOut = localOut;
 	}
-
-	@Override
-	public double getMomentum() {
-		return momentum;
-	}
-
-	@Override
-	public void setMomentum(double momentum) {
-		this.momentum = momentum;
-	}
 	
 	public String toString() {
 		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
 		String bias = "Bias: null\n";
-		String momentum = "Momentum: " + this.getMomentum() + "\n";
+		String momentum = "Momentum: " + this.getLayer().getNetwork().getMomentum() + "\n";
 		String in = "Wejście: " + this.getLocalIn() + "\n";
 		String out = "Wyjście: " + this.getLocalOut() + "\n";
 		
