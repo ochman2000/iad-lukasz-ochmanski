@@ -7,6 +7,7 @@ public class Network {
 
 	private List<Layer> layers;
 	private double momentum;
+	private double learningRate;
 
 	public List<Layer> getLayers() {
 		return layers;
@@ -105,5 +106,13 @@ public class Network {
 		}
 		return s;
 		
+	}
+
+	public double getLearningRate() {
+		return learningRate;
+	}
+
+	public void setLearningRate(double learningRate) {
+		this.learningRate = learningRate;
 	}
 }
