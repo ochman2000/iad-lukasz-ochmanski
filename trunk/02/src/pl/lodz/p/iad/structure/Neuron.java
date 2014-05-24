@@ -22,10 +22,6 @@ public interface Neuron {
 
 	public double getLocalOut();
 
-	public double getWeightOut();
-
-	public void setWeightOut(double weightOut);
-
 	public void setLocalOut(double localOut);
 	
 	public String getID();
@@ -35,4 +31,12 @@ public interface Neuron {
 	public void setLayer(Layer layer);
 	
 	public Layer getLayer();
+
+	double getGradient();
+
+	void setGradient(double gradient);
+
+	void setBias(double bias);
+
+	double getBias();
 }

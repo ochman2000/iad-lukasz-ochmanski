@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Layer {
 	private List<Neuron> neurons;
-	private double bias;
 	private Network network;
 
 	public Network getNetwork() {
@@ -31,14 +30,6 @@ public class Layer {
 	
 	public Neuron getNeuron(int index) {
 		return this.getNeurons().get(index);
-	}
-
-	public double getBias() {
-		return bias;
-	}
-
-	public void setBias(double bias) {
-		this.bias = bias;
 	}
 
 	public void setNetwork(Network network) {

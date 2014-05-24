@@ -8,6 +8,8 @@ public class HiddenLayerNeuron implements Neuron {
 	private List<Edge> output;
 	private String ID;
 	private Layer layer;
+	private double gradient;
+	private double bias;
 	
 	@Override
 	public String getID() {
@@ -68,7 +70,7 @@ public class HiddenLayerNeuron implements Neuron {
 			double product = prevOut * weight;
 			localIn+=product;
 		}
-		return localIn+this.getLayer().getBias();
+		return localIn+this.getBias();
 	}
 
 	@Override
@@ -94,7 +96,7 @@ public class HiddenLayerNeuron implements Neuron {
 	
 	public String toString() {
 		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
-		String bias = "Bias: " +this.getLayer().getBias() + "\n";
+		String bias = "Bias: " +this.getBias() + "\n";
 		String momentum = "Momentum: " + this.getLayer().getNetwork().getMomentum() + "\n";
 		String in = "Wejście: " + this.getLocalIn() + "\n";
 		String out = "Wyjście: " + this.getLocalOut() + "\n";
@@ -102,16 +104,6 @@ public class HiddenLayerNeuron implements Neuron {
 		return 	"=======================================\n" +
 				id+bias+momentum+in+out+		
 				"=======================================\n";
-	}
-
-	@Override
-	public double getWeightOut() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void setWeightOut(double weightOut) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -132,5 +124,25 @@ public class HiddenLayerNeuron implements Neuron {
 	@Override
 	public Layer getLayer() {
 		return this.layer;
+	}
+	
+	@Override
+	public double getGradient() {
+		return gradient;
+	}
+
+	@Override
+	public void setGradient(double gradient) {
+		this.gradient = gradient;
+	}
+	
+	@Override
+	public double getBias() {
+		return bias;
+	}
+
+	@Override
+	public void setBias(double bias) {
+		this.bias = bias;
 	}
 }
