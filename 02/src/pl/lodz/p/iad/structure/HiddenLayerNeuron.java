@@ -6,9 +6,9 @@ import java.util.List;
 public class HiddenLayerNeuron implements Neuron {
 	private List<Edge> input;
 	private List<Edge> output;
-	private double bias;
 	private double momentum;
 	private String ID;
+	private Layer layer;
 	
 	@Override
 	public String getID() {
@@ -60,9 +60,6 @@ public class HiddenLayerNeuron implements Neuron {
 		edge.setPrev(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see pl.lodz.p.iad.structure.Neuron#getLocalIn()
-	 */
 	@Override
 	public double getLocalIn() {
 		double localIn = 0.0;
@@ -72,7 +69,7 @@ public class HiddenLayerNeuron implements Neuron {
 			double product = prevOut * weight;
 			localIn+=product;
 		}
-		return localIn+this.getBias();
+		return localIn+this.getLayer().getBias();
 	}
 
 	@Override
@@ -106,19 +103,9 @@ public class HiddenLayerNeuron implements Neuron {
 		this.momentum = momentum;
 	}
 	
-	@Override
-	public double getBias() {
-		return bias;
-	}
-	
-	@Override
-	public void setBias(double bias) {
-		this.bias = bias;
-	}
-	
 	public String toString() {
 		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
-		String bias = "Bias: " +this.getBias() + "\n";
+		String bias = "Bias: " +this.getLayer().getBias() + "\n";
 		String momentum = "Momentum: " + this.getMomentum() + "\n";
 		String in = "Wejście: " + this.getLocalIn() + "\n";
 		String out = "Wyjście: " + this.getLocalOut() + "\n";
@@ -146,5 +133,15 @@ public class HiddenLayerNeuron implements Neuron {
 	@Override
 	public Edge getOutput(int index) {
 		return this.getOutputs().get(index);
+	}
+
+	@Override
+	public void setLayer(Layer layer) {
+		this.layer = layer;	
+	}
+
+	@Override
+	public Layer getLayer() {
+		return this.layer;
 	}
 }

@@ -11,6 +11,7 @@ public class InputLayerNeuron implements Neuron {
 	private double localOut;
 	private double momentum;
 	private String ID;
+	private Layer layer;
 	
 	@Override
 	public String getID() {
@@ -87,19 +88,9 @@ public class InputLayerNeuron implements Neuron {
 		this.momentum = momentum;
 	}
 	
-	@Override
-	public double getBias() {
-		throw new UnsupportedOperationException("Nie ma BIASu w warstwie wejściowej.");
-	}
-	
-	@Override
-	public void setBias(double bias) {
-		throw new UnsupportedOperationException("Nie można ustawić BIASu dla warstwy wejściowej.");
-	}
-	
 	public String toString() {
 		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
-		String bias = "Bias: " +this.getBias() + "\n";
+		String bias = "Bias: null\n";
 		String momentum = "Momentum: " + this.getMomentum() + "\n";
 		String in = "Wejście: " + this.getLocalIn() + "\n";
 		String out = "Wyjście: " + this.getLocalOut() + "\n";
@@ -127,5 +118,15 @@ public class InputLayerNeuron implements Neuron {
 	@Override
 	public Edge getOutput(int index) {
 		return this.getOutputs().get(index);
+	}
+
+	@Override
+	public void setLayer(Layer layer) {
+		this.layer = layer;
+	}
+
+	@Override
+	public Layer getLayer() {
+		return layer;
 	}
 }

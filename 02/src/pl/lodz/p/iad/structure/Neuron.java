@@ -28,10 +28,6 @@ public interface Neuron {
 
 	public void setLocalOut(double localOut);
 	
-	public double getBias();
-	
-	public void setBias(double bias);
-	
 	public double getMomentum();
 
 	public void setMomentum(double momentum);
@@ -39,4 +35,8 @@ public interface Neuron {
 	public String getID();
 	
 	public void setID(String id);
+	
+	public void setLayer(Layer layer);
+	
+	public Layer getLayer();
 }
