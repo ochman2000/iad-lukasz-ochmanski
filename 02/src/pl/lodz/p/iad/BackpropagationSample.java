@@ -6,11 +6,11 @@ import pl.lodz.p.iad.structure.Layer;
 import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 
-public class Sample {
+public class BackpropagationSample {
 	
 	private boolean PRE_DEFINED_WEIGHTS = false;
 
-	public Sample() {
+	public BackpropagationSample() {
 		Network network = this.initializeStructure();
 		System.out.println(network);
 		System.out.println(network.getOutputLayer().getNeuron(0));
@@ -91,6 +91,6 @@ public class Sample {
 	}
 	
 	public static void main(String[] args) {
-		new Sample();
+		new BackpropagationSample();
 	}
 }

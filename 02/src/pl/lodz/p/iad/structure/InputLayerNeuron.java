@@ -90,16 +90,6 @@ public class InputLayerNeuron implements Neuron {
 	}
 
 	@Override
-	public double getWeightOut() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void setWeightOut(double weightOut) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Edge getInput(int index) {
 		return this.getInputs().get(index);
 	}
@@ -117,5 +107,25 @@ public class InputLayerNeuron implements Neuron {
 	@Override
 	public Layer getLayer() {
 		return layer;
+	}
+	
+	@Override
+	public double getGradient() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setGradient(double gradient) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public double getBias() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setBias(double bias) {
+		throw new UnsupportedOperationException();
 	}
 }
