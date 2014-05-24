@@ -28,10 +28,6 @@ public interface Neuron {
 
 	public void setLocalOut(double localOut);
 	
-	public double getMomentum();
-
-	public void setMomentum(double momentum);
-	
 	public String getID();
 	
 	public void setID(String id);

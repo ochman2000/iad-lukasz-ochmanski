@@ -6,7 +6,6 @@ import java.util.List;
 public class HiddenLayerNeuron implements Neuron {
 	private List<Edge> input;
 	private List<Edge> output;
-	private double momentum;
 	private String ID;
 	private Layer layer;
 	
@@ -93,20 +92,10 @@ public class HiddenLayerNeuron implements Neuron {
 		throw new UnsupportedOperationException("You should never call this function on hidden layer.");
 	}
 	
-	@Override
-	public double getMomentum() {
-		return momentum;
-	}
-
-	@Override
-	public void setMomentum(double momentum) {
-		this.momentum = momentum;
-	}
-	
 	public String toString() {
 		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
 		String bias = "Bias: " +this.getLayer().getBias() + "\n";
-		String momentum = "Momentum: " + this.getMomentum() + "\n";
+		String momentum = "Momentum: " + this.getLayer().getNetwork().getMomentum() + "\n";
 		String in = "Wejście: " + this.getLocalIn() + "\n";
 		String out = "Wyjście: " + this.getLocalOut() + "\n";
 		

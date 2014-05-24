@@ -6,6 +6,7 @@ import java.util.List;
 public class Network {
 
 	private List<Layer> layers;
+	private double momentum;
 
 	public List<Layer> getLayers() {
 		return layers;
@@ -21,6 +22,7 @@ public class Network {
 	
 	public void addLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
+		newLayer.setNetwork(this);
 		this.getLayers().add(newLayer);
 	}
 	
@@ -70,11 +72,11 @@ public class Network {
 	}
 	
 	public void setMomentum(double momentum) {
-		for (Layer layer : this.getLayers()) {
-			for (Neuron neuron : layer.getNeurons()) {
-				neuron.setMomentum(momentum);
-			}
-		}
+		this.momentum = momentum;
+	}
+	
+	public double getMomentum() {
+		return momentum;
 	}
 	
 	public List<Layer> getHiddenLayers() {
@@ -98,7 +100,7 @@ public class Network {
 				else {
 					s+= "BIAS: null" + "\t";
 				}
-				s+= "MOMENTUM: " + (String.format("%.2f", n.getMomentum()))+"\n";
+				s+= "MOMENTUM: " + (String.format("%.2f", this.getMomentum()))+"\n";
 			}
 		}
 		return s;
