@@ -93,7 +93,7 @@ public class Network {
 				s+=n.getID() + "\tIN: " + (String.format("%.2f", n.getLocalIn())) + "\t"+
 						"OUT: " + (String.format("%.2f", n.getLocalOut())) + "\t";
 				if (n instanceof HiddenLayerNeuron) {
-					s+= "BIAS: " + (String.format("%.2f", n.getBias())) + "\t";
+					s+= "BIAS: " + (String.format("%.2f", layer.getBias())) + "\t";
 				}
 				else {
 					s+= "BIAS: null" + "\t";

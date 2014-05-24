@@ -20,7 +20,7 @@ public class SampleTest {
 		double weight01 = network.getLayer(1).getNeuron(0).getInputs().get(0).getWeight();
 		double weight02 = network.getLayer(1).getNeuron(0).getInputs().get(1).getWeight();
 		double weight03 = network.getLayer(1).getNeuron(0).getInputs().get(2).getWeight();
-		double bias = network.getLayer(1).getNeuron(0).getBias();
+		double bias = network.getLayer(1).getBias();
 		
 		double in = 1.0 * weight01 + 2.0 * weight02 + 3.0 * weight03 + bias;
 		double calculated = network.getLayer(1).getNeuron(0).getLocalIn();
@@ -53,7 +53,7 @@ public class SampleTest {
 		double val03 = network.getLayer(1).getNeuron(2).getLocalOut();
 		double weight04 = network.getLayer(2).getNeuron(0).getInputs().get(3).getWeight();
 		double val04 = network.getLayer(1).getNeuron(3).getLocalOut();
-		double bias = network.getLayer(2).getNeuron(0).getBias();
+		double bias = network.getLayer(2).getBias();
 		
 		double in = val01 * weight01 + val02 * weight02 + val03 * weight03 + val04 * weight04 + bias;
 		double calculated = network.getLayer(2).getNeuron(0).getLocalIn();
