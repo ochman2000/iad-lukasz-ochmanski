@@ -22,11 +22,11 @@ public class Network {
 	
 	public void addLayer(int neurons) {
 		Layer newLayer = new Layer(neurons);
-		newLayer.setNetwork(this);
-		this.getLayers().add(newLayer);
+		this.addLayer(newLayer);
 	}
 	
 	public void addLayer(Layer layer) {
+		layer.setNetwork(this);
 		this.getLayers().add(layer);
 	}
 	
@@ -35,27 +35,27 @@ public class Network {
 		this.getLayers().set(index, newLayer);
 	}
 	
-	public void setInputLayer(int neurons) {
-		Layer newLayer = new Layer(neurons);
-		if (getNumberOfLayers()==0)
-			this.getLayers().add(newLayer);
-		else
-			this.getLayers().set(0, newLayer);
-	}
-	
-	public void setOutputLayer(int neurons) {
-		Layer newLayer = new Layer(neurons);
-		if (getNumberOfLayers()<2)
-			this.getLayers().add(newLayer);
-		else
-			this.getLayers().set(getNumberOfLayers()-1, newLayer);
-	}
-	
-	public void addHiddenLayer(int neurons) {
-		Layer newLayer = new Layer(neurons);
-		int index = this.getNumberOfLayers() - 2;
-		this.getLayers().add(index, newLayer);
-	}
+//	public void setInputLayer(int neurons) {
+//		Layer newLayer = new Layer(neurons);
+//		if (getNumberOfLayers()==0)
+//			this.getLayers().add(newLayer);
+//		else
+//			this.getLayers().set(0, newLayer);
+//	}
+//	
+//	public void setOutputLayer(int neurons) {
+//		Layer newLayer = new Layer(neurons);
+//		if (getNumberOfLayers()<2)
+//			this.getLayers().add(newLayer);
+//		else
+//			this.getLayers().set(getNumberOfLayers()-1, newLayer);
+//	}
+//	
+//	public void addHiddenLayer(int neurons) {
+//		Layer newLayer = new Layer(neurons);
+//		int index = this.getNumberOfLayers() - 2;
+//		this.getLayers().add(index, newLayer);
+//	}
 	
 	public Layer getLayer(int index) {
 		return this.getLayers().get(index);
