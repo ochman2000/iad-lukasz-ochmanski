@@ -92,6 +92,7 @@ public class Sample {
 		network.addLayer(layer2);
 		
 		network.setMomentum(1.0);
+		network.setLearningRate(0.9);
 		
 		return network;
 	}
