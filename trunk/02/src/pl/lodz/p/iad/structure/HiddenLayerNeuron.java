@@ -31,7 +31,7 @@ public class HiddenLayerNeuron implements Neuron {
 		input = new ArrayList<Edge>(in);
 		output = new ArrayList<Edge>(out);
 		Random random = new Random();
-		double rnd = random.nextDouble()*4.0-2.0;
+		double rnd = random.nextDouble();
 		this.setBias(rnd);
 	}
 

@@ -14,7 +14,7 @@ public class BackpropagationSample {
 //			System.out.println(network);
 			System.out.println(network.getOutputLayer().getNeuron(0));
 			System.out.println(network.getOutputLayer().getNeuron(1));
-			double[] out = {-0.85, 0.75};
+			double[] out = {0.85, 0.75};
 			network.train(out);
 		}
 	}
