@@ -126,53 +126,35 @@ public class Network {
 		this.learningRate = learningRate;
 	}
 	
-	public void train() {
-		double[] in = {1.0, 2.0, 3.0};
-		double[] out = {-0.85, 0.75};
+	public void train(double[] expected) {
+		
+		if (this.getOutputLayer().getNeurons().size()!=expected.length) {
+			throw new IllegalArgumentException();
+		}
 		
 		//layer 2
-		double x2_0 = this.getOutputLayer().getNeuron(0).getLocalOut();
-		double derivative2_0 = this.sigmoidDerivative(x2_0);
-		double gradient2_0 = derivative2_0 * (out[0]-x2_0);
-		this.getLayer(2).getNeuron(0).setGradient(gradient2_0);
-		
-		double x2_1 = this.getOutputLayer().getNeuron(1).getLocalOut();
-		double derivative2_1 = this.sigmoidDerivative(x2_1);
-		double gradient2_1 = derivative2_1 * (out[0]-x2_1);
-		this.getLayer(2).getNeuron(1).setGradient(gradient2_1);
+		for (int neuron=0; neuron<this.getOutputLayer().getNeurons().size(); neuron++) {
+			double x2_0 = this.getOutputLayer().getNeuron(neuron).getLocalOut();
+			double derivative2_0 = this.sigmoidDerivative(x2_0);
+			double gradient2_0 = derivative2_0 * (expected[neuron]-x2_0);
+			this.getOutputLayer().getNeuron(neuron).setGradient(gradient2_0);
+		}
 		
 		//layer 1 (Zauważ, że liczenie gradientów dla warstw ukrytych odbywa się zupełnie inaczej)
-		double x1_0 = this.getLayer(1).getNeuron(0).getLocalOut();
-		double derivative1_0 = this.sigmoidDerivative(x1_0);
-		double product1_0_0 = gradient2_0 * this.getLayer(1).getNeuron(0).getOutput(0).getWeight();
-		double product1_0_1 = gradient2_1 * this.getLayer(1).getNeuron(0).getOutput(1).getWeight();
-		double sumOfProducts1_0 = (product1_0_0+product1_0_1);
-		double gradient1_0 = derivative1_0 * sumOfProducts1_0;
-		this.getLayer(1).getNeuron(0).setGradient(gradient1_0);
-		
-		double x1_1 = this.getLayer(1).getNeuron(1).getLocalOut();
-		double derivative1_1 = this.sigmoidDerivative(x1_1);
-		double product1_1_0 = gradient2_0 * this.getLayer(1).getNeuron(1).getOutput(0).getWeight();
-		double product1_1_1 = gradient2_1 * this.getLayer(1).getNeuron(1).getOutput(1).getWeight();
-		double sumOfProducts1_1 = (product1_1_0+product1_1_1);
-		double gradient1_1 = derivative1_1 * sumOfProducts1_1;
-		this.getLayer(1).getNeuron(1).setGradient(gradient1_1);
-		
-		double x1_2 = this.getLayer(1).getNeuron(2).getLocalOut();
-		double derivative1_2 = this.sigmoidDerivative(x1_2);
-		double product1_2_0 = gradient2_0 * this.getLayer(1).getNeuron(2).getOutput(0).getWeight();
-		double product1_2_1 = gradient2_1 * this.getLayer(1).getNeuron(2).getOutput(1).getWeight();
-		double sumOfProducts1_2 = (product1_2_0+product1_2_1);
-		double gradient1_2 = derivative1_2 * sumOfProducts1_2;
-		this.getLayer(1).getNeuron(2).setGradient(gradient1_2);
-		
-		double x1_3 = this.getLayer(1).getNeuron(3).getLocalOut();
-		double derivative1_3 = this.sigmoidDerivative(x1_3);
-		double product1_3_0 = gradient2_0 * this.getLayer(1).getNeuron(3).getOutput(0).getWeight();
-		double product1_3_1 = gradient2_1 * this.getLayer(1).getNeuron(3).getOutput(1).getWeight();
-		double sumOfProducts1_3 = (product1_3_0+product1_3_1);
-		double gradient1_3 = derivative1_3 * sumOfProducts1_3;
-		this.getLayer(1).getNeuron(3).setGradient(gradient1_3);
+		for (int layer=this.getNumberOfLayers()-2; layer>0; layer--) {
+			for (int neuron=0; neuron<this.getLayer(layer).getNeurons().size(); neuron++) {
+				
+				double x1_0 = this.getLayer(layer).getNeuron(neuron).getLocalOut();
+				double derivative1_0 = this.sigmoidDerivative(x1_0);
+				double sumOfProducts1_0 = 0.0;
+				for (int output=0; output<this.getLayer(layer).getNeuron(neuron).getOutputs().size(); output++) {
+					double product1_0_0 = this.getLayer(layer).getNeuron(neuron).getOutput(output).getNext().getGradient() * this.getLayer(layer).getNeuron(neuron).getOutput(output).getWeight();
+					sumOfProducts1_0 += product1_0_0;
+				}
+				double gradient1_0 = derivative1_0 * sumOfProducts1_0;
+				this.getLayer(1).getNeuron(0).setGradient(gradient1_0);
+			}
+		}
 	
 //		dla warstwy pierwszej nie liczy się gradientów
 		
