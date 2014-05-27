@@ -39,4 +39,8 @@ public interface Neuron {
 	void setBias(double bias);
 
 	double getBias();
+
+	void setPreviousDelta(double previousDelta);
+
+	double getPreviousDelta();
 }
