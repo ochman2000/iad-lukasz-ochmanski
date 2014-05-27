@@ -11,6 +11,7 @@ public class HiddenLayerNeuron implements Neuron {
 	private Layer layer;
 	private double gradient;
 	private double bias;
+	private double previousDelta = 0.0;
 	
 	@Override
 	public String getID() {
@@ -149,4 +150,16 @@ public class HiddenLayerNeuron implements Neuron {
 	public void setBias(double bias) {
 		this.bias = bias;
 	}
+
+	@Override
+	public double getPreviousDelta() {
+		return previousDelta;
+	}
+
+	@Override
+	public void setPreviousDelta(double previousDelta) {
+		this.previousDelta = previousDelta;
+	}
+
+
 }

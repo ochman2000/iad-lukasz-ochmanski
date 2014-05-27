@@ -181,6 +181,11 @@ public class Network {
 		double input0_0 = this.getLayer(0).getNeuron(0).getLocalOut();
 		double deltaWeight0_0_0 = this.getLearningRate() 
 				* this.getLayer(1).getNeuron(0).getGradient() * input0_0;
+		double newWeight0_0_0 = deltaWeight0_0_0 + this.getLayer(0).getNeuron(0).getOutput(0).getWeight();
+		newWeight0_0_0 += this.getMomentum() * this.getLayer(0).getNeuron(0).getOutput(0).getPreviousDelta();
+		this.getLayer(0).getNeuron(0).getOutput(0).setWeight(newWeight0_0_0);
+		this.getLayer(0).getNeuron(0).getOutput(0).setPreviousDelta(deltaWeight0_0_0);
+		
 		double deltaWeight0_0_1 = this.getLearningRate() 
 				* this.getLayer(1).getNeuron(1).getGradient() * input0_0; 
 		double deltaWeight0_0_2 = this.getLearningRate() 
@@ -236,6 +241,11 @@ public class Network {
 		//BIAS
 		//x4
 		double deltaBias1_0 = this.getLearningRate() * this.getLayer(1).getNeuron(0).getGradient();
+		double newBias1_0 = deltaBias1_0 + this.getLayer(1).getNeuron(0).getBias();
+		newBias1_0 += this.getMomentum() * this.getLayer(1).getNeuron(0).getPreviousDelta();
+		this.getLayer(1).getNeuron(0).setBias(newBias1_0);
+		this.getLayer(1).getNeuron(0).setPreviousDelta(deltaBias1_0);
+		
 		double deltaBias1_1 = this.getLearningRate() * this.getLayer(1).getNeuron(1).getGradient();
 		double deltaBias1_2 = this.getLearningRate() * this.getLayer(1).getNeuron(2).getGradient();
 		double deltaBias1_3 = this.getLearningRate() * this.getLayer(1).getNeuron(3).getGradient();

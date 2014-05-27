@@ -128,4 +128,14 @@ public class InputLayerNeuron implements Neuron {
 	public void setBias(double bias) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void setPreviousDelta(double previousDelta) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public double getPreviousDelta() {
+		throw new UnsupportedOperationException();
+	}
 }
