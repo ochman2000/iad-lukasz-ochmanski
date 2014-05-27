@@ -2,6 +2,7 @@ package pl.lodz.p.iad.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class HiddenLayerNeuron implements Neuron {
 	private List<Edge> input;
@@ -28,6 +29,9 @@ public class HiddenLayerNeuron implements Neuron {
 	public HiddenLayerNeuron(int in, int out) {
 		input = new ArrayList<Edge>(in);
 		output = new ArrayList<Edge>(out);
+		Random random = new Random();
+		double rnd = random.nextDouble();
+		this.setBias(rnd);
 	}
 
 	@Override

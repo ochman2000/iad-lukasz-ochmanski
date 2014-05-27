@@ -7,14 +7,15 @@ import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 
 public class BackpropagationSample {
-	
-	private boolean PRE_DEFINED_WEIGHTS = false;
 
 	public BackpropagationSample() {
 		Network network = this.initializeStructure();
-		System.out.println(network);
-		System.out.println(network.getOutputLayer().getNeuron(0));
-		System.out.println(network.getOutputLayer().getNeuron(1));
+		while(true) {
+			System.out.println(network);
+			System.out.println(network.getOutputLayer().getNeuron(0));
+			System.out.println(network.getOutputLayer().getNeuron(1));
+			network.train();
+		}
 	}
 	
 	private Network initializeStructure() {
@@ -83,7 +84,7 @@ public class BackpropagationSample {
 		network.addLayer(layer1);
 		network.addLayer(layer2);
 		
-		network.setBias(-7.0);
+//		network.setBias(-7.0);
 		network.setMomentum(1.0);
 		network.setLearningRate(0.9);
 		

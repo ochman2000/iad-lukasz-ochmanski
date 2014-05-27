@@ -36,15 +36,15 @@ public class Network {
 		this.getLayers().set(index, newLayer);
 	}
 	
-	public void setBias(double bias) {
-		for (Layer layer : this.getLayers()) {
-			for (Neuron neuron : layer.getNeurons()) {
-				if (neuron instanceof HiddenLayerNeuron) {
-					neuron.setBias(bias);
-				}
-			}
-		}
-	}
+//	public void setBias(double bias) {
+//		for (Layer layer : this.getLayers()) {
+//			for (Neuron neuron : layer.getNeurons()) {
+//				if (neuron instanceof HiddenLayerNeuron) {
+//					neuron.setBias(bias);
+//				}
+//			}
+//		}
+//	}
 	
 //	public void setInputLayer(int neurons) {
 //		Layer newLayer = new Layer(neurons);
