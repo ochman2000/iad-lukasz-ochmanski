@@ -156,7 +156,6 @@ public class SampleTest {
 		network.addLayer(layer1);
 		network.addLayer(layer2);
 		
-		network.setBias(-7.0);
 		network.setMomentum(1.0);
 		
 		return network;
