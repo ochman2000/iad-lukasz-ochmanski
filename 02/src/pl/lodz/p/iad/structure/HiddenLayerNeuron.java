@@ -100,15 +100,20 @@ public class HiddenLayerNeuron implements Neuron {
 	}
 	
 	public String toString() {
-		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\n";
-		String bias = "Bias: " +this.getBias() + "\n";
-		String momentum = "Momentum: " + this.getLayer().getNetwork().getMomentum() + "\n";
-		String in = "Wejście: " + this.getLocalIn() + "\n";
-		String out = "Wyjście: " + this.getLocalOut() + "\n";
+		String id = this.getID()==null ? "Uknown neuron" : this.getID(); id+="\t";
+		String bias = "Bias: " +this.getBias() + "\t";
+		String momentum = "Momentum: " + this.getLayer().getNetwork().getMomentum() + "\t";
+		String learningRate = "Learning rate: " + this.getLayer().getNetwork().getLearningRate() + "\t";
+		String in = "Wejście: " + this.getLocalIn() + "\t";
+		String out = "Wyjście: " + this.getLocalOut() + "\t";
 		
-		return 	"=======================================\n" +
-				id+bias+momentum+in+out+		
-				"=======================================\n";
+		return 	
+//				"=======================================\n" +
+				id+bias+
+//				momentum+learningRate+
+				out+		
+//				"======================================="+
+				"";
 	}
 
 	@Override
