@@ -126,12 +126,16 @@ public class Network {
 		this.learningRate = learningRate;
 	}
 	
-	public void train(double[] expected) {
+	public void train(double[] in, double[] expected) {
 		
-		if (this.getOutputLayer().getNeurons().size()!=expected.length) {
+		if (this.getOutputLayer().getNeurons().size()!=expected.length ||
+				this.getInputLayer().getNeurons().size()!=in.length) {
 			throw new IllegalArgumentException();
 		}
 		
+		for (int neuron=0; neuron<in.length; neuron++) {
+			this.getInputLayer().getNeuron(neuron).setLocalOut(1.0);
+		}
 		//layer 2
 		for (int neuron=0; neuron<this.getOutputLayer().getNeurons().size(); neuron++) {
 			double x2_0 = this.getOutputLayer().getNeuron(neuron).getLocalOut();
