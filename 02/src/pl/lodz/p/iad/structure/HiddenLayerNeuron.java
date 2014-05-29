@@ -148,7 +148,10 @@ public class HiddenLayerNeuron implements Neuron {
 	
 	@Override
 	public double getBias() {
-		return bias;
+		if (this.getLayer().getNetwork().isBiasEnabled())
+			return bias;
+		else
+			return 0;
 	}
 
 	@Override
