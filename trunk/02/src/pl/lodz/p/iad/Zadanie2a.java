@@ -1,5 +1,8 @@
 package pl.lodz.p.iad;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import pl.lodz.p.iad.structure.HiddenLayerNeuron;
@@ -10,32 +13,45 @@ import pl.lodz.p.iad.structure.Neuron;
 
 public class Zadanie2a {
 
+	private static final double MOMENTUM = 0.9;
+	private static final double LEARNING_RATE = 0.2;
+	private static final boolean USE_BIAS = true;
+	double[][] wzorce = {{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}};
+	
 	public static void main(String[] args) {
 		new Zadanie2a();
-
 	}
 	
 	public Zadanie2a() {
 		Network network = this.initializeStructure();
-		while(true) {
-			System.out.println(network.getOutputLayer().getNeuron(0));
-			System.out.println(network.getOutputLayer().getNeuron(1));
-			System.out.println(network.getOutputLayer().getNeuron(2));
-			System.out.println(network.getOutputLayer().getNeuron(3));
-			double[] in = losuj();
-			double[] out = in;
-			network.train(in, out);
+		int count = 0;
+		while(count<100000) {
+			System.out.println("Epoka:\t" +count);
+			epoka(network);
+			count++;
+		}
+		
+		for (int i=0; i<wzorce.length; i++) {
+			System.out.println(Arrays.toString(wzorce[i]));
+			System.out.println(network.test(wzorce[i], 5));
 		}
 	}
 	
-	private double[] losuj() {
-		double[][] wzorce = {{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}};
-		return wzorce[new Random().nextInt(4)];
+	private void epoka(Network network) {
+		List<Integer> order = new ArrayList<Integer>(4);		
+		while (order.size()<wzorce.length) {
+			int a = new Random().nextInt(4);
+			if (!order.contains(a)) {
+				order.add(a);
+				network.train(wzorce[a], wzorce[a]);
+			}
+		}
 	}
 
 	private Network initializeStructure() {
 		
 		Network network = new Network();
+		network.enableBias(USE_BIAS);
 		
 		//INPUT LAYER
 		Layer layer0 = new Layer(4);
@@ -90,8 +106,8 @@ public class Zadanie2a {
 		network.addLayer(layer1);
 		network.addLayer(layer2);
 		
-		network.setMomentum(0.4);
-		network.setLearningRate(0.9);
+		network.setMomentum(MOMENTUM);
+		network.setLearningRate(LEARNING_RATE);
 		
 		return network;
 	}

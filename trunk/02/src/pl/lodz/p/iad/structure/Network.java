@@ -8,6 +8,7 @@ public class Network {
 	private List<Layer> layers;
 	private double momentum;
 	private double learningRate;
+	private boolean useBias;
 
 	public List<Layer> getLayers() {
 		return layers;
@@ -19,6 +20,7 @@ public class Network {
 
 	public Network() {
 		this.setLayers(new LinkedList<Layer>());
+		this.enableBias(true);
 	}
 	
 	public void addLayer(int neurons) {
@@ -134,7 +136,7 @@ public class Network {
 		}
 		
 		for (int neuron=0; neuron<in.length; neuron++) {
-			this.getInputLayer().getNeuron(neuron).setLocalOut(1.0);
+			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
 		}
 		//layer 2
 		for (int neuron=0; neuron<this.getOutputLayer().getNeurons().size(); neuron++) {
@@ -192,7 +194,38 @@ public class Network {
 		}
 	}
 	
+	public double[] test(double[] in) {
+		if (this.getInputLayer().getNeurons().size()!=in.length) {
+			throw new IllegalArgumentException();
+		}
+		for (int neuron=0; neuron<in.length; neuron++) {
+			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
+		}
+		double[] out = new double[getOutputLayer().getNeurons().size()];
+		for (int neuron=0; neuron<out.length; neuron++) {
+			out[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
+		}
+		return out;
+	}
+	
+	public String test(double[] in, int decimalPlaces) {
+		double[] result =  this.test(in);
+		String s = "";
+		for (double d : result) {
+			s += String.format("%."+decimalPlaces+"f", d) + ", ";
+		}
+		return "["+s+"]";
+	}
+	
 	public double sigmoidDerivative(double x) {
 		return x*(1-x);
+	}
+
+	public boolean isBiasEnabled() {
+		return useBias;
+	}
+	
+	public void enableBias(boolean useBias) {
+		this.useBias = useBias;
 	}
 }
