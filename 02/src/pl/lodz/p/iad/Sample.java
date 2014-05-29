@@ -7,8 +7,6 @@ import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 
 public class Sample {
-	
-	private boolean PRE_DEFINED_WEIGHTS = false;
 
 	public Sample() {
 		Network network = this.initializeStructure();
@@ -83,7 +81,6 @@ public class Sample {
 		network.addLayer(layer1);
 		network.addLayer(layer2);
 		
-//		network.setBias(-7.0);
 		network.setMomentum(1.0);
 		network.setLearningRate(0.9);
 		

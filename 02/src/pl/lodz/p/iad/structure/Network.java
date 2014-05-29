@@ -214,7 +214,7 @@ public class Network {
 		for (double d : result) {
 			s += String.format("%."+decimalPlaces+"f", d) + ", ";
 		}
-		return "["+s+"]";
+		return "["+s+"] MSE: " + String.format("%."+decimalPlaces+"f", Network.MSE(in, result));
 	}
 	
 	public double sigmoidDerivative(double x) {
@@ -227,5 +227,16 @@ public class Network {
 	
 	public void enableBias(boolean useBias) {
 		this.useBias = useBias;
+	}
+	
+	public static double MSE(double[] in, double[] out) {
+		double sum_sq = 0;
+
+		for (int i = 0; i<in.length; ++i)
+		{
+			double err = in[i] - out[i];
+       		sum_sq += (err * err);
+		}
+		return sum_sq/in.length;
 	}
 }
