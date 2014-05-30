@@ -193,7 +193,13 @@ public class Network {
 			}
 		}
 	}
-	
+	/**
+	 * Metoda zwraca tablicę z wartościami wszystkich wyjść.
+	 * Np. Jeśli sieć ma cztery neurony wyjściowe to:
+	 * [0.00109, 0.40571, 0.17159, 0.16581]
+	 * @param in
+	 * @return
+	 */
 	public double[] test(double[] in) {
 		if (this.getInputLayer().getNeurons().size()!=in.length) {
 			throw new IllegalArgumentException();
@@ -206,6 +212,27 @@ public class Network {
 			out[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
 		}
 		return out;
+	}
+	
+	/**
+	 * Metoda zwraca średni błąd kwadratowy wszystkich wyjść sieci.
+	 * Np. dla  [0.00109, 0.40571, 0.17159, 0.16581]
+	 * MSE: 0.10253
+	 * @param in
+	 * @return
+	 */
+	public double getMSE(double[] in) {
+		if (this.getInputLayer().getNeurons().size()!=in.length) {
+			throw new IllegalArgumentException();
+		}
+		for (int neuron=0; neuron<in.length; neuron++) {
+			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
+		}
+		double[] out = new double[getOutputLayer().getNeurons().size()];
+		for (int neuron=0; neuron<out.length; neuron++) {
+			out[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
+		}
+		return Network.MSE(in, out);
 	}
 	
 	public String test(double[] in, int decimalPlaces) {
