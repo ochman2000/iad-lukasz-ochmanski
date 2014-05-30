@@ -1,5 +1,11 @@
 package pl.lodz.p.iad;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +19,8 @@ import pl.lodz.p.iad.structure.Neuron;
 
 public class Zadanie2a {
 
-	private static final double MOMENTUM = 0.9;
 	private static final double LEARNING_RATE = 0.2;
+	private static final double MOMENTUM = 0.9;
 	private static final boolean USE_BIAS = true;
 	double[][] wzorce = {{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}};
 	
@@ -24,28 +30,41 @@ public class Zadanie2a {
 	
 	public Zadanie2a() {
 		Network network = this.initializeStructure();
-		int count = 0;
-		while(count<100000) {
-			System.out.println("Epoka:\t" +count);
-			epoka(network);
-			count++;
+		Charset charset = Charset.forName("US-ASCII");
+		Path file = Paths.get("Test 7.txt");
+		try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
+			int count = 0;
+			while (count < 4000) {
+				double error = epoka(network);
+				if (count % 100 == 0) {
+					System.out.println("Epoka:\t" + count + "\tMSE: "+ String.format("%5f", error));
+					writer.write(count + "\t" + error+"\n");
+				}
+				count++;
+			}
+		} catch (IOException x) {
+			System.err.format("IOException: %s%n", x);
 		}
-		
-		for (int i=0; i<wzorce.length; i++) {
+
+		for (int i = 0; i < wzorce.length; i++) {
 			System.out.println(Arrays.toString(wzorce[i]));
 			System.out.println(network.test(wzorce[i], 5));
 		}
+		System.out.println(network);
 	}
 	
-	private void epoka(Network network) {
+	private double epoka(Network network) {
+		double error = 0.0;
 		List<Integer> order = new ArrayList<Integer>(4);		
 		while (order.size()<wzorce.length) {
 			int a = new Random().nextInt(4);
 			if (!order.contains(a)) {
 				order.add(a);
 				network.train(wzorce[a], wzorce[a]);
+				error += network.getMSE(wzorce[a]);
 			}
 		}
+		return error/order.size();
 	}
 
 	private Network initializeStructure() {

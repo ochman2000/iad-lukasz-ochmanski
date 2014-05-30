@@ -10,7 +10,7 @@ public class Edge {
 	
 	public Edge() {
 		Random random = new Random();
-		double rnd = random.nextDouble();
+		double rnd = random.nextDouble()-0.5;
 		this.setWeight(rnd);
 	}
 
