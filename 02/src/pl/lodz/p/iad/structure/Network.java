@@ -130,9 +130,13 @@ public class Network {
 	
 	public void train(double[] in, double[] expected) {
 		
-		if (this.getOutputLayer().getNeurons().size()!=expected.length ||
-				this.getInputLayer().getNeurons().size()!=in.length) {
-			throw new IllegalArgumentException();
+		if (this.getInputLayer().getNeurons().size()!=in.length) {
+			throw new IllegalArgumentException("Liczba neuronów "
+					+ "wejściowych nie odpowiada liczbie podanych argumentów.");
+		}
+		if (this.getOutputLayer().getNeurons().size()!=expected.length) {
+			throw new IllegalArgumentException("Liczba neuronów "
+					+ "wyjściowych nie odpowiada liczbie podanych argumentów.");
 		}
 		
 		for (int neuron=0; neuron<in.length; neuron++) {

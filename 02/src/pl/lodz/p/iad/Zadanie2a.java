@@ -21,7 +21,7 @@ public class Zadanie2a {
 
 	private static final double LEARNING_RATE = 0.2;
 	private static final double MOMENTUM = 0.9;
-	private static final boolean USE_BIAS = true;
+	private static final boolean USE_BIAS = false;
 	double[][] wzorce = {{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}};
 	
 	public static void main(String[] args) {
@@ -31,7 +31,7 @@ public class Zadanie2a {
 	public Zadanie2a() {
 		Network network = this.initializeStructure();
 		Charset charset = Charset.forName("US-ASCII");
-		Path file = Paths.get("Test 7.txt");
+		Path file = Paths.get("Test bez biasu.txt");
 		try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
 			int count = 0;
 			while (count < 4000) {
