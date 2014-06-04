@@ -6,7 +6,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -26,14 +25,15 @@ public class Zadanie2b1 {
 	 * zestawione na jednym.
 	 */
 
+	private static final String IRIS3_DANE = "iris3.dane";
+	private static final String IRIS2_DANE = "iris2.dane";
+	private static final String OUT_URL = "Test1.txt";
 	private static final double LEARNING_RATE = 0.6;
 	private static final double MOMENTUM = 0.1;
 	private static final boolean USE_BIAS = true;
 	private static final int LICZBA_CECH = 4;
 	private static final int LICZBA_KLAS = 3;
 	private static final int LIMIT_EPOK = 4000;
-	private Input[] wzorce;
-	private Input[]	zbiórWalidacyjny;
 	
 	public static void main(String[] args) {
 		new Zadanie2b1();
@@ -42,36 +42,32 @@ public class Zadanie2b1 {
 	
 	public Zadanie2b1() {
 		Network network = this.initializeStructure();
-		
-		Charset charset = Charset.forName("US-ASCII");
-		Path file = Paths.get("iris2.dane");
-		try {
-			List<String> lines = Files.readAllLines(file, charset);
-			wzorce = new Input[lines.size()];
-			for (int l=0; l<lines.size(); l++) {
-				StringTokenizer st = new StringTokenizer(lines.get(l), ",");
-				double[] wzorzec = new double[LICZBA_CECH];
-				for(int i=0; i<LICZBA_CECH; i++) {
-					wzorzec[i] = Double.parseDouble(st.nextToken());
-				}
-				double[] expected = new double[LICZBA_KLAS];
-				for(int i=0; i<LICZBA_KLAS; i++) {
-					expected[i] = Double.parseDouble(st.nextToken());
-				}
-				Input in = new Input();
-				in.setWzorzec(wzorzec);
-				in.setExpected(expected);
-				wzorce[l] = in;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		Input[] wzorce = readDataFromFile(network, IRIS2_DANE);
+		Input[] zbiórWalidacyjny = readDataFromFile(network, IRIS3_DANE);
+		feedNetworkWithData(network, wzorce);
+
+		String s = "";
+		for (int i = 0; i < zbiórWalidacyjny.length; i++) {
+			System.out.println(Arrays.toString(zbiórWalidacyjny[i].getWzorzec()));
+			double[] result = network.test(zbiórWalidacyjny[i].getWzorzec());
+			double[] expected = zbiórWalidacyjny[i].getExpected();
+			s = "[";
+			for (double d : expected) { s += String.format("%.2f", d) + ", "; }
+			s = s+"] [";
+			for (double d : result) { s += String.format("%.2f", d) + ", ";	}
+			s = s+"] MSE: " + String.format("%.5f", Network.MSE(expected, result));		
+			System.out.println(s);
 		}
-		
-		Path fileOut = Paths.get("Test1.txt");
+//		System.out.println(network);
+	}
+	
+	private void feedNetworkWithData(Network network, Input[] data) {
+		Charset charset = Charset.forName("US-ASCII");
+		Path fileOut = Paths.get(OUT_URL);
 		try (BufferedWriter writer = Files.newBufferedWriter(fileOut, charset)) {
 			int count = 0;
 			while (count < LIMIT_EPOK) {
-				double error = epoka(network);
+				double error = epoka(network, data);
 				if (count % 100 == 0) {
 					System.out.println("Epoka:\t" + count + "\tMSE: "+ String.format("%5f", error));
 					writer.write(count + "\t" + error+"\n");
@@ -81,21 +77,45 @@ public class Zadanie2b1 {
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
 		}
-
-		for (int i = 0; i < wzorce.length; i++) {
-			System.out.println(Arrays.toString(wzorce[i].getWzorzec()));
-			System.out.println(network.test(wzorce[i].getWzorzec(), 5));
-		}
-		System.out.println(network);
 	}
-	
-	private double epoka(Network network) {
+
+	private Input[] readDataFromFile(Network network, String fileName) {
+		Charset charset = Charset.forName("US-ASCII");
+		Path file = Paths.get(fileName);
+		Input[] wzorc = null;
+		try {
+			List<String> lines = Files.readAllLines(file, charset);
+			wzorc = new Input[lines.size()];
+			for (int l=0; l<lines.size(); l++) {
+				StringTokenizer st = new StringTokenizer(lines.get(l), ",");
+				double[] wzorzec = new double[LICZBA_CECH];
+				for(int i=0; i<LICZBA_CECH; i++) {
+					wzorzec[i] = Double.parseDouble(st.nextToken());
+				}
+				for(int i=0; i<(4-LICZBA_CECH); i++) {
+					Double.parseDouble(st.nextToken());
+				}
+				double[] expected = new double[LICZBA_KLAS];
+				for(int i=0; i<LICZBA_KLAS; i++) {
+					expected[i] = Double.parseDouble(st.nextToken());
+				}
+				Input in = new Input();
+				in.setWzorzec(wzorzec);
+				in.setExpected(expected);
+				wzorc[l] = in;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return wzorc;
+	}
+
+	private double epoka(Network network, Input[] data) {
 		double error = 0.0;
-		Input[] shuffled = shuffleArray(wzorce);
+		Input[] shuffled = shuffleArray(data);
 		for (int i=0; i<shuffled.length; i++) {
-			network.train(shuffled[i].getWzorzec(), shuffled[i].getExpected());
-//			error += network.getMSE(shuffled[i].getWzorzec());
-			error += Network.MSE(shuffled[i].getWzorzec(), shuffled[i].getExpected());
+			double[] output = network.train(shuffled[i].getWzorzec(), shuffled[i].getExpected());
+			error += Network.MSE(shuffled[i].getExpected(), output);
 		}
 		return error/shuffled.length;
 	}

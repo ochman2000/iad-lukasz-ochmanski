@@ -48,7 +48,17 @@ public class Zadanie2a {
 
 		for (int i = 0; i < wzorce.length; i++) {
 			System.out.println(Arrays.toString(wzorce[i]));
-			System.out.println(network.test(wzorce[i], 5));
+//			System.out.println(network.test(wzorce[i], wzorce[i], 5));
+			String s = "";
+//			for (double d : expected) {
+//				s += String.format("%."+decimalPlaces+"f", d) + ", ";
+//			}
+//			s = "[" + s + "] [";
+//			for (double d : result) {
+//				s += String.format("%."+decimalPlaces+"f", d) + ", ";
+//			}
+//			s = s+"] MSE: " + String.format("%."+decimalPlaces+"f", Network.MSE(expected, result));
+	//
 		}
 		System.out.println(network);
 	}
@@ -60,8 +70,8 @@ public class Zadanie2a {
 			int a = new Random().nextInt(4);
 			if (!order.contains(a)) {
 				order.add(a);
-				network.train(wzorce[a], wzorce[a]);
-				error += network.getMSE(wzorce[a]);
+				double[] output = network.train(wzorce[a], wzorce[a]);
+				error += Network.MSE(wzorce[a], output);
 			}
 		}
 		return error/order.size();
