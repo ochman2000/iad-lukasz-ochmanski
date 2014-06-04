@@ -128,7 +128,16 @@ public class Network {
 		this.learningRate = learningRate;
 	}
 	
-	public void train(double[] in, double[] expected) {
+	/**
+	 * Karmi sieć pojedynczą informacją.<br/>
+	 * Pierwszym argumentem jest wzorzec do rozpoznania.<br/>
+	 * Drugim argumentem jest oczekiwana odpowiedź sieci na podany wzorzec.<br/>
+	 * 
+	 * @param in
+	 * @param expected
+	 * @return wartość uzyskaną na wyjściu, zanim przeprowadzono backpropagation.
+	 */
+	public double[] train(double[] in, double[] expected) {
 		
 		if (this.getInputLayer().getNeurons().size()!=in.length) {
 			throw new IllegalArgumentException("Liczba neuronów "
@@ -143,11 +152,12 @@ public class Network {
 			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
 		}
 		//layer 2
+		double[] result = new double[this.getOutputLayer().getNeurons().size()];
 		for (int neuron=0; neuron<this.getOutputLayer().getNeurons().size(); neuron++) {
-			double x2_0 = this.getOutputLayer().getNeuron(neuron).getLocalOut();
-			double derivative2_0 = this.sigmoidDerivative(x2_0);
-			double gradient2_0 = derivative2_0 * (expected[neuron]-x2_0);
-			this.getOutputLayer().getNeuron(neuron).setGradient(gradient2_0);
+			result[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
+			double derivative = this.sigmoidDerivative(result[neuron]);
+			double gradient = derivative * (expected[neuron]-result[neuron]);
+			this.getOutputLayer().getNeuron(neuron).setGradient(gradient);
 		}
 		
 		//layer 1 (Zauważ, że liczenie gradientów dla warstw ukrytych odbywa się zupełnie inaczej)
@@ -196,6 +206,7 @@ public class Network {
 				this.getLayer(layer).getNeuron(neuron).setPreviousDelta(deltaBias1_0);
 			}
 		}
+		return result;
 	}
 	/**
 	 * Metoda zwraca tablicę z wartościami wszystkich wyjść.
@@ -225,28 +236,42 @@ public class Network {
 	 * @param in
 	 * @return
 	 */
-	public double getMSE(double[] in) {
-		if (this.getInputLayer().getNeurons().size()!=in.length) {
-			throw new IllegalArgumentException();
-		}
-		for (int neuron=0; neuron<in.length; neuron++) {
-			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
-		}
-		double[] out = new double[getOutputLayer().getNeurons().size()];
-		for (int neuron=0; neuron<out.length; neuron++) {
-			out[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
-		}
-		return Network.MSE(in, out);
-	}
+//	public double getMSE(double[] in) {
+//		if (this.getInputLayer().getNeurons().size()!=in.length) {
+//			throw new IllegalArgumentException();
+//		}
+//		for (int neuron=0; neuron<in.length; neuron++) {
+//			this.getInputLayer().getNeuron(neuron).setLocalOut(in[neuron]);
+//		}
+//		double[] out = new double[getOutputLayer().getNeurons().size()];
+//		for (int neuron=0; neuron<out.length; neuron++) {
+//			out[neuron] = this.getOutputLayer().getNeuron(neuron).getLocalOut();
+//		}
+//		return Network.MSE(in, out);
+//	}
 	
-	public String test(double[] in, int decimalPlaces) {
-		double[] result =  this.test(in);
-		String s = "";
-		for (double d : result) {
-			s += String.format("%."+decimalPlaces+"f", d) + ", ";
-		}
-		return "["+s+"] MSE: " + String.format("%."+decimalPlaces+"f", Network.MSE(in, result));
-	}
+	/**
+	 * Metoda zwraca tekstową reprezentację błędu.<br/>
+	 * Pierwszym argumentem jest wzorzec.<br/>
+	 * Drugim argumentem jest oczekiwana odpowiedź.<br/>
+	 * Trzecim argumentem jest liczba miejsc po przecinku.
+	 * @param in
+	 * @param expected
+	 * @param decimalPlaces
+	 * @return
+	 */
+//	public String test(double[] in, double[] expected, int decimalPlaces) {
+//		double[] result =  this.test(in);
+//		String s = "";
+//		for (double d : expected) {
+//			s += String.format("%."+decimalPlaces+"f", d) + ", ";
+//		}
+//		s = "[" + s + "] [";
+//		for (double d : result) {
+//			s += String.format("%."+decimalPlaces+"f", d) + ", ";
+//		}
+//		return s+"] MSE: " + String.format("%."+decimalPlaces+"f", Network.MSE(expected, result));
+//	}
 	
 	public double sigmoidDerivative(double x) {
 		return x*(1-x);
@@ -260,14 +285,25 @@ public class Network {
 		this.useBias = useBias;
 	}
 	
-	public static double MSE(double[] in, double[] out) {
+	/**
+	 * Wylicza błąd.<br/>
+	 * Pierwszym argumentem ma być wartość oczekiwana.<br/>
+	 * Drugim argumentem ma być wartość uzyskana.
+	 * @param expected
+	 * @param out
+	 * @return
+	 */
+	public static double MSE(double[] expected, double[] out) {
+		if (expected.length != out.length) {
+			throw new IllegalArgumentException("Liczba oczekiwanych elementów nie zgadza się.");
+		}
 		double sum_sq = 0;
 
-		for (int i = 0; i<in.length; ++i)
+		for (int i = 0; i<expected.length; ++i)
 		{
-			double err = in[i] - out[i];
+			double err = expected[i] - out[i];
        		sum_sq += (err * err);
 		}
-		return sum_sq/in.length;
+		return sum_sq/expected.length;
 	}
 }
