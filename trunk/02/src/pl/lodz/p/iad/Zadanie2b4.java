@@ -19,7 +19,7 @@ import pl.lodz.p.iad.structure.Layer;
 import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 
-public class Zadanie2b1 {
+public class Zadanie2b4 {
 	
 	/*
 	 * wydzielić 10% z jako zbiór walidacyjny i nie używać do treningu.
@@ -29,20 +29,19 @@ public class Zadanie2b1 {
 
 	private static final String IRIS3_DANE = "iris3.dane";
 	private static final String IRIS2_DANE = "iris2.dane";
-	private static final String OUT_URL = "Test2b1.txt";
+	private static final String OUT_URL = "Test2b4.txt";
 	private static final double LEARNING_RATE = 0.6;
 	private static final double MOMENTUM = 0.1;
 	private static final boolean USE_BIAS = true;
-	private static final int LICZBA_CECH = 4;
+	private static final int LICZBA_CECH = 3;
 	private static final int LICZBA_KLAS = 3;
 	private static final int LIMIT_EPOK = 4000;
 	
 	public static void main(String[] args) {
-		new Zadanie2b1();
-		
+		new Zadanie2b4();
 	}
 	
-	private Zadanie2b1() {
+	private Zadanie2b4() {
 		Network network = this.initializeStructure();
 		Input[] wzorce = readDataFromFile(network, IRIS2_DANE);
 		Input[] zbiórWalidacyjny = readDataFromFile(network, IRIS3_DANE);
@@ -63,6 +62,7 @@ public class Zadanie2b1 {
 			for (double d : result) { s += String.format("%.2f", d) + ", ";	}
 			double mse = Network.MSE(expected, result);
 			s = s+"] MSE: " + String.format("%.5f", mse);
+			System.out.println(s);
 			
 			Charset charset = Charset.forName("US-ASCII");
 			Path fileOut = Paths.get(OUT_URL);
@@ -73,7 +73,6 @@ public class Zadanie2b1 {
 			} catch (IOException x) {
 				System.err.format("IOException: %s%n", x);
 			}
-			System.out.println(s);
 		}
 	}
 	
@@ -105,12 +104,10 @@ public class Zadanie2b1 {
 			for (int l=0; l<lines.size(); l++) {
 				StringTokenizer st = new StringTokenizer(lines.get(l), ",");
 				double[] wzorzec = new double[LICZBA_CECH];
-				for(int i=0; i<LICZBA_CECH; i++) {
-					wzorzec[i] = Double.parseDouble(st.nextToken());
-				}
-				for(int i=0; i<(4-LICZBA_CECH); i++) {
-					Double.parseDouble(st.nextToken());
-				}
+				wzorzec[0] = Double.parseDouble(st.nextToken());
+				Double.parseDouble(st.nextToken());
+				wzorzec[1] = Double.parseDouble(st.nextToken());
+				wzorzec[2] = Double.parseDouble(st.nextToken());
 				double[] expected = new double[LICZBA_KLAS];
 				for(int i=0; i<LICZBA_KLAS; i++) {
 					expected[i] = Double.parseDouble(st.nextToken());
@@ -161,11 +158,9 @@ public class Zadanie2b1 {
 		Neuron neuron_0_0 = new InputLayerNeuron(); neuron_0_0.setID("[0-0]");
 		Neuron neuron_0_1 = new InputLayerNeuron(); neuron_0_1.setID("[0-1]");
 		Neuron neuron_0_2 = new InputLayerNeuron(); neuron_0_2.setID("[0-2]");
-		Neuron neuron_0_3 = new InputLayerNeuron(); neuron_0_3.setID("[0-3]");
 		layer0.add(neuron_0_0);
 		layer0.add(neuron_0_1);
 		layer0.add(neuron_0_2);
-		layer0.add(neuron_0_3);
 		
 		//HIDDEN LAYER
 		Layer layer1 = new Layer(4);
@@ -190,8 +185,6 @@ public class Zadanie2b1 {
 		neuron_0_1.addNeuronOut(neuron_1_1);
 		neuron_0_2.addNeuronOut(neuron_1_0);
 		neuron_0_2.addNeuronOut(neuron_1_1);
-		neuron_0_3.addNeuronOut(neuron_1_0);
-		neuron_0_3.addNeuronOut(neuron_1_1);
 		
 		neuron_1_0.addNeuronOut(neuron_2_0);
 		neuron_1_0.addNeuronOut(neuron_2_1);
@@ -199,7 +192,6 @@ public class Zadanie2b1 {
 		neuron_1_1.addNeuronOut(neuron_2_0);
 		neuron_1_1.addNeuronOut(neuron_2_1);
 		neuron_1_1.addNeuronOut(neuron_2_2);
-		
 		
 		network.addLayer(layer0);
 		network.addLayer(layer1);
@@ -210,21 +202,4 @@ public class Zadanie2b1 {
 		
 		return network;
 	}
-}
-class Input {
-	private double[] wzorzec;
-	private double[] expected;
-	public double[] getWzorzec() {
-		return wzorzec;
-	}
-	public void setWzorzec(double[] wzorzec) {
-		this.wzorzec = wzorzec;
-	}
-	public double[] getExpected() {
-		return expected;
-	}
-	public void setExpected(double[] expected) {
-		this.expected = expected;
-	}
-	
 }
