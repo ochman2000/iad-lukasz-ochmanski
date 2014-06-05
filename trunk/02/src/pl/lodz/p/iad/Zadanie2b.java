@@ -25,8 +25,8 @@ public class Zadanie2b {
 	 */
 
 	private Strategy strategy;
-	private static final String IRIS3_DANE = "iris3.dane";
 	private static final String IRIS2_DANE = "iris2.dane";
+	private static final String IRIS3_DANE = "iris3.dane";
 	private String outURL;
 	private static final int LIMIT_EPOK = 4000;
 	
@@ -36,6 +36,10 @@ public class Zadanie2b {
 		new Zadanie2b(new Zadanie2b3(), "sprawozdanie/dane/b/test03.txt");
 		new Zadanie2b(new Zadanie2b4(), "sprawozdanie/dane/b/test04.txt");
 		new Zadanie2b(new Zadanie2b5(), "sprawozdanie/dane/b/test05.txt");
+		new Zadanie2b(new Zadanie2b6(), "sprawozdanie/dane/b/test06.txt");
+		new Zadanie2b(new Zadanie2b7(), "sprawozdanie/dane/b/test07.txt");
+		new Zadanie2b(new Zadanie2b8(), "sprawozdanie/dane/b/test08.txt");
+		new Zadanie2b(new Zadanie2b9(), "sprawozdanie/dane/b/test09.txt");
 	}
 	
 	public Zadanie2b(Strategy strategy, String URL) {

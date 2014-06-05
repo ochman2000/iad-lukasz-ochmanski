@@ -16,6 +16,11 @@ import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
 import pl.lodz.p.iad.structure.Strategy;
 
+/**
+ * Przedmiotem badania są cechy 1,2,4
+ * @author Łukasz Ochmański
+ *
+ */
 public class Zadanie2b3 implements Strategy {
 	
 	private static final double LEARNING_RATE = 0.6;
