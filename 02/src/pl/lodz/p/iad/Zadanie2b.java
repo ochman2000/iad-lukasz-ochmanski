@@ -31,11 +31,11 @@ public class Zadanie2b {
 	private static final int LIMIT_EPOK = 4000;
 	
 	public static void main(String[] args) {
-		new Zadanie2b(new Zadanie2b1(), "test01.txt");
-		new Zadanie2b(new Zadanie2b2(), "test02.txt");
-		new Zadanie2b(new Zadanie2b3(), "test03.txt");
-		new Zadanie2b(new Zadanie2b4(), "test04.txt");
-		new Zadanie2b(new Zadanie2b5(), "test05.txt");
+		new Zadanie2b(new Zadanie2b1(), "sprawozdanie/dane/b/test01.txt");
+		new Zadanie2b(new Zadanie2b2(), "sprawozdanie/dane/b/test02.txt");
+		new Zadanie2b(new Zadanie2b3(), "sprawozdanie/dane/b/test03.txt");
+		new Zadanie2b(new Zadanie2b4(), "sprawozdanie/dane/b/test04.txt");
+		new Zadanie2b(new Zadanie2b5(), "sprawozdanie/dane/b/test05.txt");
 	}
 	
 	public Zadanie2b(Strategy strategy, String URL) {
