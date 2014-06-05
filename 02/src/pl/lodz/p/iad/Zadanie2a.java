@@ -49,7 +49,7 @@ public class Zadanie2a {
 		for (int i = 0; i < wzorce.length; i++) {
 			System.out.println(Arrays.toString(wzorce[i]));
 //			System.out.println(network.test(wzorce[i], wzorce[i], 5));
-			String s = "";
+//			String s = "";
 //			for (double d : expected) {
 //				s += String.format("%."+decimalPlaces+"f", d) + ", ";
 //			}
