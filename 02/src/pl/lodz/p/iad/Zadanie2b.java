@@ -4,14 +4,19 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.Random;
 
-import pl.lodz.p.iad.strategy.*;
+import pl.lodz.p.iad.strategy.Zadanie2b1;
+import pl.lodz.p.iad.strategy.Zadanie2b2;
+import pl.lodz.p.iad.strategy.Zadanie2b3;
+import pl.lodz.p.iad.strategy.Zadanie2b4;
+import pl.lodz.p.iad.strategy.Zadanie2b5;
+import pl.lodz.p.iad.strategy.Zadanie2b6;
+import pl.lodz.p.iad.strategy.Zadanie2b7;
+import pl.lodz.p.iad.strategy.Zadanie2b8;
+import pl.lodz.p.iad.strategy.Zadanie2b9;
 import pl.lodz.p.iad.structure.Input;
 import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Strategy;
@@ -27,7 +32,7 @@ public class Zadanie2b {
 	private Strategy strategy;
 	private static final String IRIS2_DANE = "iris2.dane";
 	private static final String IRIS3_DANE = "iris3.dane";
-	private String outURL;
+	private String outURL, outURL2;
 	private static final int LIMIT_EPOK = 4000;
 	
 	public static void main(String[] args) {
@@ -52,46 +57,23 @@ public class Zadanie2b {
 		Network network = this.initializeStructure();
 		Input[] wzorce = readDataFromFile(network, IRIS2_DANE);
 		Input[] zbiórWalidacyjny = readDataFromFile(network, IRIS3_DANE);
-		feedNetworkWithData(network, wzorce);
-		validatePatterns(network, zbiórWalidacyjny);
+		feedNetworkWithData(network, wzorce, zbiórWalidacyjny);
 //		System.out.println(network);
 	}
-	private void validatePatterns(Network network, Input[] zbiórWalidacyjny) {
-		String s = "";
-		for (int i = 0; i < zbiórWalidacyjny.length; i++) {
-			System.out.println(Arrays.toString(zbiórWalidacyjny[i].getWzorzec()));
-			double[] result = network.test(zbiórWalidacyjny[i].getWzorzec());
-			double[] expected = zbiórWalidacyjny[i].getExpected();
-			s = "[";
-			for (double d : expected) { s += String.format("%.2f", d) + ", "; }
-			s = s+"] [";
-			for (double d : result) { s += String.format("%.2f", d) + ", ";	}
-			double mse = Network.MSE(expected, result);
-			s = s+"] MSE: " + String.format("%.5f", mse);
-			
-			Charset charset = Charset.forName("US-ASCII");
-			Path fileOut = Paths.get(outURL);
-			try (BufferedWriter writer = Files.newBufferedWriter(fileOut, charset,
-					new OpenOption[] {StandardOpenOption.APPEND})) {
-				writer.append(i+" "+mse);
-				writer.newLine();
-			} catch (IOException x) {
-				System.err.format("IOException: %s%n", x);
-			}
-			System.out.println(s);
-		}
-	}
 	
-	private void feedNetworkWithData(Network network, Input[] data) {
+	private void feedNetworkWithData(Network network, Input[] data, Input[] zbiórWalidacyjny) {
 		Charset charset = Charset.forName("US-ASCII");
 		Path fileOut = Paths.get(outURL);
-		try (BufferedWriter writer = Files.newBufferedWriter(fileOut, charset)) {
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(fileOut, charset);
 			int count = 0;
 			while (count < LIMIT_EPOK) {
 				double error = epoka(network, data);
 				if (count % 100 == 0) {
-					System.out.println("Epoka:\t" + count + "\tMSE: "+ String.format("%5f", error));
-					writer.write(count + "\t" + error+"\n");
+					double błądZbioruWalidacyjnego = testuj(network, zbiórWalidacyjny);
+					System.out.println("Epoka:\t" + count + "\tMSE: "+ String.format("%5f", error) + 
+							"\t"+String.format("%5f", błądZbioruWalidacyjnego));
+					writer.write(count + "\t" + error+"\t"+błądZbioruWalidacyjnego+"\n");
 				}
 				count++;
 			}
@@ -112,6 +94,14 @@ public class Zadanie2b {
 			error += Network.MSE(shuffled[i].getExpected(), output);
 		}
 		return error/shuffled.length;
+	}
+	
+	private double testuj(Network network, Input[] data) {
+		double error = 0.0;
+		for (Input irys : data) {
+			error += Network.MSE(irys.getExpected(), network.test(irys.getWzorzec()));
+		}
+		return error/data.length;
 	}
 	
 	// Implementing Fisher–Yates shuffle
@@ -146,7 +136,10 @@ public class Zadanie2b {
 	}
 
 	public void setOutURL(String outURL) {
+		Path full = Paths.get(outURL);
+		String parent = full.getParent().toString();
+		String element = "w_"+full.getName(full.getNameCount()-1).toString();
 		this.outURL = outURL;
+		this.outURL2 = (parent+"\\"+element).replace('\\', '/');
 	}
-
 }
