@@ -32,7 +32,7 @@ public class Zadanie2b {
 	private Strategy strategy;
 	private static final String IRIS2_DANE = "iris2.dane";
 	private static final String IRIS3_DANE = "iris3.dane";
-	private String outURL, outURL2;
+	private String outURL;
 	private static final int LIMIT_EPOK = 4000;
 	
 	public static void main(String[] args) {
@@ -77,6 +77,7 @@ public class Zadanie2b {
 				}
 				count++;
 			}
+			writer.close();
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
 		}
@@ -136,10 +137,10 @@ public class Zadanie2b {
 	}
 
 	public void setOutURL(String outURL) {
-		Path full = Paths.get(outURL);
-		String parent = full.getParent().toString();
-		String element = "w_"+full.getName(full.getNameCount()-1).toString();
 		this.outURL = outURL;
-		this.outURL2 = (parent+"\\"+element).replace('\\', '/');
+//		Path full = Paths.get(outURL);
+//		String parent = full.getParent().toString();
+//		String element = "w_"+full.getName(full.getNameCount()-1).toString();
+//		this.outURL2 = (parent+"\\"+element).replace('\\', '/');
 	}
 }
