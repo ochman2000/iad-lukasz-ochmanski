@@ -76,7 +76,7 @@ public class Zadanie2b1 implements Strategy {
 		layer0.add(neuron_0_3);
 		
 		//HIDDEN LAYER
-		Layer layer1 = new Layer(4);
+		Layer layer1 = new Layer(2);
 		Neuron neuron_1_0 = new HiddenLayerNeuron(); neuron_1_0.setID("[1-0]");
 		Neuron neuron_1_1 = new HiddenLayerNeuron(); neuron_1_1.setID("[1-1]");
 		layer1.add(neuron_1_0);
