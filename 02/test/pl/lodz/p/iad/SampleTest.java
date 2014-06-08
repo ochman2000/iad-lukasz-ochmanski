@@ -35,7 +35,7 @@ public class SampleTest {
 		double in = network.getLayer(1).getNeuron(0).getLocalIn();
 		double calculated = 1.0 / (1.0 + Math.exp(-(in)));
 		double out = network.getLayer(1).getNeuron(0).getLocalOut();
-		System.out.println(out+" "+calculated);
+//		System.out.println(out+" "+calculated);
 		Assert.assertEquals(out, calculated, 0.01);
 	}
 	
@@ -57,7 +57,7 @@ public class SampleTest {
 		
 		double in = val01 * weight01 + val02 * weight02 + val03 * weight03 + val04 * weight04 + bias;
 		double calculated = network.getLayer(2).getNeuron(0).getLocalIn();
-		System.out.println(in+" "+calculated);
+//		System.out.println(in+" "+calculated);
 		Assert.assertEquals(in, calculated, 0.01);
 	}
 	
@@ -68,12 +68,100 @@ public class SampleTest {
 		double in = network.getLayer(2).getNeuron(0).getLocalIn();
 		double calculated = 1.0 / (1.0 + Math.exp(-(in)));
 		double out = network.getLayer(2).getNeuron(0).getLocalOut();
-		System.out.println(out+" "+calculated);
+//		System.out.println(out+" "+calculated);
 		Assert.assertEquals(out, calculated, 0.01);
 	}
 	
 	@Test
 	public void test05() {
+		Network network = this.getNetwork();
+		double[][] wzorce = {{0,0,1}, {0,1,0}, {1,0,0}, {0,1}, {1,0}, {1,1}};
+		network.train(wzorce[0], wzorce[3]);
+		network.train(wzorce[1], wzorce[4]);
+		network.train(wzorce[2], wzorce[5]);
+		network.train(wzorce[1], wzorce[3]);
+		network.train(wzorce[2], wzorce[4]);
+		double in = network.getLayer(1).getNeuron(0).getLocalIn();
+		double calculated = 1.0 / (1.0 + Math.exp(-(in)));
+		double out = network.getLayer(1).getNeuron(0).getLocalOut();
+//		System.out.println(out+" "+calculated);
+		Assert.assertEquals(out, calculated, 0.01);
+	}
+	
+	@Test
+	/**
+	 * Sprawdzam, czy metoda train() w ogóle ustawia wzorce.
+	 */
+	public void test06() {
+		Network network = this.getNetwork();
+		double[][] wzorce = {{0,0,1}, {0,1,0}, {1,0,0}, {0,1}, {1,0}, {1,1}};
+
+		int i=0;
+		for (Neuron n : network.getLayer(0).getNeurons()) { 
+			network.train(wzorce[0], wzorce[3]);
+			double in = n.getLocalIn();
+			System.out.println(in);
+			double out = n.getLocalOut();
+//			System.out.println(out);
+			Assert.assertEquals(out, wzorce[0][i], 0.01);
+			i++;
+		}
+		
+		i=0;
+		for (Neuron n : network.getLayer(0).getNeurons()) { 
+			network.train(wzorce[1], wzorce[4]);
+			double in = n.getLocalIn();
+//			System.out.println(in);
+			double out = n.getLocalOut();
+//			System.out.println(out);
+			Assert.assertEquals(out, wzorce[1][i], 0.01);
+			i++;
+		}
+		
+		i=0;
+		for (Neuron n : network.getLayer(0).getNeurons()) { 
+			network.train(wzorce[2], wzorce[5]);
+			double in = n.getLocalIn();
+			System.out.println(in);
+			double out = n.getLocalOut();
+//			System.out.println(out);
+			Assert.assertEquals(out, wzorce[2][i], 0.01);
+			i++;
+		}
+	}
+	
+	@Test
+	public void test07() {
+		Network network = this.getNetwork();
+		double[][] wzorce = {{0,0,1}, {0,1,0}, {1,0,0}, {0,1}, {1,0}, {1,1}};
+		network.train(wzorce[0], wzorce[3]);
+		network.train(wzorce[1], wzorce[4]);
+		network.train(wzorce[2], wzorce[5]);
+		network.train(wzorce[1], wzorce[3]);
+		network.train(wzorce[2], wzorce[4]);
+		for (Layer layer : this.getNetwork().getLayers().subList(1, this.getNetwork().getNumberOfLayers()-1)) {
+			for (Neuron n : layer.getNeurons()) {
+				double in = n.getLocalIn();
+				double calculated = 1.0 / (1.0 + Math.exp(-(in)));
+				double out = n.getLocalOut();
+//				System.out.println(n.getID()+": "+out+"\t"+calculated+"\t"+(out-calculated));
+				Assert.assertEquals(out, calculated, 0.01);
+			}
+		}
+	}
+	
+	
+	@Test
+	public void test14() {
+		//sprawdzić czy prev = next
+		Network network = this.getNetwork();
+		Neuron valPrev = network.getLayer(2).getNeuron(0);
+		Neuron valNext = network.getLayer(1).getNeuron(0).getOutput(0).getNext();
+		assertTrue(valPrev==valNext);
+	}
+	
+	@Test
+	public void test15() {
 		//sprawdzić czy prev = next
 		Network network = this.getNetwork();
 		Neuron valPrev = network.getLayer(2).getNeuron(0).getInput(0).getPrev();
@@ -83,7 +171,7 @@ public class SampleTest {
 	
 	//input = output
 	@Test
-	public void test06() {
+	public void test16() {
 		//sprawdzić czy prev = next
 		Network network = this.getNetwork();
 		Edge valPrev = network.getLayer(2).getNeuron(0).getInput(0);
