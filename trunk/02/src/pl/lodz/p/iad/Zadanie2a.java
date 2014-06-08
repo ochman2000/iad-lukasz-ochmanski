@@ -94,14 +94,14 @@ public class Zadanie2a {
 		layer0.add(neuron_0_3);
 		
 		//HIDDEN LAYER
-		Layer layer1 = new Layer(4);
+		Layer layer1 = new Layer(2);
 		Neuron neuron_1_0 = new HiddenLayerNeuron(); neuron_1_0.setID("[1-0]");
 		Neuron neuron_1_1 = new HiddenLayerNeuron(); neuron_1_1.setID("[1-1]");
 		layer1.add(neuron_1_0);
 		layer1.add(neuron_1_1);
 		
 		//OUTPUT LAYER
-		Layer layer2 = new Layer(2);
+		Layer layer2 = new Layer(4);
 		Neuron neuron_2_0 = new HiddenLayerNeuron(); neuron_2_0.setID("[2-0]");
 		Neuron neuron_2_1 = new HiddenLayerNeuron(); neuron_2_1.setID("[2-1]");
 		Neuron neuron_2_2 = new HiddenLayerNeuron(); neuron_2_2.setID("[2-2]");

@@ -58,7 +58,7 @@ public class Zadanie2b {
 		Input[] wzorce = readDataFromFile(network, IRIS2_DANE);
 		Input[] zbiórWalidacyjny = readDataFromFile(network, IRIS3_DANE);
 		feedNetworkWithData(network, wzorce, zbiórWalidacyjny);
-//		System.out.println(network);
+		System.out.println(network);
 	}
 	
 	private void feedNetworkWithData(Network network, Input[] data, Input[] zbiórWalidacyjny) {
@@ -87,7 +87,7 @@ public class Zadanie2b {
 		return this.getStrategy().readDataFromFile(network, fileName);
 	}
 
-	private double epoka(Network network, Input[] data) {
+	public double epoka(Network network, Input[] data) {
 		double error = 0.0;
 		Input[] shuffled = shuffleArray(data);
 		for (int i=0; i<shuffled.length; i++) {
@@ -97,7 +97,7 @@ public class Zadanie2b {
 		return error/shuffled.length;
 	}
 	
-	private double testuj(Network network, Input[] data) {
+	public double testuj(Network network, Input[] data) {
 		double error = 0.0;
 		for (Input irys : data) {
 			error += Network.MSE(irys.getExpected(), network.test(irys.getWzorzec()));
