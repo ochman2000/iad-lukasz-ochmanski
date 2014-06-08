@@ -164,15 +164,15 @@ public class Network {
 		for (int layer=this.getNumberOfLayers()-2; layer>0; layer--) {
 			for (int neuron=0; neuron<this.getLayer(layer).getNeurons().size(); neuron++) {
 				
-				double x1_0 = this.getLayer(layer).getNeuron(neuron).getLocalOut();
-				double derivative1_0 = this.sigmoidDerivative(x1_0);
-				double sumOfProducts1_0 = 0.0;
+				double x= this.getLayer(layer).getNeuron(neuron).getLocalOut();
+				double derivative = this.sigmoidDerivative(x);
+				double sumOfProducts = 0.0;
 				for (int output=0; output<this.getLayer(layer).getNeuron(neuron).getOutputs().size(); output++) {
-					double product1_0_0 = this.getLayer(layer).getNeuron(neuron).getOutput(output).getNext().getGradient() * this.getLayer(layer).getNeuron(neuron).getOutput(output).getWeight();
-					sumOfProducts1_0 += product1_0_0;
+					double product = this.getLayer(layer).getNeuron(neuron).getOutput(output).getNext().getGradient() * this.getLayer(layer).getNeuron(neuron).getOutput(output).getWeight();
+					sumOfProducts += product;
 				}
-				double gradient1_0 = derivative1_0 * sumOfProducts1_0;
-				this.getLayer(1).getNeuron(0).setGradient(gradient1_0);
+				double gradient = derivative * sumOfProducts;
+				this.getLayer(layer).getNeuron(neuron).setGradient(gradient);
 			}
 		}
 	
