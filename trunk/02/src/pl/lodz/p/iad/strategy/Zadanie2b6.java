@@ -65,7 +65,7 @@ public class Zadanie2b6 implements Strategy {
 		network.enableBias(USE_BIAS);
 		
 		//INPUT LAYER
-		Layer layer0 = new Layer(42);
+		Layer layer0 = new Layer(2);
 		Neuron neuron_0_0 = new InputLayerNeuron(); neuron_0_0.setID("[0-0]");
 		Neuron neuron_0_1 = new InputLayerNeuron(); neuron_0_1.setID("[0-1]");
 		layer0.add(neuron_0_0);

@@ -19,19 +19,52 @@ import pl.lodz.p.iad.structure.Neuron;
 
 public class Zadanie2a {
 
-	private static final double LEARNING_RATE = 0.2;
-	private static final double MOMENTUM = 0.9;
-	private static final boolean USE_BIAS = false;
+	private static double LEARNING_RATE;
+	private static double MOMENTUM ;
+	private static boolean USE_BIAS;
 	double[][] wzorce = {{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}};
 	
 	public static void main(String[] args) {
-		new Zadanie2a();
+		LEARNING_RATE = 0.6;
+		MOMENTUM = 0.0;
+		USE_BIAS = false;
+		new Zadanie2a("sprawozdanie/dane/a/test01.txt");
+		
+		LEARNING_RATE = 0.6;
+		MOMENTUM = 0.0;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test02.txt");
+		
+		LEARNING_RATE = 0.9;
+		MOMENTUM = 0.0;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test03.txt");
+		
+		LEARNING_RATE = 0.6;
+		MOMENTUM = 0.0;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test04.txt");
+		
+		LEARNING_RATE = 0.2;
+		MOMENTUM = 0.0;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test05.txt");
+		
+		LEARNING_RATE = 0.9;
+		MOMENTUM = 0.6;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test06.txt");
+		
+		LEARNING_RATE = 0.2;
+		MOMENTUM = 0.9;
+		USE_BIAS = true;
+		new Zadanie2a("sprawozdanie/dane/a/test07.txt");
 	}
 	
-	public Zadanie2a() {
+	public Zadanie2a(String fileName) {
 		Network network = this.initializeStructure();
 		Charset charset = Charset.forName("US-ASCII");
-		Path file = Paths.get("Test bez biasu.txt");
+		Path file = Paths.get(fileName);
 		try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
 			int count = 0;
 			while (count < 4000) {
@@ -47,18 +80,8 @@ public class Zadanie2a {
 		}
 
 		for (int i = 0; i < wzorce.length; i++) {
-			System.out.println(Arrays.toString(wzorce[i]));
-//			System.out.println(network.test(wzorce[i], wzorce[i], 5));
-//			String s = "";
-//			for (double d : expected) {
-//				s += String.format("%."+decimalPlaces+"f", d) + ", ";
-//			}
-//			s = "[" + s + "] [";
-//			for (double d : result) {
-//				s += String.format("%."+decimalPlaces+"f", d) + ", ";
-//			}
-//			s = s+"] MSE: " + String.format("%."+decimalPlaces+"f", Network.MSE(expected, result));
-	//
+			System.out.print(Arrays.toString(wzorce[i])+"\t");
+			System.out.println(Arrays.toString(network.test(wzorce[i])));
 		}
 		System.out.println(network);
 	}
