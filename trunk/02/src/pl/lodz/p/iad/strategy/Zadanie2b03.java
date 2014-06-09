@@ -17,11 +17,11 @@ import pl.lodz.p.iad.structure.Neuron;
 import pl.lodz.p.iad.structure.Strategy;
 
 /**
- * Przedmiotem badania są cechy 1,2,3
+ * Przedmiotem badania są cechy 1,2,4
  * @author Łukasz Ochmański
  *
  */
-public class Zadanie2b2 implements Strategy {
+public class Zadanie2b03 implements Strategy {
 	
 	private static final double LEARNING_RATE = 0.6;
 	private static final double MOMENTUM = 0.1;
@@ -42,8 +42,8 @@ public class Zadanie2b2 implements Strategy {
 				double[] wzorzec = new double[LICZBA_CECH];
 				wzorzec[0] = Double.parseDouble(st.nextToken());
 				wzorzec[1] = Double.parseDouble(st.nextToken());
-				wzorzec[2] = Double.parseDouble(st.nextToken());
 				Double.parseDouble(st.nextToken());
+				wzorzec[2] = Double.parseDouble(st.nextToken());
 				double[] expected = new double[LICZBA_KLAS];
 				for(int i=0; i<LICZBA_KLAS; i++) {
 					expected[i] = Double.parseDouble(st.nextToken());
@@ -103,7 +103,6 @@ public class Zadanie2b2 implements Strategy {
 		neuron_1_1.addNeuronOut(neuron_2_0);
 		neuron_1_1.addNeuronOut(neuron_2_1);
 		neuron_1_1.addNeuronOut(neuron_2_2);
-		
 		
 		network.addLayer(layer0);
 		network.addLayer(layer1);

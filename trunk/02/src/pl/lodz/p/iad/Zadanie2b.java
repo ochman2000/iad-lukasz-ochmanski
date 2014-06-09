@@ -8,18 +8,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 
-import pl.lodz.p.iad.strategy.Zadanie2b1;
-import pl.lodz.p.iad.strategy.Zadanie2b2;
-import pl.lodz.p.iad.strategy.Zadanie2b3;
-import pl.lodz.p.iad.strategy.Zadanie2b4;
-import pl.lodz.p.iad.strategy.Zadanie2b5;
-import pl.lodz.p.iad.strategy.Zadanie2b6;
-import pl.lodz.p.iad.strategy.Zadanie2b7;
-import pl.lodz.p.iad.strategy.Zadanie2b8;
-import pl.lodz.p.iad.strategy.Zadanie2b9;
+import pl.lodz.p.iad.strategy.Zadanie2b01;
+import pl.lodz.p.iad.strategy.Zadanie2b02;
+import pl.lodz.p.iad.strategy.Zadanie2b03;
+import pl.lodz.p.iad.strategy.Zadanie2b04;
+import pl.lodz.p.iad.strategy.Zadanie2b05;
+import pl.lodz.p.iad.strategy.Zadanie2b06;
+import pl.lodz.p.iad.strategy.Zadanie2b07;
+import pl.lodz.p.iad.strategy.Zadanie2b08;
+import pl.lodz.p.iad.strategy.Zadanie2b09;
+import pl.lodz.p.iad.strategy.Zadanie2b10;
 import pl.lodz.p.iad.structure.Input;
 import pl.lodz.p.iad.structure.Network;
 import pl.lodz.p.iad.structure.Neuron;
+import pl.lodz.p.iad.structure.Separator;
 import pl.lodz.p.iad.structure.Strategy;
 
 public class Zadanie2b {
@@ -33,19 +35,20 @@ public class Zadanie2b {
 	private Strategy strategy;
 	private static final String IRIS2_DANE = "iris2.dane";
 	private static final String IRIS3_DANE = "iris3.dane";
-	private String outURL;
+	private String outURL, outURL2, outURL3;
 	private static final int LIMIT_EPOK = 4000;
 	
 	public static void main(String[] args) {
-		new Zadanie2b(new Zadanie2b1(), "sprawozdanie/dane/b/test01.txt");
-		new Zadanie2b(new Zadanie2b2(), "sprawozdanie/dane/b/test02.txt");
-		new Zadanie2b(new Zadanie2b3(), "sprawozdanie/dane/b/test03.txt");
-		new Zadanie2b(new Zadanie2b4(), "sprawozdanie/dane/b/test04.txt");
-		new Zadanie2b(new Zadanie2b5(), "sprawozdanie/dane/b/test05.txt");
-		new Zadanie2b(new Zadanie2b6(), "sprawozdanie/dane/b/test06.txt");
-		new Zadanie2b(new Zadanie2b7(), "sprawozdanie/dane/b/test07.txt");
-		new Zadanie2b(new Zadanie2b8(), "sprawozdanie/dane/b/test08.txt");
-		new Zadanie2b(new Zadanie2b9(), "sprawozdanie/dane/b/test09.txt");
+		new Zadanie2b(new Zadanie2b01(), "sprawozdanie/dane/b/test01.txt");
+		new Zadanie2b(new Zadanie2b02(), "sprawozdanie/dane/b/test02.txt");
+		new Zadanie2b(new Zadanie2b03(), "sprawozdanie/dane/b/test03.txt");
+		new Zadanie2b(new Zadanie2b04(), "sprawozdanie/dane/b/test04.txt");
+		new Zadanie2b(new Zadanie2b05(), "sprawozdanie/dane/b/test05.txt");
+		new Zadanie2b(new Zadanie2b06(), "sprawozdanie/dane/b/test06.txt");
+		new Zadanie2b(new Zadanie2b07(), "sprawozdanie/dane/b/test07.txt");
+		new Zadanie2b(new Zadanie2b08(), "sprawozdanie/dane/b/test08.txt");
+		new Zadanie2b(new Zadanie2b09(), "sprawozdanie/dane/b/test09.txt");
+		new Zadanie2bBagging(new Zadanie2b10(), "sprawozdanie/dane/b/test10.txt");
 
 	}
 	
@@ -55,13 +58,13 @@ public class Zadanie2b {
 		this.run();
 	}
 
-	private void run() {
+	public void run() {
 		Network network = this.initializeStructure();
 		Input[] zbiórTreningowy = readDataFromFile(network, IRIS2_DANE);
 		Input[] zbiórTestowy = readDataFromFile(network, IRIS3_DANE);
 		feedNetworkWithData(network, zbiórTreningowy, zbiórTestowy);
-		zapiszWarstwęUkrytą(network, zbiórTreningowy, "sprawozdanie/dane/c/test01.txt");
-		zapiszWarstwęUkrytą(network, zbiórTestowy, "sprawozdanie/dane/c/test02.txt");
+		zapiszWarstwęUkrytą(network, zbiórTreningowy, outURL2);
+		zapiszWarstwęUkrytą(network, zbiórTestowy, outURL3);
 		System.out.println(network);
 	}
 	
@@ -79,16 +82,16 @@ public class Zadanie2b {
 					throw new IllegalArgumentException("Liczba neuronów "
 							+ "wyjściowych nie odpowiada liczbie podanych argumentów.");
 				}
-				for (double in : input.getWzorzec()) {
-					network.getInputLayer().getNeuron(0).setLocalOut(in);
+				for (int i=0; i<input.getWzorzec().length; i++) {
+					network.getInputLayer().getNeuron(i).setLocalOut(input.getWzorzec()[i]);
 				}
-				String s, delim; s = delim = "";
+				String s= "";
+				Separator delim = new Separator(",");
 				for (Neuron n : network.getLayer(network.getNumberOfLayers()-2).getNeurons()) {
 					s += delim + String.format("%5f", n.getLocalOut());
-					delim = ",";
 				}
 				for (double d : input.getExpected()) {
-					s += delim + d;
+					s +=  ""+ delim + d;
 				} 
 				writer.write(s+"\n");
 			}
@@ -98,7 +101,7 @@ public class Zadanie2b {
 		}
 	}
 
-	private void feedNetworkWithData(Network network, Input[] data, Input[] zbiórTestowy) {
+	public void feedNetworkWithData(Network network, Input[] data, Input[] zbiórTestowy) {
 		Charset charset = Charset.forName("US-ASCII");
 		Path fileOut = Paths.get(outURL);
 		try {
@@ -120,7 +123,7 @@ public class Zadanie2b {
 		}
 	}
 
-	private Input[] readDataFromFile(Network network, String fileName) {
+	public Input[] readDataFromFile(Network network, String fileName) {
 		return this.getStrategy().readDataFromFile(network, fileName);
 	}
 
@@ -157,7 +160,7 @@ public class Zadanie2b {
 		return out;
 	}
 
-	private Network initializeStructure() {
+	public Network initializeStructure() {
 		return this.getStrategy().initializeStructure();
 	}
 
@@ -175,9 +178,11 @@ public class Zadanie2b {
 
 	public void setOutURL(String outURL) {
 		this.outURL = outURL;
-//		Path full = Paths.get(outURL);
-//		String parent = full.getParent().toString();
-//		String element = "w_"+full.getName(full.getNameCount()-1).toString();
-//		this.outURL2 = (parent+"\\"+element).replace('\\', '/');
+		Path full = Paths.get(outURL);
+		String parent = full.getParent().toString();
+		String element2 = "trening_"+full.getName(full.getNameCount()-1).toString();
+		String element3 = "test_"+full.getName(full.getNameCount()-1).toString();
+		this.outURL2 = (parent+"\\"+element2).replace('\\', '/');
+		this.outURL3 = (parent+"\\"+element3).replace('\\', '/');
 	}
 }

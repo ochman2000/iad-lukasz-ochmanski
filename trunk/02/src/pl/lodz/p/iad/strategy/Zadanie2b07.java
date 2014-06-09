@@ -21,7 +21,7 @@ import pl.lodz.p.iad.structure.Strategy;
  * @author Łukasz Ochmański
  *
  */
-public class Zadanie2b7 implements Strategy {
+public class Zadanie2b07 implements Strategy {
 	
 	private static final double LEARNING_RATE = 0.6;
 	private static final double MOMENTUM = 0.1;

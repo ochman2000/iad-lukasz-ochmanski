@@ -17,16 +17,16 @@ import pl.lodz.p.iad.structure.Neuron;
 import pl.lodz.p.iad.structure.Strategy;
 
 /**
- * Przedmiotem badania są cechy 3,4
+ * Przedmiotem badania są cechy 1,3,4
  * @author Łukasz Ochmański
  *
  */
-public class Zadanie2b6 implements Strategy {
+public class Zadanie2b04 implements Strategy {
 	
 	private static final double LEARNING_RATE = 0.6;
 	private static final double MOMENTUM = 0.1;
 	private static final boolean USE_BIAS = true;
-	private static final int LICZBA_CECH = 2;
+	private static final int LICZBA_CECH = 3;
 	private static final int LICZBA_KLAS = 3;
 	
 	@Override
@@ -41,9 +41,9 @@ public class Zadanie2b6 implements Strategy {
 				StringTokenizer st = new StringTokenizer(lines.get(l), ",");
 				double[] wzorzec = new double[LICZBA_CECH];
 				wzorzec[0] = Double.parseDouble(st.nextToken());
+				Double.parseDouble(st.nextToken());
 				wzorzec[1] = Double.parseDouble(st.nextToken());
-				Double.parseDouble(st.nextToken());
-				Double.parseDouble(st.nextToken());
+				wzorzec[2] = Double.parseDouble(st.nextToken());
 				double[] expected = new double[LICZBA_KLAS];
 				for(int i=0; i<LICZBA_KLAS; i++) {
 					expected[i] = Double.parseDouble(st.nextToken());
@@ -65,11 +65,13 @@ public class Zadanie2b6 implements Strategy {
 		network.enableBias(USE_BIAS);
 		
 		//INPUT LAYER
-		Layer layer0 = new Layer(2);
+		Layer layer0 = new Layer(3);
 		Neuron neuron_0_0 = new InputLayerNeuron(); neuron_0_0.setID("[0-0]");
 		Neuron neuron_0_1 = new InputLayerNeuron(); neuron_0_1.setID("[0-1]");
+		Neuron neuron_0_2 = new InputLayerNeuron(); neuron_0_2.setID("[0-2]");
 		layer0.add(neuron_0_0);
 		layer0.add(neuron_0_1);
+		layer0.add(neuron_0_2);
 		
 		//HIDDEN LAYER
 		Layer layer1 = new Layer(2);
@@ -92,6 +94,8 @@ public class Zadanie2b6 implements Strategy {
 		neuron_0_0.addNeuronOut(neuron_1_1);
 		neuron_0_1.addNeuronOut(neuron_1_0);
 		neuron_0_1.addNeuronOut(neuron_1_1);
+		neuron_0_2.addNeuronOut(neuron_1_0);
+		neuron_0_2.addNeuronOut(neuron_1_1);
 		
 		neuron_1_0.addNeuronOut(neuron_2_0);
 		neuron_1_0.addNeuronOut(neuron_2_1);
