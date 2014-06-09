@@ -19,6 +19,7 @@ import pl.lodz.p.iad.strategy.Zadanie2b8;
 import pl.lodz.p.iad.strategy.Zadanie2b9;
 import pl.lodz.p.iad.structure.Input;
 import pl.lodz.p.iad.structure.Network;
+import pl.lodz.p.iad.structure.Neuron;
 import pl.lodz.p.iad.structure.Strategy;
 
 public class Zadanie2b {
@@ -45,6 +46,7 @@ public class Zadanie2b {
 		new Zadanie2b(new Zadanie2b7(), "sprawozdanie/dane/b/test07.txt");
 		new Zadanie2b(new Zadanie2b8(), "sprawozdanie/dane/b/test08.txt");
 		new Zadanie2b(new Zadanie2b9(), "sprawozdanie/dane/b/test09.txt");
+
 	}
 	
 	public Zadanie2b(Strategy strategy, String URL) {
@@ -55,13 +57,48 @@ public class Zadanie2b {
 
 	private void run() {
 		Network network = this.initializeStructure();
-		Input[] wzorce = readDataFromFile(network, IRIS2_DANE);
-		Input[] zbiórWalidacyjny = readDataFromFile(network, IRIS3_DANE);
-		feedNetworkWithData(network, wzorce, zbiórWalidacyjny);
+		Input[] zbiórTreningowy = readDataFromFile(network, IRIS2_DANE);
+		Input[] zbiórTestowy = readDataFromFile(network, IRIS3_DANE);
+		feedNetworkWithData(network, zbiórTreningowy, zbiórTestowy);
+		zapiszWarstwęUkrytą(network, zbiórTreningowy, "sprawozdanie/dane/c/test01.txt");
+		zapiszWarstwęUkrytą(network, zbiórTestowy, "sprawozdanie/dane/c/test02.txt");
 		System.out.println(network);
 	}
 	
-	private void feedNetworkWithData(Network network, Input[] data, Input[] zbiórWalidacyjny) {
+	private void zapiszWarstwęUkrytą(Network network, Input[] dane, String filename) {
+		Charset charset = Charset.forName("US-ASCII");
+		Path fileOut = Paths.get(filename);
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(fileOut, charset);
+			for (Input input : dane) {
+				if (network.getInputLayer().getNeurons().size()!=input.getWzorzec().length) {
+					throw new IllegalArgumentException("Liczba neuronów "
+							+ "wejściowych nie odpowiada liczbie podanych argumentów.");
+				}
+				if (network.getOutputLayer().getNeurons().size()!=input.getExpected().length) {
+					throw new IllegalArgumentException("Liczba neuronów "
+							+ "wyjściowych nie odpowiada liczbie podanych argumentów.");
+				}
+				for (double in : input.getWzorzec()) {
+					network.getInputLayer().getNeuron(0).setLocalOut(in);
+				}
+				String s, delim; s = delim = "";
+				for (Neuron n : network.getLayer(network.getNumberOfLayers()-2).getNeurons()) {
+					s += delim + String.format("%5f", n.getLocalOut());
+					delim = ",";
+				}
+				for (double d : input.getExpected()) {
+					s += delim + d;
+				} 
+				writer.write(s+"\n");
+			}
+			writer.close();
+		} catch (IOException x) {
+			System.err.format("IOException: %s%n", x);
+		}
+	}
+
+	private void feedNetworkWithData(Network network, Input[] data, Input[] zbiórTestowy) {
 		Charset charset = Charset.forName("US-ASCII");
 		Path fileOut = Paths.get(outURL);
 		try {
@@ -70,10 +107,10 @@ public class Zadanie2b {
 			while (count < LIMIT_EPOK) {
 				double error = epoka(network, data);
 				if (count % 100 == 0) {
-					double błądZbioruWalidacyjnego = testuj(network, zbiórWalidacyjny);
+					double błądZbioruTestowego = testuj(network, zbiórTestowy);
 					System.out.println("Epoka:\t" + count + "\tMSE: "+ String.format("%5f", error) + 
-							"\t"+String.format("%5f", błądZbioruWalidacyjnego));
-					writer.write(count + "\t" + error+"\t"+błądZbioruWalidacyjnego+"\n");
+							"\t"+String.format("%5f", błądZbioruTestowego));
+					writer.write(count + "\t" + error+"\t"+błądZbioruTestowego+"\n");
 				}
 				count++;
 			}
