@@ -110,7 +110,7 @@ public class SampleTest {
 		i=0;
 		for (Neuron n : network.getLayer(0).getNeurons()) { 
 			network.train(wzorce[1], wzorce[4]);
-			double in = n.getLocalIn();
+//			double in = n.getLocalIn();
 //			System.out.println(in);
 			double out = n.getLocalOut();
 //			System.out.println(out);
