@@ -1,0 +1,15 @@
+1st sample size = 201
+2nd sample size = 591
+
+1st sample mean = 2.679
+2nd sample mean = 2.432
+1st sample stdev = 1.102
+2nd sample stdev = 0.786
+Degrees of freedom for Student-t distribution = 272.374
+
+Results:
+Statistics value z = 2.929794
+Normal distribution: p-value = 0.003392
+Student-t distribution: p-value = 0.003679
+Normal distribution: H0 rejected (alternative proved)
+Student-t distribution: H0 rejected (alternative proved)
