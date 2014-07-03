@@ -51,11 +51,15 @@ public class Point {
 	}
 	
 	public double getDistanceFrom(Point p) {
-		double odlegloscX = p.getCoordinate(0) - this.getCoordinate(0);
-		double odlegloscY = p.getCoordinate(1) - this.getCoordinate(1);
-		double a = Math.pow(odlegloscX, 2);
-	    double b = Math.pow(odlegloscY, 2);
-	    double c = Math.sqrt(a + b);
-	    return c;
+		if (this.getCoordinates().size()!=p.getCoordinates().size()) {
+			throw new IllegalArgumentException("Punkty mają niezgodną ilość wymiarów.");
+		}
+	    double sum = 0.0;
+	    for (int i=0; i<this.getCoordinates().size(); i++) {
+			double odleglosc = p.getCoordinate(i) - this.getCoordinate(i);
+			double pq = Math.pow(odleglosc, 2);
+		    sum+=pq;
+	    }
+	    return Math.sqrt(sum);
 	}
 }
