@@ -23,9 +23,9 @@ public class Point {
 		this.getCoordinates().add(dimension, value);
 	}
 
-	// public void setCoordinate(int dimension, double value) {
-	// this.getCoordinates().set(dimension, value);
-	// }
+	 public void setCoordinate(int dimension, double value) {
+		 this.getCoordinates().set(dimension, value);
+	 }
 
 	public double getCoordinate(int dimension) {
 		return this.getCoordinates().get(dimension);

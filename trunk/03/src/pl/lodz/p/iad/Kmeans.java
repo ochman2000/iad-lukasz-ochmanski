@@ -52,9 +52,34 @@ public class Kmeans {
 				for (Point centroid : centroidy) {
 					double dist = punkt.getDistanceFrom(centroid);
 					if (dist<min) {
+						min=dist;
 						punkt.setGroup(centroid);
 					}
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Dla każdej grupy centroidów, wylicz średnią dla każdego wymiaru, biorąc pod
+	 * uwagę tylko te elementy, które nie są centroidami i należą do danej grupy centroida.
+	 * Następnie przesuń centroida w każdą z możliwych wymiarów o tą wyliczoną wartość.
+	 */
+	private void przesunCentroidy() {
+		for (Point centroid : centroidy) {
+			for (int i=0; i<centroid.getCoordinates().size(); i++) {
+				double sum = 0.0;
+				int count = 0;
+				for (Point punkt : mapa) {
+					if (punkt.isCentroid()==false) {
+						if (punkt.getGroup()==centroid) {
+							sum +=punkt.getCoordinate(i);
+							count++;
+						}
+					}
+				}
+				double x = sum/count;
+				centroid.setCoordinate(i, x);
 			}
 		}
 	}
