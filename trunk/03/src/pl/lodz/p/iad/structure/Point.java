@@ -27,8 +27,8 @@ public class Point {
 	// this.getCoordinates().set(dimension, value);
 	// }
 
-	public void getCoordinate(int dimension) {
-		this.getCoordinate(dimension);
+	public double getCoordinate(int dimension) {
+		return this.getCoordinates().get(dimension);
 	}
 
 	public Point getGroup() {
@@ -48,5 +48,14 @@ public class Point {
 				: "\nnależy do grupy centroida: " + this.getCoordinates();
 		if (this.getGroup()==null) dodatkowy = "\nNie jest przypisany do żadnej grupy centroidów.";
 		return this.getCoordinates() + dodatkowy;
+	}
+	
+	public double getDistanceFrom(Point p) {
+		double odlegloscX = p.getCoordinate(0) - this.getCoordinate(0);
+		double odlegloscY = p.getCoordinate(1) - this.getCoordinate(1);
+		double a = Math.pow(odlegloscX, 2);
+	    double b = Math.pow(odlegloscY, 2);
+	    double c = Math.sqrt(a + b);
+	    return c;
 	}
 }
