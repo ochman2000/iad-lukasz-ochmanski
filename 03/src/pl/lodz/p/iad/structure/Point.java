@@ -62,4 +62,25 @@ public class Point {
 	    }
 	    return Math.sqrt(sum);
 	}
+	
+	@Override
+    public int hashCode() {
+		double sum = 0.0;
+		for (double coordinate : getCoordinates()) {
+			sum+=coordinate;
+			sum++;
+		}
+		return (int) sum;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj.hashCode()==this.hashCode()) {
+			return true;
+		}
+		return false;
+	}
 }
