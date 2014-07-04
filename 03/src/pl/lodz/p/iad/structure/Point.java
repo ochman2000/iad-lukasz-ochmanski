@@ -1,9 +1,19 @@
 package pl.lodz.p.iad.structure;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Point {
+	
+	/**
+	 * Used in hashCode().
+	 * Determines how precise should two points be.
+	 * PRECISION = 1_000_000 means that 0.000_000_1 is equal to 0.000_000_2
+	 */
+	private final int PRECISION = 1_000_000; 
+	
 	private List<Double> coordinates;
 	private Point group;
 
@@ -13,6 +23,16 @@ public class Point {
 
 	public List<Double> getCoordinates() {
 		return coordinates;
+	}
+	
+	public List<Double> getCoordinatesTrimmed() {
+		List<Double> d = new ArrayList<Double>();
+		for (int i=0; i<this.getCoordinates().size(); i++) {
+			BigDecimal bd = new BigDecimal(this.getCoordinate(i));
+		    bd = bd.setScale(2, RoundingMode.HALF_UP);
+			d.add(i, bd.doubleValue());
+		}
+		return d;
 	}
 
 	public void setCoordinates(List<Double> coordinates) {
@@ -45,9 +65,9 @@ public class Point {
 
 	public String toString() {
 		String dodatkowy = this.isCentroid() ? "\nJest centroidem"
-				: "\nnależy do grupy centroida: " + this.getCoordinates();
+				: "\nnależy do grupy centroida: " + this.getCoordinatesTrimmed();
 		if (this.getGroup()==null) dodatkowy = "\nNie jest przypisany do żadnej grupy centroidów.";
-		return this.getCoordinates() + dodatkowy;
+		return this.getCoordinatesTrimmed() + dodatkowy;
 	}
 	
 	public double getDistanceFrom(Point p) {
@@ -70,7 +90,7 @@ public class Point {
 			sum+=coordinate;
 			sum++;
 		}
-		return (int) sum;
+		return (int) (sum*PRECISION);
 	}
 	
 	@Override

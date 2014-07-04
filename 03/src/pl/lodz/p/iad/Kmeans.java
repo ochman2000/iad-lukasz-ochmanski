@@ -1,19 +1,18 @@
 package pl.lodz.p.iad;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
 public class Kmeans {
 	
+	/**
+	 * Określa liczbę centroidów.
+	 */
 	private static final int PODZBIORY = 3;
-//	private Mapa mapa;
-//	private Set<Point> centroidy;
 
 	public Kmeans() {
 		Mapa mapa = new Mapa();
@@ -37,14 +36,14 @@ public class Kmeans {
 		
 		
 		mapa = grupujPunkty(mapa, centroidy);
-		System.out.println("Grupowanie centroidów zakończone powodzeniem.");
 		List<Point> noweCentroidy = przesunCentroidy(mapa, centroidy);
-		System.out.println("Przesuwanie centroidów zakończone powodzeniem.");
+		int counter=0;
 		
 		while (!centroidySaIdentyczne(centroidy, noweCentroidy)) {
+			System.out.println("Iteracja:\t"+ ++counter);
 			centroidy = noweCentroidy;
 			mapa = grupujPunkty(mapa, centroidy);
-			System.out.println("Grupowanie centroidów zakończone powodzeniem.");
+			System.out.println("Grupowanie  centroidów zakończone powodzeniem.");
 			noweCentroidy = przesunCentroidy(mapa, centroidy);
 			System.out.println("Przesuwanie centroidów zakończone powodzeniem.");
 		}
@@ -103,7 +102,7 @@ public class Kmeans {
 					}
 				}
 				double x = sum/count;
-				nowyCentroid.setCoordinate(i, x);
+				nowyCentroid.addCoordinate(i, x);
 			}
 			noweCentroidy.add(nowyCentroid);
 		}
