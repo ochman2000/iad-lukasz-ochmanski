@@ -72,6 +72,42 @@ public class PointTest {
 	@Test
 	public void test05() {
 		Point p1 = new Point(2);
+		p1.addCoordinate(0, 0.000_001);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 0.0);
+		p2.addCoordinate(1, 0.0);
+		p2.addCoordinate(2, 0.0);
+		p2.setGroup(p2);
+		
+		System.out.println(p1.hashCode());
+		System.out.println(p2.hashCode());
+		assertFalse(p1.equals(p2));
+	}
+	
+	@Test
+	public void test06() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 0.000_000_1);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 0.0);
+		p2.addCoordinate(1, 0.0);
+		p2.addCoordinate(2, 0.0);
+		p2.setGroup(p2);
+		
+		System.out.println(p1.hashCode());
+		System.out.println(p2.hashCode());
+		assertTrue(p1.equals(p2));
+	}
+	
+	@Test
+	public void test08() {
+		Point p1 = new Point(2);
 		p1.addCoordinate(0, 3.0);
 		p1.addCoordinate(1, 0.0);
 		p1.addCoordinate(2, 0.0);
@@ -86,7 +122,7 @@ public class PointTest {
 	}
 	
 	@Test
-	public void test06() {
+	public void test09() {
 		List<Point> lista = new ArrayList<Point>(2);
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 3.0);
@@ -105,7 +141,7 @@ public class PointTest {
 	}
 	
 	@Test
-	public void test07() {
+	public void test10() {
 		List<Point> lista = new ArrayList<Point>(2);
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 3.0);
@@ -124,7 +160,7 @@ public class PointTest {
 	}
 	
 	@Test
-	public void test08() {
+	public void test11() {
 		List<Point> lista = new ArrayList<Point>(2);
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 3.0);

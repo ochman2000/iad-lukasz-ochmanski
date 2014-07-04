@@ -31,7 +31,7 @@ public class Mapa extends ArrayList<Point>{
 				String token = linia.nextToken();
 				double value = Double.parseDouble(token);
 				punkt.addCoordinate(i, value);
-				System.out.print("Punkt nr "+ i +": "+token+"\t");
+				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
 			}
 			this.add(punkt);
 			System.out.println();
