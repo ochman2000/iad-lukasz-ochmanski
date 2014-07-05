@@ -31,10 +31,32 @@ public class Mapa extends ArrayList<Point>{
 				String token = linia.nextToken();
 				double value = Double.parseDouble(token);
 				punkt.addCoordinate(i, value);
-				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
+//				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
 			}
 			this.add(punkt);
-			System.out.println();
+//			System.out.println();
 		}
+	}
+	
+	public String toString() {
+		StringBuilder s= new StringBuilder();
+		for (Point punkt : this) {
+			StringBuilder info = null;
+			if (punkt.isCentroid()) {
+				info = new StringBuilder("Jest centroidem");
+			}
+			else {
+				info = new StringBuilder("należy do grupy centroida: ");
+				info.append(punkt.getCoordinatesTrimmed());
+			}
+			if (punkt.getGroup()==null) {
+				info = new StringBuilder("Nie jest przypisany do żadnej grupy centroidów.");
+			}
+			s.append(""+punkt.getCoordinatesTrimmed());
+			s.append("\t:\t");
+			s.append(info);
+			s.append("\n");
+		}
+		return s.toString();
 	}
 }

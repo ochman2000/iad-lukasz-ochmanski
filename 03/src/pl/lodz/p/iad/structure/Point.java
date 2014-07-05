@@ -64,10 +64,10 @@ public class Point {
 	}
 
 	public String toString() {
-		String dodatkowy = this.isCentroid() ? "\nJest centroidem"
-				: "\nnależy do grupy centroida: " + this.getCoordinatesTrimmed();
-		if (this.getGroup()==null) dodatkowy = "\nNie jest przypisany do żadnej grupy centroidów.";
-		return this.getCoordinatesTrimmed() + dodatkowy;
+		String info = this.isCentroid() ? "Jest centroidem"
+				: "należy do grupy centroida: " + this.getCoordinatesTrimmed();
+		if (this.getGroup()==null) info = "Nie jest przypisany do żadnej grupy centroidów.";
+		return ""+this.getCoordinatesTrimmed(); // + " : " + info;
 	}
 	
 	public double getDistanceFrom(Point p) {
