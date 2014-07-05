@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pl.lodz.p.iad.diagram.Voronoi;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -47,7 +48,19 @@ public class Kmeans {
 			noweCentroidy = przesunCentroidy(mapa, centroidy);
 			System.out.println("Współrzędne centroidów: \t"+noweCentroidy);
 		}
+		rysujDiagramVoronoia(noweCentroidy, mapa);
 //		System.out.println(mapa);
+	}
+	
+	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+		Voronoi voronoi = new Voronoi(512, 512, 0);
+		for (Point centroid : centroidy) {
+			voronoi.dodajCentroid(centroid);
+		}
+		
+		for (Point point : mapa) {			
+			voronoi.dodajKropkę(point);
+		}
 	}
 	
 	private boolean centroidySaIdentyczne(List<Point> centroidy,

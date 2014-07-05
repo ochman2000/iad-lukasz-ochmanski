@@ -29,11 +29,29 @@ public class Voronoi implements DrawListener {
 
 
     public Voronoi() {
-        draw.setCanvasSize(SIZE, SIZE);
-        draw.setXscale(0, SIZE);
-        draw.setYscale(0, SIZE);
-        draw.addListener(this);
-        draw.show(20);
+    	this(SIZE, SIZE, 0);
+    }
+    
+    public Voronoi(int w, int h, int zoom) {
+    	draw.setCanvasSize(w, h);
+    	draw.setXscale(0, w);
+    	draw.setYscale(0, h);
+    	draw.addListener(this);
+    	draw.show(0);    	
+    }
+    
+    public void dodajCentroid(pl.lodz.p.iad.structure.Point centroid) {
+    	double x = centroid.getCoordinate(0)*100+256;
+    	double y = centroid.getCoordinate(1)*100+256;
+    	mousePressed(x, y);
+    }
+    
+    public void dodajKropkę(pl.lodz.p.iad.structure.Point punkt) {
+    	draw.setPenColor(Color.WHITE);
+    	double x = punkt.getCoordinate(0)*100+256;
+    	double y = punkt.getCoordinate(1)*100+256;
+    	draw.filledCircle(x, y, 1);
+        draw.show(0);
     }
 
     public void mousePressed(double x, double y) {
@@ -55,7 +73,7 @@ public class Voronoi implements DrawListener {
         // draw the point afterwards
         draw.setPenColor(Color.BLACK);
         draw.filledCircle(x, y, 4);
-        draw.show(20);
+        draw.show(0);
         System.out.println("Done processing: " + p);
     }
 
