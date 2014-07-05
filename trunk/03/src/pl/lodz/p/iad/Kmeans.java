@@ -10,7 +10,7 @@ import pl.lodz.p.iad.structure.Point;
 public class Kmeans {
 	
 	/**
-	 * Określa liczbę centroidów.
+	 * Określa liczbę K centroidów.
 	 */
 	private static final int PODZBIORY = 3;
 
@@ -28,13 +28,14 @@ public class Kmeans {
 				centroidy.add(centroid);
 			}
 		}
-		System.out.println("Losowanie zakończone powodzeniem.");
+		System.out.print("Wylosowane centroidy:\t");
 		for (Point point : mapa) {
 			if (point.isCentroid())
-			System.out.println(point);
+			System.out.print(point+ "\t");
 		}
+		System.out.println("\n");
 		
-		
+		//WYLICZ OPTYMALNE POZYCJE CENTROIDÓW
 		mapa = grupujPunkty(mapa, centroidy);
 		List<Point> noweCentroidy = przesunCentroidy(mapa, centroidy);
 		int counter=0;
@@ -43,10 +44,10 @@ public class Kmeans {
 			System.out.println("Iteracja:\t"+ ++counter);
 			centroidy = noweCentroidy;
 			mapa = grupujPunkty(mapa, centroidy);
-			System.out.println("Grupowanie  centroidów zakończone powodzeniem.");
 			noweCentroidy = przesunCentroidy(mapa, centroidy);
-			System.out.println("Przesuwanie centroidów zakończone powodzeniem.");
+			System.out.println("Współrzędne centroidów: \t"+noweCentroidy);
 		}
+//		System.out.println(mapa);
 	}
 	
 	private boolean centroidySaIdentyczne(List<Point> centroidy,
@@ -82,8 +83,8 @@ public class Kmeans {
 	}
 	
 	/**
-	 * Dla każdej grupy centroidów, wylicz średnią dla każdego wymiaru, biorąc pod
-	 * uwagę tylko te elementy, które nie są centroidami i należą do danej grupy centroida.
+	 * Dla każdej grupy centroidów, wylicz średnią dla każdego wymiaru, biorąc pod uwagę
+	 * tylko te elementy, które nie są centroidami i należą do danej grupy centroida.
 	 * Następnie przesuń centroida w każdą z możliwych wymiarów o tą wyliczoną wartość.
 	 */
 	private List<Point> przesunCentroidy(Mapa mapa, List<Point> centroidy) {
@@ -103,6 +104,7 @@ public class Kmeans {
 				}
 				double x = sum/count;
 				nowyCentroid.addCoordinate(i, x);
+				nowyCentroid.setGroup(nowyCentroid);
 			}
 			noweCentroidy.add(nowyCentroid);
 		}
