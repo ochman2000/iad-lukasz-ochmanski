@@ -54,11 +54,37 @@ public class Kmeans {
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
 		Voronoi voronoi = new Voronoi(512, 512, 0);
 		for (Point centroid : centroidy) {
-			voronoi.dodajCentroid(centroid);
+			voronoi.dodajCentroid(centroid.getCoordinate(0),
+					centroid.getCoordinate(1));
 		}
 		
 		for (Point point : mapa) {			
-			voronoi.dodajKropkę(point);
+			voronoi.dodajKropkę(point.getCoordinate(0),
+					point.getCoordinate(1));
+		}
+		System.out.println(mapa.get(0).getCoordinates().size());
+		if (mapa.get(0).getCoordinates().size()>2) {
+			Voronoi voronoi2 = new Voronoi(512, 512, 0);
+			for (Point centroid : centroidy) {
+				voronoi2.dodajCentroid(centroid.getCoordinate(0),
+						centroid.getCoordinate(2));
+			}
+			
+			for (Point point : mapa) {			
+				voronoi2.dodajKropkę(point.getCoordinate(0),
+						point.getCoordinate(2));
+			}
+			
+			Voronoi voronoi3 = new Voronoi(512, 512, 0);
+			for (Point centroid : centroidy) {
+				voronoi3.dodajCentroid(centroid.getCoordinate(1),
+						centroid.getCoordinate(2));
+			}
+			
+			for (Point point : mapa) {			
+				voronoi3.dodajKropkę(point.getCoordinate(1),
+						point.getCoordinate(2));
+			}
 		}
 	}
 	

@@ -40,16 +40,16 @@ public class Voronoi implements DrawListener {
     	draw.show(0);    	
     }
     
-    public void dodajCentroid(pl.lodz.p.iad.structure.Point centroid) {
-    	double x = centroid.getCoordinate(0)*100+256;
-    	double y = centroid.getCoordinate(1)*100+256;
+    public void dodajCentroid(double x1, double y1) {
+    	double x = x1*100+256;
+    	double y = y1*100+256;
     	mousePressed(x, y);
     }
     
-    public void dodajKropkę(pl.lodz.p.iad.structure.Point punkt) {
+    public void dodajKropkę(double x1, double y1) {
     	draw.setPenColor(Color.WHITE);
-    	double x = punkt.getCoordinate(0)*100+256;
-    	double y = punkt.getCoordinate(1)*100+256;
+    	double x = x1*100+256;
+    	double y = y1*100+256;
     	draw.filledCircle(x, y, 1);
         draw.show(0);
     }

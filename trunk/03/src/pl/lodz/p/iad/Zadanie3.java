@@ -15,7 +15,7 @@ public class Zadanie3 {
 		Zbior zbior1 = new Zbior() {
 			@Override
 			public List<Integer> getColumnIndices() {
-				return Arrays.asList(0, 1);
+				return Arrays.asList(0,1);
 			}
 		};
 		Mapa mapa1 = new Mapa(zbior1);
