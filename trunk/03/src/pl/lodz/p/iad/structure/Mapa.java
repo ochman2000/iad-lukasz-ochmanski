@@ -10,13 +10,10 @@ import java.util.StringTokenizer;
 
 public class Mapa extends ArrayList<Point>{
 	
-	private final static int DIMENSIONS = 2;
-	/**
-	 * 
-	 */
+	private final static int LICZBA_KOLUMN = 8;
 	private static final long serialVersionUID = 1L;
 
-	public Mapa() {
+	public Mapa(Zbior zbior) {
 		Path file = Paths.get("resources/hydra01.dane");
 		List<String> lines = null;
 		try {
@@ -24,17 +21,21 @@ public class Mapa extends ArrayList<Point>{
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
 		}
+		
 		for (String line : lines) {
 			StringTokenizer linia = new StringTokenizer(line, ",");
-			Point punkt = new Point(DIMENSIONS);
-			for (int i=0; i<DIMENSIONS; i++) {
-				String token = linia.nextToken();
-				double value = Double.parseDouble(token);
-				punkt.addCoordinate(i, value);
-//				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
+			Point punkt = new Point(zbior.getColumnIndices().size());
+			int m=0;
+			for (int i=0; i<LICZBA_KOLUMN; i++) {
+				if (zbior.getColumnIndices().contains(i)) {
+					String token = linia.nextToken();
+					double value = Double.parseDouble(token);
+					punkt.addCoordinate(m++, value);
+	//				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
+				}
+				this.add(punkt);
+	//			System.out.println();
 			}
-			this.add(punkt);
-//			System.out.println();
 		}
 	}
 	

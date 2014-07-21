@@ -15,8 +15,7 @@ public class Kmeans {
 	 */
 	private static final int PODZBIORY = 3;
 
-	public Kmeans() {
-		Mapa mapa = new Mapa();
+	public Kmeans(Mapa mapa) {
 		Random rnd = new Random();
 		List<Point> centroidy = new ArrayList<Point>(PODZBIORY);
 		
@@ -122,9 +121,5 @@ public class Kmeans {
 			noweCentroidy.add(nowyCentroid);
 		}
 		return noweCentroidy;
-	}
-	
-	public static void main(String[] args) {
-		new Kmeans();
 	}
 }

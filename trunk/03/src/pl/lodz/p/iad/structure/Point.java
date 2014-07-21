@@ -64,6 +64,7 @@ public class Point {
 	}
 
 	public String toString() {
+		@SuppressWarnings("unused")
 		String info = this.isCentroid() ? "Jest centroidem"
 				: "należy do grupy centroida: " + this.getCoordinatesTrimmed();
 		if (this.getGroup()==null) info = "Nie jest przypisany do żadnej grupy centroidów.";
