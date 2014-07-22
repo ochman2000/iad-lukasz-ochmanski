@@ -7,6 +7,7 @@ import java.util.Random;
 import pl.lodz.p.iad.diagram.Voronoi;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
+import pl.lodz.p.iad.structure.Zbior;
 
 public class Kmeans {
 	
@@ -15,7 +16,8 @@ public class Kmeans {
 	 */
 	private static final int PODZBIORY = 3;
 
-	public Kmeans(Mapa mapa) {
+	public Kmeans(Zbior z) {
+		Mapa mapa = new Mapa(z);
 		Random rnd = new Random();
 		List<Point> centroidy = new ArrayList<Point>(PODZBIORY);
 		
