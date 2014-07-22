@@ -13,7 +13,7 @@ public class Mapa extends ArrayList<Point>{
 	private final static int LICZBA_KOLUMN = 8;
 	private static final long serialVersionUID = 1L;
 
-	public Mapa(Zbior zbior) {
+	public Mapa(List<Integer> kolumny) {
 		Path file = Paths.get("resources/hydra01.dane");
 		List<String> lines = null;
 		try {
@@ -24,10 +24,10 @@ public class Mapa extends ArrayList<Point>{
 		
 		for (String line : lines) {
 			StringTokenizer linia = new StringTokenizer(line, ",");
-			Point punkt = new Point(zbior.getColumnIndices().size());
+			Point punkt = new Point(kolumny.size());
 			int m=0;
 			for (int i=0; i<LICZBA_KOLUMN; i++) {
-				if (zbior.getColumnIndices().contains(i)) {
+				if (kolumny.contains(i)) {
 					String token = linia.nextToken();
 					double value = Double.parseDouble(token);
 					punkt.addCoordinate(m++, value);
