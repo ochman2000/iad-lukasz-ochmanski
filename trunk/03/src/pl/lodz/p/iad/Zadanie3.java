@@ -12,13 +12,12 @@ public class Zadanie3 {
 	
 	public static void main(String[] args) {
 	
-		Zbior zbior1 = new Zbior() {
+		Mapa mapa1 = new Mapa(new Zbior() {
 			@Override
 			public List<Integer> getColumnIndices() {
 				return Arrays.asList(0,1);
 			}
-		};
-		Mapa mapa1 = new Mapa(zbior1);
+		});
 		new Kmeans(mapa1);
 	}
 }
