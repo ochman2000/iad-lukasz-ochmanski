@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.ranges.RangeException;
+
 public class Point {
 	
 	/**
@@ -82,6 +84,22 @@ public class Point {
 		    sum+=pq;
 	    }
 	    return Math.sqrt(sum);
+	}
+	
+	public double getOutput(Point p) {
+		double value = getNormalizationFactor()*getDistanceFrom(p);
+		value = (value+1)/2;
+		if (value<-1.0 || value>1.0)
+			throw new IllegalStateException("Outpu of a neuron out of range.");
+		return value;
+	}
+	
+	private double getNormalizationFactor() {
+		double vectorLength = 0.0;
+		for (Double coord : this.getCoordinates()) {
+			vectorLength += coord*coord;
+		}
+		return 1/(Math.sqrt(vectorLength));
 	}
 	
 	@Override

@@ -8,14 +8,14 @@ import pl.lodz.p.iad.diagram.Voronoi;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
-public class Kmeans {
+public class Kohonen {
 	
 	/**
 	 * Określa liczbę K centroidów.
 	 */
 	private static final int PODZBIORY = 3;
 
-	public Kmeans(List<Integer> kolumny) {
+	public Kohonen(List<Integer> kolumny) {
 		Mapa mapa = new Mapa(kolumny);
 		Random rnd = new Random();
 		List<Point> centroidy = new ArrayList<Point>(PODZBIORY);
@@ -110,7 +110,7 @@ public class Kmeans {
 //			if (punkt.isCentroid()==false) {
 				double min = Double.MAX_VALUE;
 				for (Point centroid : centroidy) {
-					double dist = punkt.getDistanceFrom(centroid);
+					double dist = punkt.getOutput(centroid);
 					if (dist<min) {
 						min=dist;
 						punkt.setGroup(centroid);
