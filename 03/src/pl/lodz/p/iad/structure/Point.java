@@ -90,7 +90,7 @@ public class Point {
 		double value = getNormalizationFactor()*getDistanceFrom(p);
 		value = (value+1)/2;
 		if (value<-1.0 || value>1.0)
-			throw new IllegalStateException("Outpu of a neuron out of range.");
+			throw new RuntimeException("Output out of range.");
 		return value;
 	}
 	

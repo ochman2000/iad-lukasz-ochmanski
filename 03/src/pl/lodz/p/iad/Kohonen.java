@@ -14,42 +14,42 @@ public class Kohonen {
 	 * Określa liczbę K centroidów.
 	 */
 	private static final int PODZBIORY = 3;
+	private static final double LICZBA_ITERACJI = 1_000;
+	private static final double RADIUS = 1.0;
+	private static final double LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI)); = 0;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa mapa = new Mapa(kolumny);
 		Random rnd = new Random();
-		List<Point> centroidy = new ArrayList<Point>(PODZBIORY);
+		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
-		//LOSUJ K CENTROIDÓW
-		while (centroidy.size()<PODZBIORY) {
+		//LOSUJ K NEURONÓW
+		while (neurony.size()<PODZBIORY) {
 			int indeks = rnd.nextInt(mapa.size());
 			Point centroid = mapa.get(indeks);
-			if (!centroidy.contains(centroid)) {
+			if (!neurony.contains(centroid)) {
 				centroid.setGroup(centroid);
-				centroidy.add(centroid);
+				neurony.add(centroid);
 			}
 		}
-		System.out.print("Wylosowane centroidy:\t");
+		System.out.print("Wylosowane neurony:\t");
 		for (Point point : mapa) {
 			if (point.isCentroid())
 			System.out.print(point+ "\t");
 		}
 		System.out.println("\n");
 		
-		//WYLICZ OPTYMALNE POZYCJE CENTROIDÓW
-		mapa = grupujPunkty(mapa, centroidy);
-		List<Point> noweCentroidy = przesunCentroidy(mapa, centroidy);
+		//ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
+		List<Point> noweNeurony = przesunNeuronyZwycieskie(mapa, neurony);
 		int counter=0;
 		
-		while (!centroidySaIdentyczne(centroidy, noweCentroidy)) {
+		while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
 			System.out.println("Iteracja:\t"+ ++counter);
-			centroidy = noweCentroidy;
-			mapa = grupujPunkty(mapa, centroidy);
-			noweCentroidy = przesunCentroidy(mapa, centroidy);
-			System.out.println("Współrzędne centroidów: \t"+noweCentroidy);
+			neurony = noweNeurony;
+			noweNeurony = przesunNeuronyZwycieskie(mapa, neurony);
+			System.out.println("Współrzędne neuronów: \t"+noweNeurony);
 		}
-		rysujDiagramVoronoia(noweCentroidy, mapa);
-//		System.out.println(mapa);
+		rysujDiagramVoronoia(noweNeurony, mapa);
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
@@ -89,7 +89,7 @@ public class Kohonen {
 		}
 	}
 	
-	private boolean centroidySaIdentyczne(List<Point> centroidy,
+	private boolean pozycjeSaTakieSame(List<Point> centroidy,
 			List<Point> noweCentroidy) {
 		for (int i = 0; i < centroidy.size(); i++) {
 			if (!centroidy.get(i).equals(noweCentroidy.get(i)))
@@ -98,55 +98,61 @@ public class Kohonen {
 		return true;
 	}
 
-	/**
-	 * Dla wszystkich punktów, które nie są centroidami, sprawdź odległości tych punktów
-	 * od każdego centroida i wybierz ten centroid, którego odległość od tego punktu jest
-	 * najmniejsza. Następnie przypisz ten punkt do grupy tego centroida.
-	 * Złożoność obliczeniowa: O(p*c), gdzie p to liczba punktów (10000) a c to liczba
-	 * centroidów (3).
-	 */
-	private Mapa grupujPunkty(Mapa mapa, List<Point> centroidy) {
-		for (Point punkt : mapa) {
-//			if (punkt.isCentroid()==false) {
-				double min = Double.MAX_VALUE;
-				for (Point centroid : centroidy) {
-					double dist = punkt.getOutput(centroid);
-					if (dist<min) {
-						min=dist;
-						punkt.setGroup(centroid);
-					}
-				}
-//			}
-		}
-		return mapa;
-	}
 	
 	/**
-	 * Dla każdej grupy centroidów, wylicz średnią dla każdego wymiaru, biorąc pod uwagę
-	 * tylko te elementy, które nie są centroidami i należą do danej grupy centroida.
-	 * Następnie przesuń centroida w każdą z możliwych wymiarów o tą wyliczoną wartość.
+	 * Klasyczny algorytm Kohonena zakłada adaptację wag jedynie neuronu
+	 * zwycięskiego i neuronów znajdujących się nie dalej niż \lambda (czyli
+	 * promienia sąsiedztwa). Oprócz tego należy zaimplementować adaptację z
+	 * wykorzystaniem gaussowskiej funkcji sąsiedztwa, określającej współczynnik
+	 * nauki neuronów przegrywających rywalizację w funkcji ich odległości od
+	 * zwycięscy. Ponadto należy uwzględnić zjawisko pojawiania się martwych
+	 * neuronów uwzględniając aktywność neuronów w procesie uczenia.
 	 */
-	private List<Point> przesunCentroidy(Mapa mapa, List<Point> centroidy) {
-		List<Point> noweCentroidy = new ArrayList<Point>(PODZBIORY);
-		for (Point centroid : centroidy) {
-			Point nowyCentroid = new Point(centroid.getCoordinates().size());
-			for (int i=0; i<centroid.getCoordinates().size(); i++) {
-				double sum = 0.0;
-				int count = 0;
-				for (Point punkt : mapa) {
-					if (punkt.isCentroid()==false) {
-						if (punkt.getGroup()==centroid) {
-							sum +=punkt.getCoordinate(i);
-							count++;
-						}
+	private List<Point> przesunNeuronyZwycieskie(Mapa map, List<Point> neurony) {
+		List<Point> noweNeurony = new ArrayList<Point>(PODZBIORY);
+		Random rnd = new Random();
+		for (int i = 0; i < LICZBA_ITERACJI; i++) {
+			Point input = map.get(rnd.nextInt(map.size()));
+			Point zwyciezca = getZwyciezca(neurony, input);
+			double lambda = getPromienSasiedztwa(i);
+			double learnRate = LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI));
+			for (Point neuron : neurony) {
+				//punkty znajdujące się w promieniu sąsiedztwa od inputu czy zwyciezcy?
+				if(neuron.getOutput(p)<lambda){
+					int wymiar=0;
+					for (double waga : neuron.getCoordinates()) {
+						double dist = neuron.getOutput(zwyciezca);
+						double gauss = Math.exp(-((dist*dist)/(2*(lambda*lambda))));
+						double nowaWaga = waga + gauss*learnRate*(
+								Math.abs(input.getCoordinate(wymiar))-waga);
+						wymiar++;
 					}
 				}
-				double x = sum/count;
-				nowyCentroid.addCoordinate(i, x);
-				nowyCentroid.setGroup(nowyCentroid);
 			}
-			noweCentroidy.add(nowyCentroid);
 		}
-		return noweCentroidy;
 	}
+	
+	private boolean isInNeighborhood(double promien) {
+		
+	}
+	
+	private Point getZwyciezca(List<Point> neurony, Point input) {
+		double min = Double.MAX_VALUE;
+		Point winner = null;
+		for (Point point : neurony) {
+			double xyz = point.getOutput(input);
+			if (xyz<min) {
+				min = xyz;
+				winner = point;
+			}
+		}
+		return winner;
+	}
+	
+	private double getPromienSasiedztwa(int iteracja) {
+		double wspolczynnik = LICZBA_ITERACJI/(Math.log(RADIUS));
+		return RADIUS * Math.exp(-(iteracja/wspolczynnik));
+	}
+	
+
 }
