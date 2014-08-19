@@ -5,9 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.ranges.RangeException;
-
-public class Point {
+public class Point implements Cloneable {
 	
 	/**
 	 * Used in hashCode().
@@ -73,6 +71,33 @@ public class Point {
 		return ""+this.getCoordinatesTrimmed(); // + " : " + info;
 	}
 	
+	/**
+	 * Klonowanie ma jedną wadę. W algorytmie k-uśrednień, po skopiowaniu całego
+	 * zbioru danych, przynależność do klastrów będzie identyczna, a tego nie chcesz.
+	 * Zapewne chciałbyś, aby metoda clone robiła również analogiczna operację
+	 * przenoszenia grup to kopiowanego zbioru. Niestety tak dobrze nie ma.
+	 * Przynależność do grupy jest jedynie wskaźnikiem, a wskaźnika rozmnożyć nie
+	 * mogę. Zatem używaj tej metody z rozsądkiem.
+	 */
+	public Point clone() {
+		List<Double> copy = new ArrayList<Double>();
+		for (Double coordinate : this.getCoordinates()) {
+			copy.add(coordinate);
+		}
+		Point p = new Point(this.getCoordinates().size());
+		p.setGroup(this.getGroup());
+		p.setCoordinates(copy);
+		return p;
+	}
+	
+	/**
+	 * Zwraca odległość eukulidesową pomiędzy dwoma punktami. Obsługuje
+	 * każdą liczbę wymiarów. Z powodów optymalizacyjnych, czy z lenistwa
+	 * nie sprawdzam, czy sumowanie składników powoduje overflow...
+	 * Zakładamy, że to się nie stanie.
+	 * @param p
+	 * @return
+	 */
 	public double getDistanceFrom(Point p) {
 		if (this.getCoordinates().size()!=p.getCoordinates().size()) {
 			throw new IllegalArgumentException("Punkty mają niezgodną ilość wymiarów.");
@@ -86,6 +111,14 @@ public class Point {
 	    return Math.sqrt(sum);
 	}
 	
+	/**
+	 * Funkcja zwraca odległość wektora wejściowego od wyjściowego.
+	 * Zwracana wartość jest równoważna odległości euklidesowej
+	 * pomiędzy wagami dwu wektorów (We, Wy). W odróżnieniu od funkcji
+	 * getDistanceFrom() ta funkcja jest znormalizowana do przedziału (-1, 1).
+	 * @param p
+	 * @return
+	 */
 	public double getOutput(Point p) {
 		double value = getNormalizationFactor()*getDistanceFrom(p);
 		value = (value+1)/2;

@@ -16,7 +16,7 @@ public class Kohonen {
 	private static final int PODZBIORY = 3;
 	private static final double LICZBA_ITERACJI = 1_000;
 	private static final double RADIUS = 1.0;
-	private static final double LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI)); = 0;
+	private static final double LEARNING_RATE = 0;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa mapa = new Mapa(kolumny);
@@ -105,35 +105,43 @@ public class Kohonen {
 	 * promienia sąsiedztwa). Oprócz tego należy zaimplementować adaptację z
 	 * wykorzystaniem gaussowskiej funkcji sąsiedztwa, określającej współczynnik
 	 * nauki neuronów przegrywających rywalizację w funkcji ich odległości od
-	 * zwycięscy. Ponadto należy uwzględnić zjawisko pojawiania się martwych
+	 * zwycięzcy. Ponadto należy uwzględnić zjawisko pojawiania się martwych
 	 * neuronów uwzględniając aktywność neuronów w procesie uczenia.
 	 */
 	private List<Point> przesunNeuronyZwycieskie(Mapa map, List<Point> neurony) {
-		List<Point> noweNeurony = new ArrayList<Point>(PODZBIORY);
+		//ZRÓB DEEP COPY OF THE ARRAYLIST
+		List<Point> noweNeurony = deepCopy(neurony);
 		Random rnd = new Random();
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
 			Point input = map.get(rnd.nextInt(map.size()));
-			Point zwyciezca = getZwyciezca(neurony, input);
+			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);
 			double learnRate = LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI));
-			for (Point neuron : neurony) {
-				//punkty znajdujące się w promieniu sąsiedztwa od inputu czy zwyciezcy?
-				if(neuron.getOutput(p)<lambda){
-					int wymiar=0;
-					for (double waga : neuron.getCoordinates()) {
-						double dist = neuron.getOutput(zwyciezca);
+			for (Point neuron : noweNeurony) {
+				//stopień uaktywnienia neuronów z sąsiedztwa zależy od odległości
+				//ich wektorów wagowych od wag neuronu wygrywającego.
+				double dist = neuron.getOutput(zwyciezca);
+				if(dist<lambda){
+					for (int wymiar=0; wymiar<neuron.getCoordinates().size(); wymiar++) {
 						double gauss = Math.exp(-((dist*dist)/(2*(lambda*lambda))));
+						double waga = neuron.getCoordinate(wymiar);
+						//czy ten wzór ma sens? to jest waga? czy output?
 						double nowaWaga = waga + gauss*learnRate*(
 								Math.abs(input.getCoordinate(wymiar))-waga);
-						wymiar++;
+						neuron.setCoordinate(wymiar, nowaWaga);
 					}
 				}
 			}
 		}
+		return noweNeurony;
 	}
 	
-	private boolean isInNeighborhood(double promien) {
-		
+	private List<Point> deepCopy(List<Point> lista) {
+		List<Point> copy = new ArrayList<Point>();
+		for (Point point : lista) {
+			copy.add(point.clone());
+		}
+		return copy;
 	}
 	
 	private Point getZwyciezca(List<Point> neurony, Point input) {
