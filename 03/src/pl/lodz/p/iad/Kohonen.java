@@ -14,12 +14,13 @@ public class Kohonen {
 	 * Określa liczbę K centroidów.
 	 */
 	private static final int PODZBIORY = 3;
-	private static final double LICZBA_ITERACJI = 1_000;
 	private static final double RADIUS = 1.0;
 	private static final double LEARNING_RATE = 0;
+	private static double LICZBA_ITERACJI;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa mapa = new Mapa(kolumny);
+		LICZBA_ITERACJI = mapa.size();
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
@@ -108,12 +109,14 @@ public class Kohonen {
 	 * zwycięzcy. Ponadto należy uwzględnić zjawisko pojawiania się martwych
 	 * neuronów uwzględniając aktywność neuronów w procesie uczenia.
 	 */
-	private List<Point> przesunNeuronyZwycieskie(Mapa map, List<Point> neurony) {
+	private List<Point> przesunNeuronyZwycieskie(Mapa trainingSet, List<Point> neurony) {
 		//ZRÓB DEEP COPY OF THE ARRAYLIST
 		List<Point> noweNeurony = deepCopy(neurony);
-		Random rnd = new Random();
+		//RANDOMIZE TRAINING SET
+		trainingSet.shuffle();
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
-			Point input = map.get(rnd.nextInt(map.size()));
+			//
+			Point input = trainingSet.get(i);
 			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);
 			double learnRate = LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI));
@@ -122,7 +125,8 @@ public class Kohonen {
 				//ich wektorów wagowych od wag neuronu wygrywającego.
 				double dist = neuron.getOutput(zwyciezca);
 				if(dist<lambda){
-					for (int wymiar=0; wymiar<neuron.getCoordinates().size(); wymiar++) {
+					for (int wymiar=0; wymiar<neuron.getCoordinates().size();
+							wymiar++) {
 						double gauss = Math.exp(-((dist*dist)/(2*(lambda*lambda))));
 						double waga = neuron.getCoordinate(wymiar);
 						//czy ten wzór ma sens? to jest waga? czy output?
