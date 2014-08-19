@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 public class Mapa extends ArrayList<Point>{
@@ -59,5 +60,17 @@ public class Mapa extends ArrayList<Point>{
 			s.append("\n");
 		}
 		return s.toString();
+	}
+	
+	public void shuffle() {
+//		List<Point> l = new LinkedList<Point>();
+		Random rnd = new Random();
+		for (int i = 0; i < this.size(); i++) {
+			int index = rnd.nextInt(i + 1);
+			// Simple swap
+			Point a = this.get(index);
+			this.set(index, this.get(i));
+			this.set(i, a);
+		}	
 	}
 }
