@@ -115,7 +115,6 @@ public class Kohonen {
 		//RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
-			//
 			Point input = trainingSet.get(i);
 			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);
@@ -123,7 +122,7 @@ public class Kohonen {
 			for (Point neuron : noweNeurony) {
 				//stopień uaktywnienia neuronów z sąsiedztwa zależy od odległości
 				//ich wektorów wagowych od wag neuronu wygrywającego.
-				double dist = neuron.getOutput(zwyciezca);
+				double dist = neuron.getEuclideanDistanceFrom(zwyciezca);
 				if(dist<lambda){
 					for (int wymiar=0; wymiar<neuron.getCoordinates().size();
 							wymiar++) {
@@ -152,7 +151,7 @@ public class Kohonen {
 		double min = Double.MAX_VALUE;
 		Point winner = null;
 		for (Point point : neurony) {
-			double xyz = point.getOutput(input);
+			double xyz = point.getEuclideanDistanceFrom(input);
 			if (xyz<min) {
 				min = xyz;
 				winner = point;
