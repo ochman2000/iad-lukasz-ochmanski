@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class PointTest {
 
@@ -82,8 +84,8 @@ public class PointTest {
 		p2.addCoordinate(2, 0.0);
 		p2.setGroup(p2);
 		
-		System.out.println(p1.hashCode());
-		System.out.println(p2.hashCode());
+//		System.out.println(p1.hashCode());
+//		System.out.println(p2.hashCode());
 		assertFalse(p1.equals(p2));
 	}
 	
@@ -100,8 +102,8 @@ public class PointTest {
 		p2.addCoordinate(2, 0.0);
 		p2.setGroup(p2);
 		
-		System.out.println(p1.hashCode());
-		System.out.println(p2.hashCode());
+//		System.out.println(p1.hashCode());
+//		System.out.println(p2.hashCode());
 		assertTrue(p1.equals(p2));
 	}
 	
@@ -174,6 +176,30 @@ public class PointTest {
 		p2.addCoordinate(1, 0.0);
 //		p2.addCoordinate(2, 0.0);
 		p2.setGroup(p2);
+		
+		assertFalse(lista.contains(p2));
+	}
+	
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+
+	@Test
+	public void test12() {
+		List<Point> lista = new ArrayList<Point>(2);
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		lista.add(p1);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 3.0);
+		p2.addCoordinate(1, 0.0);
+//		p2.addCoordinate(2, 0.0);
+		expectedEx.expect(IllegalArgumentException.class);
+	    expectedEx.expectMessage("Liczba wymiarów jest niezgodna");
+		p1.setGroup(p2);
 		
 		assertFalse(lista.contains(p2));
 	}
