@@ -87,7 +87,8 @@ public class Point implements Cloneable {
 			copy.add(coordinate);
 		}
 		Point p = new Point(this.getCoordinates().size());
-		p.setGroup(this.getGroup());
+		Point klaster = this.getGroup();
+		if (klaster!=null) p.setGroup(this.getGroup());
 		p.setCoordinates(copy);
 		return p;
 	}

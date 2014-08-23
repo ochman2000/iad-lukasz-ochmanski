@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import pl.lodz.p.iad.Kohonen;
+
 public class PointTest {
 
 	@Test
@@ -202,5 +204,48 @@ public class PointTest {
 		p1.setGroup(p2);
 		
 		assertFalse(lista.contains(p2));
+	}
+	
+	@Test
+	public void test13() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = p1.clone();
+		
+		assertTrue(p1.equals(p2));
+	}
+	
+	@Test
+	public void test14() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = p1.clone();
+		p2.addCoordinate(3, 2.1);
+		assertFalse(p1.equals(p2));
+	}
+	
+	@Test
+	public void test15() {
+		List<Point> lista1 = new ArrayList<Point>(2);
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 3.0);
+		p2.addCoordinate(1, 0.1);
+		p2.addCoordinate(2, 0.0);
+		p2.setGroup(p2);
+		
+		List<Point> lista2 = Kohonen.deepCopy(lista1);
+		
+		assertTrue(lista1.equals(lista2));
 	}
 }

@@ -112,7 +112,7 @@ public class Kohonen {
 	 */
 	private List<Point> przesunNeuronyZwycieskie(Mapa trainingSet, List<Point> neurony) {
 		//ZRÓB DEEP COPY OF THE ARRAYLIST
-		List<Point> noweNeurony = deepCopy(neurony);
+		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
 		//RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
@@ -140,7 +140,7 @@ public class Kohonen {
 		return noweNeurony;
 	}
 	
-	private List<Point> deepCopy(List<Point> lista) {
+	public static List<Point> deepCopy(List<Point> lista) {
 		List<Point> copy = new ArrayList<Point>();
 		for (Point point : lista) {
 			copy.add(point.clone());
@@ -166,9 +166,7 @@ public class Kohonen {
 		double wspolczynnik = LICZBA_ITERACJI/(Math.log(radius));
 		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
 		if (lambda>radius || lambda<1)
-			throw new RuntimeException("Lambda out of range.");
+			throw new RuntimeException("Lambda out of range. "+lambda);
 		return lambda;
 	}
-	
-
 }
