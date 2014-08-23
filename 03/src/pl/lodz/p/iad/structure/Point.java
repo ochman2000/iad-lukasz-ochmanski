@@ -56,6 +56,8 @@ public class Point implements Cloneable {
 	}
 
 	public void setGroup(Point group) {
+		if (this.getCoordinates().size()!=group.getCoordinates().size())
+			throw new IllegalArgumentException("Liczba wymiarów jest niezgodna");
 		this.group = group;
 	}
 
@@ -100,7 +102,8 @@ public class Point implements Cloneable {
 	 */
 	public double getDistanceFrom(Point p) {
 		if (this.getCoordinates().size()!=p.getCoordinates().size()) {
-			throw new IllegalArgumentException("Punkty mają niezgodną ilość wymiarów.");
+			throw new IllegalArgumentException("Punkty mają niezgodną ilość"
+					+ " wymiarów.");
 		}
 	    double sum = 0.0;
 	    for (int i=0; i<this.getCoordinates().size(); i++) {
@@ -119,10 +122,10 @@ public class Point implements Cloneable {
 	 * @param p
 	 * @return
 	 */
-	public double getOutput(Point p) {
+	public double getEuclideanDistanceFrom(Point p) {
 		double value = getNormalizationFactor()*getDistanceFrom(p);
 		value = (value+1)/2;
-		if (value<-1.0 || value>1.0)
+		if (value<=-1.0 || value>=1.0)
 			throw new RuntimeException("Output out of range.");
 		return value;
 	}

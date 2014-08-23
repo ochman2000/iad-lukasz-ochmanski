@@ -11,10 +11,11 @@ import pl.lodz.p.iad.structure.Point;
 public class Kohonen {
 	
 	/**
-	 * Określa liczbę K centroidów.
+	 * Określa liczbę K centroidów, czyli liczbę klastrów. Tyle właśnie
+	 * neuronów będzie w warstwie ukrytej. Jeśli ma to być lattice 40x40
+	 * powinieneś wpisać tutaj wartość 160;
 	 */
 	private static final int PODZBIORY = 3;
-	private static final double RADIUS = 1.0;
 	private static final double LEARNING_RATE = 0;
 	private static double LICZBA_ITERACJI;
 
@@ -24,7 +25,7 @@ public class Kohonen {
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
-		//LOSUJ K NEURONÓW
+		//LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		while (neurony.size()<PODZBIORY) {
 			int indeks = rnd.nextInt(mapa.size());
 			Point centroid = mapa.get(indeks);
@@ -161,8 +162,12 @@ public class Kohonen {
 	}
 	
 	private double getPromienSasiedztwa(int iteracja) {
-		double wspolczynnik = LICZBA_ITERACJI/(Math.log(RADIUS));
-		return RADIUS * Math.exp(-(iteracja/wspolczynnik));
+		double radius = Math.sqrt(PODZBIORY)/2;
+		double wspolczynnik = LICZBA_ITERACJI/(Math.log(radius));
+		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
+		if (lambda>radius || lambda<1)
+			throw new RuntimeException("Lambda out of range.");
+		return lambda;
 	}
 	
 
