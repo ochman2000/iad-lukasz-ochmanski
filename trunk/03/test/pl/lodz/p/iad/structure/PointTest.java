@@ -238,6 +238,19 @@ public class PointTest {
 		p1.addCoordinate(1, 0.0);
 		p1.addCoordinate(2, 0.0);
 		
+		List<Point> lista2 = Kohonen.deepCopy(lista1);
+		
+		assertTrue(lista1.equals(lista2));
+	}
+	
+	@Test
+	public void test16() {
+		List<Point> lista1 = new ArrayList<Point>(2);
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
 		Point p2 = new Point(2);
 		p2.addCoordinate(0, 3.0);
 		p2.addCoordinate(1, 0.1);
@@ -245,7 +258,8 @@ public class PointTest {
 		p2.setGroup(p2);
 		
 		List<Point> lista2 = Kohonen.deepCopy(lista1);
+		lista2.add(p2);
 		
-		assertTrue(lista1.equals(lista2));
+		assertFalse(lista1.equals(lista2));
 	}
 }
