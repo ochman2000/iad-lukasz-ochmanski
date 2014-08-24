@@ -16,12 +16,12 @@ public class Kohonen {
 	 * powinieneś wpisać tutaj wartość 160;
 	 */
 	private static final int PODZBIORY = 3;
-	private static final double LEARNING_RATE = 0;
-	private static double LICZBA_ITERACJI;
+	private static final double LEARNING_RATE = 0.0;
+	private static double LICZBA_ITERACJI = 0.0;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa mapa = new Mapa(kolumny);
-		LICZBA_ITERACJI = mapa.size();
+		if (LICZBA_ITERACJI==0.0) LICZBA_ITERACJI = mapa.size();
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
@@ -30,12 +30,12 @@ public class Kohonen {
 			int indeks = rnd.nextInt(mapa.size());
 			Point centroid = mapa.get(indeks);
 			if (!neurony.contains(centroid)) {
-				centroid.setGroup(centroid);
+//				centroid.setGroup(centroid);
 				neurony.add(centroid);
 			}
 		}
 		System.out.print("Wylosowane neurony:\t");
-		for (Point point : mapa) {
+		for (Point point : neurony) {
 			if (point.isCentroid())
 			System.out.print(point+ "\t");
 		}
