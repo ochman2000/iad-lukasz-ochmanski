@@ -183,7 +183,7 @@ public class PointTest {
 	}
 	
 	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
+	public ExpectedException expectedEx1 = ExpectedException.none();
 
 	@Test
 	public void test12() {
@@ -199,8 +199,8 @@ public class PointTest {
 		p2.addCoordinate(0, 3.0);
 		p2.addCoordinate(1, 0.0);
 //		p2.addCoordinate(2, 0.0);
-		expectedEx.expect(IllegalArgumentException.class);
-	    expectedEx.expectMessage("Liczba wymiarów jest niezgodna");
+		expectedEx1.expect(IllegalArgumentException.class);
+	    expectedEx1.expectMessage("Liczba wymiarów jest niezgodna");
 		p1.setGroup(p2);
 		
 		assertFalse(lista.contains(p2));
@@ -261,5 +261,19 @@ public class PointTest {
 		lista2.add(p2);
 		
 		assertFalse(lista1.equals(lista2));
+	}
+	
+	@Rule
+	public ExpectedException expectedEx2 = ExpectedException.none();
+	
+	@Test
+	public void test17() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		expectedEx2.expect(IllegalArgumentException.class);
+	    expectedEx2.expectMessage("Neuron nie może należeć do grupy null.");
+	    p1.setGroup(null);
 	}
 }
