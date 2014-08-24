@@ -31,13 +31,11 @@ public class Kohonen {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
 			if (!neurony.contains(centroid)) {
-//				centroid.setGroup(centroid);
 				neurony.add(centroid);
 			}
 		}
 		System.out.print("Wylosowane neurony:\t");
 		for (Point point : neurony) {
-			if (point.isCentroid())
 			System.out.print(point+ "\t");
 		}
 		System.out.println("\n");
@@ -164,6 +162,7 @@ public class Kohonen {
 	
 	private double getPromienSasiedztwa(int iteracja) {
 		double radius = Math.sqrt(PODZBIORY)/2;
+		if (radius<1) radius=1; 
 		double wspolczynnik = LICZBA_ITERACJI/(Math.log(radius));
 		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
 		if (lambda>radius || lambda<1)

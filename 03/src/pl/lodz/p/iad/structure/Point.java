@@ -129,13 +129,15 @@ public class Point implements Cloneable {
 	 * Funkcja zwraca odległość wektora wejściowego od wyjściowego.
 	 * Zwracana wartość jest równoważna odległości euklidesowej
 	 * pomiędzy wagami dwu wektorów (We, Wy). W odróżnieniu od funkcji
-	 * getDistanceFrom() ta funkcja jest znormalizowana do przedziału (-1, 1).
+	 * getDistanceFrom() ta funkcja jest znormalizowana do przedziału (0, 2),
+	 * ponieważ różnica pomiędzy maksymalnymi wartościami wektorów (-1, 1)
+	 * to właśnie 2.
 	 * @param p
 	 * @return
 	 */
 	public double getEuclideanDistanceFrom(Point p) {
 		double value = getDistanceFrom(p);
-		if (value<=0.0 || value>=2.0)
+		if (value<0.0 || value>=2.0)
 			throw new RuntimeException("Output out of range: "+value);
 		return value;
 	}
