@@ -90,10 +90,7 @@ public class Point implements Cloneable {
 			copy.add(coordinate);
 		}
 		Point p = new Point(this.getCoordinates().size());
-//		this.getGroup().ifPresent(p.setGroup(this.getGroup().get()));
-//		this.user.ifPresent(this.doSomething(this.user.get()));
-//		this.user.ifPresent(theUser -> this.doSomethingWithUser(theUser));
-		
+//		if (this.getGroup()!= null) p.setGroup(this.getGroup().get());
 //		this.getGroup().ifPresent(theGroup -> p.setGroup(theGroup));
 		this.getGroup().ifPresent(p::setGroup);
 		p.setCoordinates(copy);
