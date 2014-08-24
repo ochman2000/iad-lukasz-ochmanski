@@ -96,10 +96,10 @@ public class Point implements Cloneable {
 			copy.add(coordinate);
 		}
 		Point p = new Point(this.getCoordinates().size());
+		p.setCoordinates(copy);
 //		if (this.getGroup()!= null) p.setGroup(this.getGroup().get());
 //		this.getGroup().ifPresent(theGroup -> p.setGroup(theGroup));
 		this.getGroup().ifPresent(p::setGroup);
-		p.setCoordinates(copy);
 		return p;
 	}
 	
@@ -134,10 +134,10 @@ public class Point implements Cloneable {
 	 * @return
 	 */
 	public double getEuclideanDistanceFrom(Point p) {
-		double value = getNormalizationFactor()*getDistanceFrom(p);
+		double value = p.getNormalizationFactor()*getDistanceFrom(p);
 		value = (value+1)/2;
 		if (value<=-1.0 || value>=1.0)
-			throw new RuntimeException("Output out of range.");
+			throw new RuntimeException("Output out of range: "+value);
 		return value;
 	}
 	
@@ -146,6 +146,7 @@ public class Point implements Cloneable {
 		for (Double coord : this.getCoordinates()) {
 			vectorLength += coord*coord;
 		}
+//		if(vectorLength<0.1) return vectorLength;
 		return 1/(Math.sqrt(vectorLength));
 	}
 	

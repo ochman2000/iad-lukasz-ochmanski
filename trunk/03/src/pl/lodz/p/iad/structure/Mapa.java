@@ -51,7 +51,7 @@ public class Mapa extends ArrayList<Point>{
 				info = new StringBuilder("należy do grupy centroida: ");
 				info.append(punkt.getCoordinatesTrimmed());
 			}
-			if (punkt.getGroup()==null) {
+			if (!punkt.getGroup().isPresent()) {
 				info = new StringBuilder("Nie jest przypisany do żadnej grupy centroidów.");
 			}
 			s.append(""+punkt.getCoordinatesTrimmed());
