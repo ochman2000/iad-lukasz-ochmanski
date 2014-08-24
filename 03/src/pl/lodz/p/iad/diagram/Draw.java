@@ -119,7 +119,7 @@ public final class Draw implements ActionListener, MouseListener,
 	private double xmin, ymin, xmax, ymax;
 
 	// name of window
-	private String name = "Draw";
+	private String name = "Mozaika Woronoja";
 
 	// for synchronization
 	private Object mouseLock = new Object();

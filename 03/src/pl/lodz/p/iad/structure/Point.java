@@ -59,20 +59,26 @@ public class Point implements Cloneable {
 	}
 
 	public void setGroup(Point group) {
-		if (this.getCoordinates().size()!=group.getCoordinates().size())
+		if (group==null)
+			throw new IllegalArgumentException("Neuron nie może należeć do grupy null.");
+		if (group!=null && this.getCoordinates().size()!=group.getCoordinates().size())
 			throw new IllegalArgumentException("Liczba wymiarów jest niezgodna");
 		this.group = Optional.ofNullable(group);
 	}
 
 	public boolean isCentroid() {
-		return this.getGroup().get() == this;
+		if (!this.getGroup().isPresent())
+			return false;
+		else
+			return this.getGroup().get() == this;
 	}
 
 	public String toString() {
 		@SuppressWarnings("unused")
 		String info = this.isCentroid() ? "Jest centroidem"
 				: "należy do grupy centroida: " + this.getCoordinatesTrimmed();
-		if (this.getGroup().isPresent()) info = "Nie jest przypisany do żadnej grupy centroidów.";
+		if (this.getGroup().isPresent()) info = "Nie jest przypisany do żadnej grupy"
+				+ " centroidów.";
 		return ""+this.getCoordinatesTrimmed(); // + " : " + info;
 	}
 	
