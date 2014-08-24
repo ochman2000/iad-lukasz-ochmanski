@@ -14,6 +14,9 @@ public class Mapa extends ArrayList<Point>{
 	private final static int LICZBA_KOLUMN = 8;
 	private static final long serialVersionUID = 1L;
 
+	public Mapa() {
+		super();
+	}
 	public Mapa(List<Integer> kolumny) {
 		Path file = Paths.get("resources/hydra01.dane");
 		List<String> lines = null;
@@ -72,5 +75,13 @@ public class Mapa extends ArrayList<Point>{
 			this.set(index, this.get(i));
 			this.set(i, a);
 		}	
+	}
+	
+	public Mapa getNormalized() {
+		Mapa normalized = new Mapa();
+		for (Point point : this) {
+			normalized.add(point.getNormalized());
+		}
+		return normalized;
 	}
 }
