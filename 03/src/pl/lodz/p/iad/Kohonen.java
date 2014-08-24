@@ -20,15 +20,16 @@ public class Kohonen {
 	private static double LICZBA_ITERACJI = 0.0;
 
 	public Kohonen(List<Integer> kolumny) {
-		Mapa mapa = new Mapa(kolumny);
-		if (LICZBA_ITERACJI==0.0) LICZBA_ITERACJI = mapa.size();
+		Mapa hydra = new Mapa(kolumny);
+		hydra = hydra.getNormalized();
+		if (LICZBA_ITERACJI==0.0) LICZBA_ITERACJI = hydra.size();
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
 		//LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		while (neurony.size()<PODZBIORY) {
-			int indeks = rnd.nextInt(mapa.size());
-			Point centroid = mapa.get(indeks);
+			int indeks = rnd.nextInt(hydra.size());
+			Point centroid = hydra.get(indeks);
 			if (!neurony.contains(centroid)) {
 //				centroid.setGroup(centroid);
 				neurony.add(centroid);
@@ -42,16 +43,16 @@ public class Kohonen {
 		System.out.println("\n");
 		
 		//ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
-		List<Point> noweNeurony = przesunNeuronyZwycieskie(mapa, neurony);
+		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 		int counter=0;
 		
 		while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
 			System.out.println("Iteracja:\t"+ ++counter);
 			neurony = noweNeurony;
-			noweNeurony = przesunNeuronyZwycieskie(mapa, neurony);
+			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 			System.out.println("Współrzędne neuronów: \t"+noweNeurony);
 		}
-		rysujDiagramVoronoia(noweNeurony, mapa);
+		rysujDiagramVoronoia(noweNeurony, hydra);
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
@@ -166,7 +167,7 @@ public class Kohonen {
 		double wspolczynnik = LICZBA_ITERACJI/(Math.log(radius));
 		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
 		if (lambda>radius || lambda<1)
-			throw new RuntimeException("Lambda out of range. "+lambda);
+			throw new RuntimeException("Lambda out of range: "+lambda);
 		return lambda;
 	}
 }
