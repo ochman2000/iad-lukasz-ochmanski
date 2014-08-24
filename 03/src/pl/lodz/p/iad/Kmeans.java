@@ -135,7 +135,7 @@ public class Kmeans {
 				int count = 0;
 				for (Point punkt : mapa) {
 					if (punkt.isCentroid()==false) {
-						if (punkt.getGroup()==centroid) {
+						if (punkt.getGroup().get()==centroid) {
 							sum +=punkt.getCoordinate(i);
 							count++;
 						}
