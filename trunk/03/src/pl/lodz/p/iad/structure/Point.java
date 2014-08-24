@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Point implements Cloneable {
 	
@@ -15,9 +16,11 @@ public class Point implements Cloneable {
 	private final int PRECISION = 1_000_000; 
 	
 	private List<Double> coordinates;
-	private Point group;
+	private Optional<Point> group;
 
 	public Point(int size) {
+		group = Optional.empty();
+//		group = Optional.ofNullable(null);
 		coordinates = new ArrayList<Double>(size);
 	}
 
@@ -51,25 +54,25 @@ public class Point implements Cloneable {
 		return this.getCoordinates().get(dimension);
 	}
 
-	public Point getGroup() {
+	public Optional<Point> getGroup() {
 		return group;
 	}
 
 	public void setGroup(Point group) {
 		if (this.getCoordinates().size()!=group.getCoordinates().size())
 			throw new IllegalArgumentException("Liczba wymiarów jest niezgodna");
-		this.group = group;
+		this.group = Optional.ofNullable(group);
 	}
 
 	public boolean isCentroid() {
-		return this.getGroup() == this;
+		return this.getGroup().get() == this;
 	}
 
 	public String toString() {
 		@SuppressWarnings("unused")
 		String info = this.isCentroid() ? "Jest centroidem"
 				: "należy do grupy centroida: " + this.getCoordinatesTrimmed();
-		if (this.getGroup()==null) info = "Nie jest przypisany do żadnej grupy centroidów.";
+		if (this.getGroup().isPresent()) info = "Nie jest przypisany do żadnej grupy centroidów.";
 		return ""+this.getCoordinatesTrimmed(); // + " : " + info;
 	}
 	
@@ -87,8 +90,12 @@ public class Point implements Cloneable {
 			copy.add(coordinate);
 		}
 		Point p = new Point(this.getCoordinates().size());
-		Point klaster = this.getGroup();
-		if (klaster!=null) p.setGroup(this.getGroup());
+//		this.getGroup().ifPresent(p.setGroup(this.getGroup().get()));
+//		this.user.ifPresent(this.doSomething(this.user.get()));
+//		this.user.ifPresent(theUser -> this.doSomethingWithUser(theUser));
+		
+//		this.getGroup().ifPresent(theGroup -> p.setGroup(theGroup));
+		this.getGroup().ifPresent(p::setGroup);
 		p.setCoordinates(copy);
 		return p;
 	}
