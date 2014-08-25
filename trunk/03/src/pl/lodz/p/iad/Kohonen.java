@@ -147,16 +147,34 @@ public class Kohonen {
 		return copy;
 	}
 	
+	/**
+	 * Metoda zwraca neuron nabliższy podanemu wektorowi wejściowemu, uwzględniając
+	 * przy tym liczbę zwycięstw. Neurony, które zwyciężały w przeszłości są karane
+	 * poprzez zawyżanie ich odległości euklidesowej, a gdy liczba zwycięstw jest
+	 * zbyt duża, muszą dodatkowo pauzować przez jeden cykl uczenia.
+	 * 
+	 * @param neurony
+	 * @param input
+	 * @return
+	 */
 	private Point getZwyciezca(List<Point> neurony, Point input) {
 		double min = Double.MAX_VALUE;
 		Point winner = null;
 		for (Point point : neurony) {
-			double xyz = point.getEuclideanDistanceFrom(input);
-			if (xyz<min) {
-				min = xyz;
-				winner = point;
+			if (point.getWon()<0) {
+				//PRZYWRÓĆ NEURON DO RYWALIZACJI, ALE TYM RAZEM MUSI PAUZOWAĆ
+				point.odnotujZwyciestwo();
+			}
+			else {
+				double xyz = point.getEuclideanDistanceFrom(input);
+				xyz = (point.getWon()+1) * xyz;
+				if (xyz<min) {
+					min = xyz;
+					winner = point;
+				}
 			}
 		}
+		winner.odnotujZwyciestwo();
 		return winner;
 	}
 	

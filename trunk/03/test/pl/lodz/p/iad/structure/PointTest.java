@@ -273,7 +273,81 @@ public class PointTest {
 		p1.addCoordinate(1, 0.0);
 		p1.addCoordinate(2, 0.0);
 		expectedEx2.expect(IllegalArgumentException.class);
-	    expectedEx2.expectMessage("Neuron nie może należeć do grupy null.");
+	    expectedEx2.expectMessage("Neuron nie może być przypisany do grupy null.");
 	    p1.setGroup(null);
+	}
+	
+	/**
+	 * The input vector x = ( 1.2, -2.3, 3.4, -4.55, 5.6 ) is normalized as follows:
+	 * c = 1.0 / sqrt( 1.22 + ( -2.3 )2 + 3.42 + ( -4.55 )2 + 5.62 ) = 0.1192
+	 * x = ( 1.2* 0.1192, (-2.3)*0.1192, 3.4*0.1192, (-4.55)*0.1192, 5.6*0.1192 )
+	 * x = ( 0.1430, -0.2742, 0.4053, -0.5424, 0.6675 )
+	 */
+	@Test
+	public void test18() {
+		Point p1 = new Point(5);
+		p1.addCoordinate(0, 1.2);
+		p1.addCoordinate(1, -2.3);
+		p1.addCoordinate(2, 3.4);
+		p1.addCoordinate(3, -4.55);
+		p1.addCoordinate(4, 5.6);
+		
+		p1 = p1.getNormalized();
+		
+		assertEquals(-0.2742, p1.getCoordinate(1), 0.0001);
+	}
+	
+	@Test
+	public void test19() {
+		Point p1 = new Point(5);
+		p1.addCoordinate(0, 1.2);
+		p1.addCoordinate(1, -2.3);
+		p1.addCoordinate(2, 3.4);
+		p1.addCoordinate(3, -4.55);
+		p1.addCoordinate(4, 5.6);
+	
+		assertTrue(p1.getWon()==0);
+	}
+	
+	@Test
+	public void test20() {
+		Point p1 = new Point(5);
+		p1.addCoordinate(0, 1.2);
+		p1.addCoordinate(1, -2.3);
+		p1.addCoordinate(2, 3.4);
+		p1.addCoordinate(3, -4.55);
+		p1.addCoordinate(4, 5.6);
+	
+		p1.odnotujZwyciestwo();
+		assertTrue(p1.getWon()==1);
+	}
+	
+	@Test
+	public void test21() {
+		Point p1 = new Point(5);
+		p1.addCoordinate(0, 1.2);
+		p1.addCoordinate(1, -2.3);
+		p1.addCoordinate(2, 3.4);
+		p1.addCoordinate(3, -4.55);
+		p1.addCoordinate(4, 5.6);
+	
+		p1.odnotujZwyciestwo();
+		p1.odnotujZwyciestwo();
+		assertTrue(p1.getWon()== -1);
+	}
+	
+	@Test
+	public void test22() {
+		Point p1 = new Point(5);
+		p1.addCoordinate(0, 1.2);
+		p1.addCoordinate(1, -2.3);
+		p1.addCoordinate(2, 3.4);
+		p1.addCoordinate(3, -4.55);
+		p1.addCoordinate(4, 5.6);
+	
+		p1.odnotujZwyciestwo();
+		p1.odnotujZwyciestwo();
+		p1.odnotujZwyciestwo();
+		assertTrue(p1.getWon()==0);
 	}
 }
