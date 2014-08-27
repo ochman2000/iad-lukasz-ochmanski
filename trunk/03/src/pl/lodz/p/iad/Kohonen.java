@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pl.lodz.p.iad.diagram.Voronoi;
+import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -19,7 +19,7 @@ public class Kohonen {
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI = 0;
 	private List<Double> ksiazkaKodowa;
-	private static double drawStepPercent = 10;
+	private static double drawStepPercent = 10.0;
 	private static boolean writeToFile = false;
 
 	public Kohonen(List<Integer> kolumny) {
@@ -58,7 +58,7 @@ public class Kohonen {
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi voronoi = new Voronoi(512, 512, 0);
+		Voronoi2 voronoi = new Voronoi2(512, 512, 0);
 		for (Point centroid : centroidy) {
 			voronoi.dodajCentroid(centroid.getCoordinate(0),
 					centroid.getCoordinate(1));
@@ -100,7 +100,7 @@ public class Kohonen {
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
 		//RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
-		for (int i = 0; i < (double)LICZBA_ITERACJI; i++) {
+		for (int i = 0; i < LICZBA_ITERACJI; i++) {
 			Point input = trainingSet.get(i);
 			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);

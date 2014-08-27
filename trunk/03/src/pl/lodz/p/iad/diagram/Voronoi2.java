@@ -21,18 +21,18 @@ package pl.lodz.p.iad.diagram;
 
 import java.awt.Color;
 
-public class Voronoi implements DrawListener {
+public class Voronoi2 implements DrawListener {
     private static int SIZE = 512;
     private Point[][] nearest = new Point[SIZE][SIZE];  // which point is pixel (i, j) nearest?
     private static int vornoiCounter = 0;
     private Draw draw = new Draw();
 
 
-    public Voronoi() {
+    public Voronoi2() {
     	this(SIZE, SIZE, 0);
     }
     
-    public Voronoi(int w, int h, int zoom) {
+    public Voronoi2(int w, int h, int zoom) {
     	draw.setCanvasSize(w, h);
     	draw.setXscale(0, w);
     	draw.setYscale(0, h);
@@ -47,7 +47,7 @@ public class Voronoi implements DrawListener {
     }
     
     public void dodajKropkę(double x1, double y1) {
-    	draw.setPenColor(Color.WHITE);
+    	draw.setPenColor(Color.GRAY);
     	double x = x1*100+256;
     	double y = y1*100+256;
     	draw.filledCircle(x, y, 1);
@@ -62,7 +62,7 @@ public class Voronoi implements DrawListener {
         System.out.println("Inserting:       " + p);
 
         // compare each pixel (i, j) and find nearest point
-        draw.setPenColor(Color.getHSBColor((float) Math.random(), .7f, .7f));
+        draw.setPenColor(Color.WHITE);
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 Point q = new Point(i, j);
@@ -89,6 +89,6 @@ public class Voronoi implements DrawListener {
     	}
     // must implement these since they're part of the interface
     public void mouseDragged(double x, double y)  { }
-    public void mouseReleased(double x, double y) { }
-
+    public void mouseReleased(double x, double y) { } 
+   
 }
