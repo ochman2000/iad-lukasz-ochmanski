@@ -114,9 +114,7 @@ public class Kohonen {
 							wymiar++) {
 						double gauss = Math.exp(-((dist*dist)/(2.0*(lambda*lambda))));
 						double waga = neuron.getCoordinate(wymiar);
-						//czy ten wzór ma sens? to jest waga? czy output?
-						double nowaWaga = waga + gauss*learnRate*(
-								Math.abs(input.getCoordinate(wymiar))-waga);
+						double nowaWaga = waga + gauss*learnRate*(input.getCoordinate(wymiar)-waga);
 						neuron.setCoordinate(wymiar, nowaWaga);
 					}
 				}
