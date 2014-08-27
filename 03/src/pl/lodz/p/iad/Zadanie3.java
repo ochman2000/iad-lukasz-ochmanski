@@ -11,7 +11,7 @@ public class Zadanie3 {
 //		new Kmeans(Arrays.asList(2, 3, 4));
 		
 //		new Kmeans(Arrays.asList(5, 6, 7));
-		System.out.println("shit");
+
 		new Kohonen(Arrays.asList(0, 1));
 	}
 }
