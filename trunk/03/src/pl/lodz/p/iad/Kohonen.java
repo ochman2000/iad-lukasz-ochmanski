@@ -15,11 +15,12 @@ public class Kohonen {
 	 * neuronów będzie w warstwie ukrytej. Jeśli ma to być lattice 40x40
 	 * powinieneś wpisać tutaj wartość 160;
 	 */
-	private static final int PODZBIORY = 3;
-	private static final double LEARNING_RATE = 0.1;
+	private static int PODZBIORY = 3;
+	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI = 0;
 	private List<Double> ksiazkaKodowa;
 	private static double drawStepPercent = 10;
+	private static boolean writeToFile = false;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
@@ -69,7 +70,9 @@ public class Kohonen {
 		}
 		
 		voronoi.drawMe();
-		//voronoi.saveVornoiToFile();
+		if(writeToFile){
+			voronoi.saveVornoiToFile();
+		}
 		
 	}
 	
@@ -121,7 +124,6 @@ public class Kohonen {
 			
 			double drawJump =LICZBA_ITERACJI*(drawStepPercent/100);
 			if(i % drawJump == 0.0){
- 				System.out.println("print shit");
  				rysujDiagramVoronoia(noweNeurony, trainingSet);
 			}
 		}
@@ -198,7 +200,18 @@ public class Kohonen {
 		return sum/ksiazkaKodowa.size();
 	}
 	
+	public static void setIterLimit(int limit){
+		LICZBA_ITERACJI = limit;
+	}
+
+	public static void setNeuronsAmount(int neuronsAmount){
+		PODZBIORY = neuronsAmount;
+	}
+	
 	public static void setDrawStepPercent(int newDrawStepPercent){
 		drawStepPercent = newDrawStepPercent;
+	}
+	public static void writeToFile(boolean write){
+		writeToFile = write;
 	}
 }
