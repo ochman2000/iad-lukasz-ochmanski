@@ -37,9 +37,8 @@ public class Mapa extends ArrayList<Point>{
 					punkt.addCoordinate(m++, value);
 	//				System.out.print("Punkt nr "+ i +": "+String.format("%.2f", value)+"\t");
 				}
-				this.add(punkt);
-	//			System.out.println();
 			}
+			this.add(punkt);
 		}
 	}
 	

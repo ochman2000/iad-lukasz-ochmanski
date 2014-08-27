@@ -15,7 +15,7 @@ public class Zadanie3 {
 		Kohonen.setNeuronsAmount(10);
 		Kohonen.setIterLimit(100);
 		Kohonen.setDrawStepPercent(1);
-		Kohonen.writeToFile(false);
+		Kohonen.writeToFile(true);
 		new Kohonen(Arrays.asList(0, 1));
 	}
 }
