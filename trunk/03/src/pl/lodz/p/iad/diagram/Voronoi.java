@@ -24,7 +24,7 @@ import java.awt.Color;
 public class Voronoi implements DrawListener {
     private static int SIZE = 512;
     private Point[][] nearest = new Point[SIZE][SIZE];  // which point is pixel (i, j) nearest?
-
+    private static int vornoiCounter = 0;
     private Draw draw = new Draw();
 
 
@@ -51,7 +51,10 @@ public class Voronoi implements DrawListener {
     	double x = x1*100+256;
     	double y = y1*100+256;
     	draw.filledCircle(x, y, 1);
-        draw.show(0);
+     //   draw.show(0);
+    }
+    public void drawMe(){
+    	draw.show(0);
     }
 
     public void mousePressed(double x, double y) {
@@ -80,7 +83,10 @@ public class Voronoi implements DrawListener {
 
     // save the screen to a file
     public void keyTyped(char c) { draw.save("voronoi" + c + ".png"); }
-
+    public void saveVornoiToFile() { 
+    	draw.save("voronoi" + vornoiCounter + ".png"); 
+    	vornoiCounter++;
+    	}
     // must implement these since they're part of the interface
     public void mouseDragged(double x, double y)  { }
     public void mouseReleased(double x, double y) { }

@@ -18,6 +18,7 @@ public class Kohonen {
 	private static final int PODZBIORY = 3;
 	private static final double LEARNING_RATE = 0.0;
 	private static double LICZBA_ITERACJI = 0.0;
+	private static double drawStepPercent = 10;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
@@ -64,6 +65,10 @@ public class Kohonen {
 			voronoi.dodajKropkę(point.getCoordinate(0),
 					point.getCoordinate(1));
 		}
+		
+		voronoi.drawMe();
+		//voronoi.saveVornoiToFile();
+		
 		System.out.println(mapa.get(0).getCoordinates().size());
 		if (mapa.get(0).getCoordinates().size()>2) {
 			Voronoi voronoi2 = new Voronoi(512, 512, 0);
@@ -135,6 +140,12 @@ public class Kohonen {
 					}
 				}
 			}
+			
+			double drawJump =LICZBA_ITERACJI*(drawStepPercent/100);
+			if(i % drawJump == 0.0){
+ 				System.out.println("print shit");
+ 				rysujDiagramVoronoia(noweNeurony, trainingSet);
+			}
 		}
 		return noweNeurony;
 	}
@@ -186,5 +197,9 @@ public class Kohonen {
 		if (lambda>radius || lambda<1)
 			throw new RuntimeException("Lambda out of range: "+lambda);
 		return lambda;
+	}
+	
+	public static void setDrawStepPercent(int newDrawStepPercent){
+		drawStepPercent = newDrawStepPercent;
 	}
 }
