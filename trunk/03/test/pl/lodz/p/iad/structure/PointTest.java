@@ -350,4 +350,11 @@ public class PointTest {
 		p1.odnotujZwyciestwo();
 		assertTrue(p1.getWon()==0);
 	}
+	
+	@Test
+	public void test23() {
+		double wynik = Math.exp(-((0)/(2.0*(1.0*1.0))));
+		
+		assertEquals(1.0, wynik, 0.0001);
+	}
 }

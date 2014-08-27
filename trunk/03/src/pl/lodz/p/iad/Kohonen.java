@@ -16,14 +16,16 @@ public class Kohonen {
 	 * powinieneś wpisać tutaj wartość 160;
 	 */
 	private static final int PODZBIORY = 3;
-	private static final double LEARNING_RATE = 0.0;
-	private static double LICZBA_ITERACJI = 0.0;
+	private static final double LEARNING_RATE = 0.1;
+	private static int LICZBA_ITERACJI = 0;
+	private List<Double> ksiazkaKodowa;
 	private static double drawStepPercent = 10;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
 		hydra = hydra.getNormalized();
-		if (LICZBA_ITERACJI==0.0) LICZBA_ITERACJI = hydra.size();
+		if (LICZBA_ITERACJI==0) LICZBA_ITERACJI = hydra.size();
+		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		
@@ -69,30 +71,6 @@ public class Kohonen {
 		voronoi.drawMe();
 		//voronoi.saveVornoiToFile();
 		
-		System.out.println(mapa.get(0).getCoordinates().size());
-		if (mapa.get(0).getCoordinates().size()>2) {
-			Voronoi voronoi2 = new Voronoi(512, 512, 0);
-			for (Point centroid : centroidy) {
-				voronoi2.dodajCentroid(centroid.getCoordinate(0),
-						centroid.getCoordinate(2));
-			}
-			
-			for (Point point : mapa) {			
-				voronoi2.dodajKropkę(point.getCoordinate(0),
-						point.getCoordinate(2));
-			}
-			
-			Voronoi voronoi3 = new Voronoi(512, 512, 0);
-			for (Point centroid : centroidy) {
-				voronoi3.dodajCentroid(centroid.getCoordinate(1),
-						centroid.getCoordinate(2));
-			}
-			
-			for (Point point : mapa) {			
-				voronoi3.dodajKropkę(point.getCoordinate(1),
-						point.getCoordinate(2));
-			}
-		}
 	}
 	
 	private boolean pozycjeSaTakieSame(List<Point> centroidy,
@@ -119,11 +97,11 @@ public class Kohonen {
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
 		//RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
-		for (int i = 0; i < LICZBA_ITERACJI; i++) {
+		for (int i = 0; i < (double)LICZBA_ITERACJI; i++) {
 			Point input = trainingSet.get(i);
 			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);
-			double learnRate = LEARNING_RATE* Math.exp(-(i/LICZBA_ITERACJI));
+			double learnRate = LEARNING_RATE* Math.exp(-(i/(double)LICZBA_ITERACJI));
 			for (Point neuron : noweNeurony) {
 				//stopień uaktywnienia neuronów z sąsiedztwa zależy od odległości
 				//ich wektorów wagowych od wag neuronu wygrywającego.
@@ -131,7 +109,7 @@ public class Kohonen {
 				if(dist<lambda){
 					for (int wymiar=0; wymiar<neuron.getCoordinates().size();
 							wymiar++) {
-						double gauss = Math.exp(-((dist*dist)/(2*(lambda*lambda))));
+						double gauss = Math.exp(-((dist*dist)/(2.0*(lambda*lambda))));
 						double waga = neuron.getCoordinate(wymiar);
 						//czy ten wzór ma sens? to jest waga? czy output?
 						double nowaWaga = waga + gauss*learnRate*(
@@ -178,7 +156,7 @@ public class Kohonen {
 			}
 			else {
 				double xyz = point.getEuclideanDistanceFrom(input);
-				xyz = (point.getWon()+1) * xyz;
+				xyz = (double)(point.getWon()+1) * xyz;
 				if (xyz<min) {
 					min = xyz;
 					winner = point;
@@ -186,17 +164,38 @@ public class Kohonen {
 			}
 		}
 		winner.odnotujZwyciestwo();
+//		ksiazkaKodowa.add()
 		return winner;
 	}
 	
 	private double getPromienSasiedztwa(int iteracja) {
 		double radius = Math.sqrt(PODZBIORY)/2;
 		if (radius<1) radius=1; 
-		double wspolczynnik = LICZBA_ITERACJI/(Math.log(radius));
+		double wspolczynnik = (double)LICZBA_ITERACJI/(Math.log(radius));
 		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
 		if (lambda>radius || lambda<1)
 			throw new RuntimeException("Lambda out of range: "+lambda);
 		return lambda;
+	}
+	
+	
+//	private double subtractVectors(Point a, Point b) {
+//		if (a==null || b==null || a.getCoordinates()==null || b.getCoordinates()==null) {
+//			throw new IllegalArgumentException();
+//		}
+//		if (a.getCoordinates().size()!= b.getCoordinates().size()) {
+//			throw new RuntimeException("Niezgodna ilość wymiarów wektorów: "+
+//					a.getCoordinates().size()+"!="+b.getCoordinates().size());
+//		}
+//		for (int wymiar=0; wymiar<a.getCoordinates().size(); wymiar++) {
+//			a.getCoordinate(wymiar) - b.getCoordinate(wymiar);
+//		}
+//	}
+	
+	private double getBladKwantyzacji() {
+//		double sum = ksiazkaKodowa.parallelStream().reduce(0.0, Double::sum);
+		double sum = ksiazkaKodowa.parallelStream().mapToDouble(x->x).sum();
+		return sum/ksiazkaKodowa.size();
 	}
 	
 	public static void setDrawStepPercent(int newDrawStepPercent){
