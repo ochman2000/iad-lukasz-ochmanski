@@ -48,13 +48,13 @@ public class Kohonen {
 		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 		int counter=0;
 		
-		while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
-			System.out.println("Iteracja:\t"+ ++counter);
-			neurony = noweNeurony;
-			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
-			System.out.println("Współrzędne neuronów: \t"+noweNeurony);
-		}
-		rysujDiagramVoronoia(noweNeurony, hydra);
+//		while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
+//			System.out.println("Iteracja:\t"+ ++counter);
+//			neurony = noweNeurony;
+//			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
+//			System.out.println("Współrzędne neuronów: \t"+noweNeurony);
+//		}
+//		rysujDiagramVoronoia(noweNeurony, hydra);
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
@@ -123,6 +123,7 @@ public class Kohonen {
 			double drawJump =LICZBA_ITERACJI*(drawStepPercent/100);
 			if(i % drawJump == 0.0){
  				rysujDiagramVoronoia(noweNeurony, trainingSet);
+//				System.out.println("Współrzędne neuronów: \t"+noweNeurony);
 			}
 		}
 		return noweNeurony;
@@ -169,11 +170,11 @@ public class Kohonen {
 	}
 	
 	private double getPromienSasiedztwa(int iteracja) {
-		double radius = Math.sqrt(PODZBIORY)/2;
-		if (radius<1) radius=1; 
+		double radius = 1.0;// Math.sqrt(PODZBIORY)/2;
+//		if (radius<1) radius=1; 
 		double wspolczynnik = (double)LICZBA_ITERACJI/(Math.log(radius));
 		double lambda = radius * Math.exp(-(iteracja/wspolczynnik));
-		if (lambda>radius || lambda<1)
+		if (lambda>radius || lambda<0)
 			throw new RuntimeException("Lambda out of range: "+lambda);
 		return lambda;
 	}

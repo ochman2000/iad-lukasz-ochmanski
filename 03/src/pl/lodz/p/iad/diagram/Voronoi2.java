@@ -59,7 +59,7 @@ public class Voronoi2 implements DrawListener {
 
     public void mousePressed(double x, double y) {
         Point p = new Point(x, y);
-        System.out.println("Inserting:       " + p);
+//        System.out.println("Inserting:       " + p);
 
         // compare each pixel (i, j) and find nearest point
         draw.setPenColor(Color.WHITE);
@@ -77,7 +77,7 @@ public class Voronoi2 implements DrawListener {
         draw.setPenColor(Color.BLACK);
         draw.filledCircle(x, y, 4);
         draw.show(0);
-        System.out.println("Done processing: " + p);
+//        System.out.println("Done processing: " + p);
     }
 
 
