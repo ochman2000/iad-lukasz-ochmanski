@@ -89,6 +89,11 @@ public class Voronoi2 implements DrawListener {
     	}
     // must implement these since they're part of the interface
     public void mouseDragged(double x, double y)  { }
-    public void mouseReleased(double x, double y) { } 
+    public void mouseReleased(double x, double y) { }
+
+	public void kill() {
+		draw.kill();
+		
+	} 
    
 }

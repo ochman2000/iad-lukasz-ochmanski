@@ -211,7 +211,7 @@ public final class Draw implements ActionListener, MouseListener,
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
-		frame.setVisible(true);
+		frame.setVisible(false);
 	}
 
 	/**
@@ -1401,6 +1401,11 @@ public final class Draw implements ActionListener, MouseListener,
 		draw2.text(0.2, 0.5, "bdfdfdfdlack text");
 		draw2.setPenColor(Draw.WHITE);
 		draw2.text(0.8, 0.8, "white text");
+	}
+
+	public void kill() {
+		this.frame.dispose();
+		
 	}
 
 }
