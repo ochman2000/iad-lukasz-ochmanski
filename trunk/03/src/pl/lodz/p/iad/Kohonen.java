@@ -72,6 +72,7 @@ public class Kohonen {
 		voronoi.drawMe();
 		if(writeToFile){
 			voronoi.saveVornoiToFile();
+			voronoi.kill();
 		}
 		
 	}
@@ -123,9 +124,10 @@ public class Kohonen {
 			double drawJump =LICZBA_ITERACJI*(drawStepPercent/100);
 			if(i % drawJump == 0.0){
  				rysujDiagramVoronoia(noweNeurony, trainingSet);
-//				System.out.println("Współrzędne neuronów: \t"+noweNeurony);
+				System.out.println(""+i+"\t"+"Współrzędne neuronów: \t"+noweNeurony);
 			}
 		}
+		System.exit(0);
 		return noweNeurony;
 	}
 	
