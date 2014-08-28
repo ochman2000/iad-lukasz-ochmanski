@@ -56,6 +56,10 @@ public class Voronoi2 implements DrawListener {
     public void drawMe(){
     	draw.show(0);
     }
+    
+    public void clear() {
+    	draw.clear();
+    }
 
     public void mousePressed(double x, double y) {
         Point p = new Point(x, y);

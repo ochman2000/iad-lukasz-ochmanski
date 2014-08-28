@@ -211,7 +211,7 @@ public final class Draw implements ActionListener, MouseListener,
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
-		frame.setVisible(false);
+		frame.setVisible(true);
 	}
 
 	/**
@@ -1370,37 +1370,6 @@ public final class Draw implements ActionListener, MouseListener,
 		synchronized (keyLock) {
 			keysDown.remove(e.getKeyCode());
 		}
-	}
-
-	/**
-	 * Test client.
-	 */
-	public static void main(String[] args) {
-
-		// create one drawing window
-		Draw draw1 = new Draw("Test client 1");
-		draw1.square(.2, .8, .1);
-		draw1.filledSquare(.8, .8, .2);
-		draw1.circle(.8, .2, .2);
-		draw1.setPenColor(Draw.MAGENTA);
-		draw1.setPenRadius(.02);
-		draw1.arc(.8, .2, .1, 200, 45);
-
-		// create another one
-		Draw draw2 = new Draw("Test client 2");
-		draw2.setCanvasSize(900, 200);
-		// draw a blue diamond
-		draw2.setPenRadius();
-		draw2.setPenColor(Draw.BLUE);
-		double[] x = { .1, .2, .3, .2 };
-		double[] y = { .2, .3, .2, .1 };
-		draw2.filledPolygon(x, y);
-
-		// text
-		draw2.setPenColor(Draw.BLACK);
-		draw2.text(0.2, 0.5, "bdfdfdfdlack text");
-		draw2.setPenColor(Draw.WHITE);
-		draw2.text(0.8, 0.8, "white text");
 	}
 
 	public void kill() {

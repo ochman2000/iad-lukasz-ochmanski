@@ -18,9 +18,10 @@ public class Kohonen {
 	private static int PODZBIORY = 3;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI = 0;
-	private List<Double> ksiazkaKodowa;
 	private static double drawStepPercent = 10.0;
 	private static boolean writeToFile = false;
+	private List<Double> ksiazkaKodowa;
+	private Voronoi2 voronoi;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
@@ -29,6 +30,7 @@ public class Kohonen {
 		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
+		voronoi = new Voronoi2(512, 512, 0);
 		
 		//LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		while (neurony.size()<PODZBIORY) {
@@ -58,7 +60,7 @@ public class Kohonen {
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi2 voronoi = new Voronoi2(512, 512, 0);
+		voronoi.clear();
 		for (Point centroid : centroidy) {
 			voronoi.dodajCentroid(centroid.getCoordinate(0),
 					centroid.getCoordinate(1));
@@ -72,7 +74,6 @@ public class Kohonen {
 		voronoi.drawMe();
 		if(writeToFile){
 			voronoi.saveVornoiToFile();
-			voronoi.kill();
 		}
 		
 	}
