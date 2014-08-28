@@ -1,5 +1,6 @@
 package pl.lodz.p.iad.structure;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -14,9 +15,10 @@ public class Point implements Cloneable {
 	 */
 	private final int PRECISION = 1_000_000;
 	private final int CZAS_ZYCIA = 2;
-
+	
 	private List<Double> coordinates;
 	private Optional<Point> group;
+	private Optional<Color> color;
 	private int won = 0;
 
 	public Point(int size) {
@@ -102,6 +104,7 @@ public class Point implements Cloneable {
 		Point p = new Point(this.getCoordinates().size());
 		p.setCoordinates(copy);
 		p.setWon(this.getWon());
+		p.setColor(this.getColor());
 		this.getGroup().ifPresent(p::setGroup);
 		return p;
 	}
@@ -141,8 +144,8 @@ public class Point implements Cloneable {
 	 */
 	public double getEuclideanDistanceFrom(Point p) {
 		double value = getDistanceFrom(p);
-		if (value < 0.0 || value >= 2.0)
-			throw new RuntimeException("Output out of range: " + value);
+//		if (value < 0.0 || value >= 2.0)
+//			throw new RuntimeException("Output out of range: " + value);
 		return value;
 	}
 
@@ -188,6 +191,8 @@ public class Point implements Cloneable {
 			p.addCoordinate(wymiar, value);
 			p.setWon(this.getWon());
 			this.getGroup().ifPresent(p::setGroup);
+//			this.getColor().ifPresent(p::setColor);
+			p.setColor(this.getColor());
 		}
 		return p;
 	}
@@ -208,5 +213,13 @@ public class Point implements Cloneable {
 	 */
 	public void odnotujZwyciestwo() {
 		setWon((getWon()+1)<CZAS_ZYCIA ? getWon()+1 : -1);
+	}
+
+	public Optional<Color> getColor() {
+		return color;
+	}
+
+	public void setColor(Optional<Color> color) {
+		this.color = color;
 	}
 }
