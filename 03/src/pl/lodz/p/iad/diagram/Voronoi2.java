@@ -26,6 +26,8 @@ public class Voronoi2 implements DrawListener {
 	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
 														// (i, j) nearest?
 	private static int vornoiCounter = 0;
+	private static int epochCounter = 0;
+	private static int vornoiCustomFolderCounter = 0;
 	private Draw draw = new Draw();
 
 	public Voronoi2() {
@@ -91,10 +93,17 @@ public class Voronoi2 implements DrawListener {
 	}
 
 	public void saveVornoiToFile() {
-		draw.save("resources/voronoi" + vornoiCounter + ".png");
+		draw.save("resources/voronoi2/voronoi-epoch" + epochCounter+ "-" + vornoiCounter + ".png");
 		vornoiCounter++;
 	}
-
+	
+    public void saveVornoiToFile(String folderName) {
+    	draw.save("resources/" + folderName + "/voronoi-" + vornoiCustomFolderCounter + ".png"); 
+    	vornoiCustomFolderCounter++;
+    }
+    public static void increaseEpoch(){
+    	epochCounter++;
+    }
 	// must implement these since they're part of the interface
 	public void mouseDragged(double x, double y) {
 	}
