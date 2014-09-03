@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pl.lodz.p.iad.diagram.Voronoi;
+import pl.lodz.p.iad.diagram.Voronoi1;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -53,7 +53,7 @@ public class Kmeans {
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi voronoi = new Voronoi(512, 512, 0);
+		Voronoi1 voronoi = new Voronoi1(512, 512, 0);
 		for (Point centroid : centroidy) {
 			voronoi.dodajCentroid(centroid.getCoordinate(0),
 					centroid.getCoordinate(1));
@@ -65,7 +65,7 @@ public class Kmeans {
 		}
 		System.out.println(mapa.get(0).getCoordinates().size());
 		if (mapa.get(0).getCoordinates().size()>2) {
-			Voronoi voronoi2 = new Voronoi(512, 512, 0);
+			Voronoi1 voronoi2 = new Voronoi1(512, 512, 0);
 			for (Point centroid : centroidy) {
 				voronoi2.dodajCentroid(centroid.getCoordinate(0),
 						centroid.getCoordinate(2));
@@ -76,7 +76,7 @@ public class Kmeans {
 						point.getCoordinate(2));
 			}
 			
-			Voronoi voronoi3 = new Voronoi(512, 512, 0);
+			Voronoi1 voronoi3 = new Voronoi1(512, 512, 0);
 			for (Point centroid : centroidy) {
 				voronoi3.dodajCentroid(centroid.getCoordinate(1),
 						centroid.getCoordinate(2));

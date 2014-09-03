@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import pl.lodz.p.iad.diagram.Voronoi;
 import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
@@ -21,22 +20,21 @@ public class Kohonen {
 	private static int PODZBIORY = 3;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI = 0;
-	private static int EPOCH_LIMIT = 1;
 	private static double drawStepPercent = 10.0;
 	private static boolean writeToFile = false;
-	private static boolean drawDiagmrams = false;
 	private List<Double> ksiazkaKodowa;
-	private Voronoi2 voronoi2;
+	private Voronoi2 voronoi;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
-		// hydra = hydra.getNormalized();
+//		hydra = hydra.getNormalized();
+		hydra = hydra.getScaled(0.02);
 		if (LICZBA_ITERACJI == 0)
 			LICZBA_ITERACJI = hydra.size();
 		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
-		voronoi2 = new Voronoi2(512, 512, 0);
+		voronoi = new Voronoi2(512, 512, 0);
 
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		while (neurony.size() < PODZBIORY) {
@@ -54,18 +52,9 @@ public class Kohonen {
 		System.out.println("\n");
 
 		// ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
-		int epochIter = 0;
-		while(epochIter < EPOCH_LIMIT){
-			System.out.println(" epoch nr : " + epochIter);
-			List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
-			rysujDiagramVoronoiaForEpoch(noweNeurony, hydra);
-			epochIter++;
-			Voronoi.increaseEpoch();
-			Voronoi2.increaseEpoch();
-		}
-		
+		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 		int counter = 0;
-		System.exit(0);
+
 		// while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
 		// System.out.println("Iteracja:\t"+ ++counter);
 		// neurony = noweNeurony;
@@ -76,14 +65,9 @@ public class Kohonen {
 	}
 
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi voronoi1 = new Voronoi();
-		voronoi2.clear();
+		voronoi.clear();
 		for (Point centroid : centroidy) {
-			voronoi1.dodajCentroid(centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-			voronoi2.dodajCentroid(
+			voronoi.dodajCentroid(
 					centroid.getCoordinate(0),
 					centroid.getCoordinate(1),
 					centroid.getColor().orElseThrow(
@@ -91,49 +75,15 @@ public class Kohonen {
 		}
 
 		for (Point point : mapa) {
-			voronoi2.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-			voronoi1.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
+			voronoi.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
 		}
 
-		if(drawDiagmrams){
-			voronoi2.drawMe();
-			voronoi1.drawMe();	
-		}
-		
+		voronoi.drawMe();
 		if (writeToFile) {
-			voronoi2.saveVornoiToFile();
-			voronoi1.saveVornoiToFile();
+			voronoi.saveVornoiToFile();
 		}
 	}
 
-	private void rysujDiagramVoronoiaForEpoch(List<Point> centroidy, Mapa mapa) {
-		Voronoi voronoi1 = new Voronoi();
-		voronoi2.clear();
-		for (Point centroid : centroidy) {
-			voronoi1.dodajCentroid(centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-			voronoi2.dodajCentroid(
-					centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-		}
-
-		for (Point point : mapa) {
-			voronoi2.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-			voronoi1.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-
-		voronoi2.drawMe();
-		voronoi1.drawMe();
-		if (true) {
-			voronoi2.saveVornoiToFile("epoch2");
-			voronoi1.saveVornoiToFile("epoch1");
-		}
-	}
-	
 	private boolean pozycjeSaTakieSame(List<Point> centroidy,
 			List<Point> noweCentroidy) {
 		for (int i = 0; i < centroidy.size(); i++) {
@@ -154,7 +104,6 @@ public class Kohonen {
 	 */
 	private List<Point> przesunNeuronyZwycieskie(Mapa trainingSet,
 			List<Point> neurony) {
-		System.out.println("przesunNeuronyZwycieskie start");
 		// ZRÓB DEEP COPY OF THE ARRAYLIST
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
 		// RANDOMIZE TRAINING SET
@@ -190,6 +139,7 @@ public class Kohonen {
 						+ noweNeurony);
 			}
 		}
+		System.exit(0);
 		return noweNeurony;
 	}
 
@@ -266,10 +216,6 @@ public class Kohonen {
 	public static void setIterLimit(int limit) {
 		LICZBA_ITERACJI = limit;
 	}
-	
-	public static void setEpochLimit(int limit) {
-		EPOCH_LIMIT = limit;
-	}
 
 	public static void setNeuronsAmount(int neuronsAmount) {
 		PODZBIORY = neuronsAmount;
@@ -282,9 +228,4 @@ public class Kohonen {
 	public static void writeToFile(boolean write) {
 		writeToFile = write;
 	}
-	public static void drawDiagmrams(boolean draw) {
-		drawDiagmrams = draw;
-	}
-	
-	
 }
