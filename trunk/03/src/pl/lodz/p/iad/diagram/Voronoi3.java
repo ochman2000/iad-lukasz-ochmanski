@@ -21,7 +21,7 @@ package pl.lodz.p.iad.diagram;
 
 import java.awt.Color;
 
-public class Voronoi2 implements DrawListener {
+public class Voronoi3 implements DrawListener {
 	private static final int SCALE_IN_PERCENT = 5000;
 	private static int SIZE = 512;
 	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
@@ -29,11 +29,11 @@ public class Voronoi2 implements DrawListener {
 	private static int vornoiCounter = 0;
 	private Draw draw = new Draw();
 
-	public Voronoi2() {
+	public Voronoi3() {
 		this(SIZE, SIZE, 0);
 	}
 
-	public Voronoi2(int w, int h, int zoom) {
+	public Voronoi3(int w, int h, int zoom) {
 		draw.setCanvasSize(w, h);
 		draw.setXscale(0, w);
 		draw.setYscale(0, h);

@@ -21,22 +21,18 @@ package pl.lodz.p.iad.diagram;
 
 import java.awt.Color;
 
-public class Voronoi implements DrawListener {
+public class Voronoi1 implements DrawListener {
     private static int SIZE = 512;
     private Point[][] nearest = new Point[SIZE][SIZE];  // which point is pixel (i, j) nearest?
     private static int vornoiCounter = 0;
-    private static int epochCounter = 0;
-    private static int vornoiCustomFolderCounter = 0;
     private Draw draw = new Draw();
-    
-    private Color centroidColor = null;
 
 
-    public Voronoi() {
+    public Voronoi1() {
     	this(SIZE, SIZE, 0);
     }
     
-    public Voronoi(int w, int h, int zoom) {
+    public Voronoi1(int w, int h, int zoom) {
     	draw.setCanvasSize(w, h);
     	draw.setXscale(0, w);
     	draw.setYscale(0, h);
@@ -44,16 +40,9 @@ public class Voronoi implements DrawListener {
     	draw.show(0);    	
     }
     
-    
     public void dodajCentroid(double x1, double y1) {
     	double x = x1*100+256;
     	double y = y1*100+256;
-    	mousePressed(x, y);
-    }
-    public void dodajCentroid(double x1, double y1, Color color) {
-    	double x = x1*100+256;
-    	double y = y1*100+256;
-    	centroidColor = color;
     	mousePressed(x, y);
     }
     
@@ -73,8 +62,7 @@ public class Voronoi implements DrawListener {
         System.out.println("Inserting:       " + p);
 
         // compare each pixel (i, j) and find nearest point
-        //draw.setPenColor(Color.getHSBColor((float) Math.random(), .7f, .7f));
-        draw.setPenColor(centroidColor);
+        draw.setPenColor(Color.getHSBColor((float) Math.random(), .7f, .7f));
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 Point q = new Point(i, j);
@@ -96,18 +84,9 @@ public class Voronoi implements DrawListener {
     // save the screen to a file
     public void keyTyped(char c) { draw.save("resources/voronoi" + c + ".png"); }
     public void saveVornoiToFile() { 
-    	draw.save("resources/voronoi1/voronoi-epoch" + epochCounter+ "-" + vornoiCounter + ".png"); 
+    	draw.save("resources/voronoi" + vornoiCounter + ".png"); 
     	vornoiCounter++;
     	}
-    
-    public void saveVornoiToFile(String folderName) {
-    	draw.save("resources/" + folderName + "/voronoi-" + vornoiCustomFolderCounter + ".png"); 
-    	vornoiCustomFolderCounter++;
-    }
-    
-    public static void increaseEpoch(){
-    	epochCounter++;
-    }
     // must implement these since they're part of the interface
     public void mouseDragged(double x, double y)  { }
     public void mouseReleased(double x, double y) { }
