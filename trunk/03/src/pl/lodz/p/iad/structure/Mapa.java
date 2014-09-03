@@ -83,4 +83,12 @@ public class Mapa extends ArrayList<Point>{
 		}
 		return normalized;
 	}
+	
+	public Mapa getScaled(double factor) {
+		Mapa scaled = new Mapa();
+		for (Point p : this) {
+			scaled.add(p.getScaled(factor));
+		}
+		return scaled;
+	}
 }
