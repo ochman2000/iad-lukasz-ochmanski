@@ -182,20 +182,22 @@ public class Point implements Cloneable {
 	}
 
 	public Point getNormalized() {
-		Point p = new Point(this.getCoordinates().size());
+		return getScaled(this.getNormalizationFactor());
+	}
+	
+	public Point getScaled(double factor) {
+		Point p = this.clone();
 		for (int wymiar = 0; wymiar < this.getCoordinates().size(); wymiar++) {
 			double coord = this.getCoordinate(wymiar);
-			double value = this.getNormalizationFactor() * coord;
+			double value = factor * coord;
 			if (value <= -1.0 || value >= 1.0)
 				throw new RuntimeException("Output out of range: " + value);
 			p.addCoordinate(wymiar, value);
-			p.setWon(this.getWon());
-			this.getGroup().ifPresent(p::setGroup);
-//			this.getColor().ifPresent(p::setColor);
-			p.setColor(this.getColor());
 		}
 		return p;
 	}
+	
+	
 
 	public int getWon() {
 		if (won>=CZAS_ZYCIA) throw new IllegalStateException("Niedozwolona liczba"
