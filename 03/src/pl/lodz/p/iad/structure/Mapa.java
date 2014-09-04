@@ -13,11 +13,13 @@ public class Mapa extends ArrayList<Point>{
 	
 	private final static int LICZBA_KOLUMN = 8;
 	private static final long serialVersionUID = 1L;
+	private int liczbaWymiarow = 0;
 
 	public Mapa() {
 		super();
 	}
 	public Mapa(List<Integer> kolumny) {
+		setLiczbaWymiarow(kolumny.size());
 		Path file = Paths.get("resources/hydra01.dane");
 		List<String> lines = null;
 		try {
@@ -81,6 +83,9 @@ public class Mapa extends ArrayList<Point>{
 		for (Point point : this) {
 			normalized.add(point.getNormalized());
 		}
+		if (normalized.get(0).getCoordinates().size() != getLiczbaWymiarow())
+			throw new RuntimeException("Niezgodna liczba wymiarów: "
+					+ normalized.get(0).getCoordinates().size());
 		return normalized;
 	}
 	
@@ -89,6 +94,16 @@ public class Mapa extends ArrayList<Point>{
 		for (Point p : this) {
 			scaled.add(p.getScaled(factor));
 		}
+		if (scaled.get(0).getCoordinates().size() != getLiczbaWymiarow())
+			throw new RuntimeException("Niezgodna liczba wymiarów: "
+					+ scaled.get(0).getCoordinates().size());
 		return scaled;
+	}
+	
+	public int getLiczbaWymiarow() {
+		return liczbaWymiarow;
+	}
+	public void setLiczbaWymiarow(int liczbaWymiarow) {
+		this.liczbaWymiarow = liczbaWymiarow;
 	}
 }
