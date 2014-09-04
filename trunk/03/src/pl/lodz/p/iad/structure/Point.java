@@ -127,9 +127,14 @@ public class Point implements Cloneable {
 		for (int i = 0; i < this.getCoordinates().size(); i++) {
 			double odleglosc = p.getCoordinate(i) - this.getCoordinate(i);
 			double pq = Math.pow(odleglosc, 2);
-			sum += pq;
+			if (!Double.isFinite(pq))
+				throw new ArithmeticException("Potęgowanie się sypnęło.");
+			sum  += pq;
 		}
-		return Math.sqrt(sum);
+		double pierw = Math.sqrt(sum);
+		if (!Double.isFinite(pierw))
+			throw new ArithmeticException("Pierwiastkowanie się sypnęło.");
+		return pierw;
 	}
 
 	/**
@@ -192,7 +197,7 @@ public class Point implements Cloneable {
 			double value = factor * coord;
 			if (value <= -1.0 || value >= 1.0)
 				throw new RuntimeException("Output out of range: " + value);
-			p.addCoordinate(wymiar, value);
+			p.setCoordinate(wymiar, value);
 		}
 		return p;
 	}

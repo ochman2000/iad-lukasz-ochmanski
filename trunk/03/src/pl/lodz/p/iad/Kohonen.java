@@ -28,7 +28,7 @@ public class Kohonen {
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
 //		hydra = hydra.getNormalized();
-		hydra = hydra.getScaled(0.02);
+//		hydra = hydra.getScaled(0.02);
 		if (LICZBA_ITERACJI == 0)
 			LICZBA_ITERACJI = hydra.size();
 		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
@@ -114,6 +114,8 @@ public class Kohonen {
 			double lambda = getPromienSasiedztwa(i);
 			double learnRate = LEARNING_RATE
 					* Math.exp(-(i / (double) LICZBA_ITERACJI));
+			if (!Double.isFinite(learnRate))
+				throw new ArithmeticException("Learning rate się sypnął.");
 			for (Point neuron : noweNeurony) {
 				// stopień uaktywnienia neuronów z sąsiedztwa zależy od
 				// odległości
@@ -124,6 +126,8 @@ public class Kohonen {
 							.size(); wymiar++) {
 						double gauss = Math
 								.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
+						if (!Double.isFinite(gauss))
+							throw new ArithmeticException("gauss się sypnął.");
 						double waga = neuron.getCoordinate(wymiar);
 						double nowaWaga = waga + gauss * learnRate
 								* (input.getCoordinate(wymiar) - waga);
@@ -135,8 +139,10 @@ public class Kohonen {
 			double drawJump = LICZBA_ITERACJI * (drawStepPercent / 100);
 			if (i % drawJump == 0.0) {
 				rysujDiagramVoronoia(noweNeurony, trainingSet);
-				System.out.println("" + i + "\t" + "Współrzędne neuronów: \t"
-						+ noweNeurony);
+				System.out.println("" + i + "\t learnRate: "+learnRate 
+						+ "\t lambda: "+ lambda
+//						+ "\t" + "Współrzędne neuronów: \t"	+ noweNeurony
+						);
 			}
 		}
 		System.exit(0);
@@ -184,10 +190,14 @@ public class Kohonen {
 	}
 
 	private double getPromienSasiedztwa(int iteracja) {
-		double radius = 1.0;// Math.sqrt(PODZBIORY)/2;
-		// if (radius<1) radius=1;
+		double radius = Math.sqrt(PODZBIORY)/2;
+//		 if (radius<1) radius=1.1;
 		double wspolczynnik = (double) LICZBA_ITERACJI / (Math.log(radius));
+		if (!Double.isFinite(wspolczynnik))
+			throw new ArithmeticException("Dzielenie się sypnęło.");
 		double lambda = radius * Math.exp(-(iteracja / wspolczynnik));
+		if (!Double.isFinite(lambda))
+			throw new ArithmeticException("lambda się sypnęła.");
 		if (lambda > radius || lambda < 0)
 			throw new RuntimeException("Lambda out of range: " + lambda);
 		return lambda;
