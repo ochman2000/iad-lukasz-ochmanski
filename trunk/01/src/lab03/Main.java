@@ -7,7 +7,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		double[][] kwadrat = new double[100][100];
+//		double[][] kwadrat = new double[100][100];
 		for (int i = 0; i < 20; i++) {
 			System.out.println(losuj());
 		}
