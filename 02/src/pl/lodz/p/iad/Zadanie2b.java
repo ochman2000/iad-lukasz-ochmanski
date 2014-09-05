@@ -3,6 +3,7 @@ package pl.lodz.p.iad;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,7 +70,7 @@ public class Zadanie2b {
 	}
 	
 	private void zapiszWarstwęUkrytą(Network network, Input[] dane, String filename) {
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		Path fileOut = Paths.get(filename);
 		try {
 			BufferedWriter writer = Files.newBufferedWriter(fileOut, charset);
@@ -102,7 +103,7 @@ public class Zadanie2b {
 	}
 
 	public void feedNetworkWithData(Network network, Input[] data, Input[] zbiórTestowy) {
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		Path fileOut = Paths.get(outURL);
 		try {
 			BufferedWriter writer = Files.newBufferedWriter(fileOut, charset);

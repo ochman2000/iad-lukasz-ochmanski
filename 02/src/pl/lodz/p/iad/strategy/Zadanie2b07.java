@@ -2,6 +2,7 @@ package pl.lodz.p.iad.strategy;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +32,7 @@ public class Zadanie2b07 implements Strategy {
 	
 	@Override
 	public Input[] readDataFromFile(Network network, String fileName) {
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		Path file = Paths.get(fileName);
 		Input[] wzorc = null;
 		try {
