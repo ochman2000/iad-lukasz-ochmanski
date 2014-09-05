@@ -3,6 +3,8 @@ package pl.lodz.p.iad;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.spi.CharsetProvider;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,7 +65,7 @@ public class Zadanie2a {
 	
 	public Zadanie2a(String fileName) {
 		Network network = this.initializeStructure();
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		Path file = Paths.get(fileName);
 		try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
 			int count = 0;
