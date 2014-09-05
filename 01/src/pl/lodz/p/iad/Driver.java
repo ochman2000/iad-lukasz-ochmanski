@@ -21,6 +21,7 @@ public class Driver {
 		ArrayList<Double> listA = DataAnalyzer.getIris(DataAnalyzer.KLASA[0], DataAnalyzer.COLUMN);
 		ArrayList<Double> listB = DataAnalyzer.getIris(DataAnalyzer.KLASA[1], DataAnalyzer.COLUMN);
 		ArrayList<Double> listC = DataAnalyzer.getIris(DataAnalyzer.KLASA[2], DataAnalyzer.COLUMN);
+		@SuppressWarnings("unused")
 		Wykres histogram = new Wykres(DataAnalyzer.COLUMN);
 		
 		//KLASA C1 "Iris-setosa"
