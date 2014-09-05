@@ -3,6 +3,7 @@ package pl.lodz.p.iad;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ import java.util.StringTokenizer;
 
 public class DataAnalyzer {
 
-	private static final String CHARSET = "UTF-8";
+	private static final Charset CHARSET = StandardCharsets.UTF_8;
 	public static String TOKEN = ",";
 	public static String TEST_FILE = "183566/iris.dane";
 	public static String INFO_FILE = "183566/183566.info";
@@ -32,8 +33,7 @@ public class DataAnalyzer {
 	public static ArrayList<Double> getIris(String klasa, int val) {
 		ArrayList<Double> a = new ArrayList<>();
 		Path file = Paths.get(TEST_FILE);
-		Charset charset = Charset.forName(CHARSET);
-		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+		try (BufferedReader reader = Files.newBufferedReader(file, CHARSET)) {
 		    String line = null;
 		    while ((line = reader.readLine()) != null) {
 		    	StringTokenizer st = new StringTokenizer(line, TOKEN, false);
@@ -59,8 +59,7 @@ public class DataAnalyzer {
 	public static double getAlpha() {
 		double alpha = 0;
 		Path file = Paths.get(INFO_FILE);
-		Charset charset = Charset.forName(CHARSET);
-		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+		try (BufferedReader reader = Files.newBufferedReader(file, CHARSET)) {
 		    String line = null;
 		    line = reader.readLine();
 	    	StringTokenizer st = new StringTokenizer(line, TOKEN, false);
@@ -75,8 +74,7 @@ public class DataAnalyzer {
 	public static boolean getOgon() {
 		boolean ogon = false;
 		Path file = Paths.get(INFO_FILE);
-		Charset charset = Charset.forName(CHARSET);
-		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+		try (BufferedReader reader = Files.newBufferedReader(file, CHARSET)) {
 		    String line = null;
 		    line = reader.readLine();
 		    line = reader.readLine();
