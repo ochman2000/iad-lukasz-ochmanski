@@ -8,7 +8,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.ui.ApplicationFrame;
@@ -75,7 +74,7 @@ public class Wykres extends ApplicationFrame {
           } catch (Exception e) {
             e.printStackTrace();
           }
-        XYPlot plot = (XYPlot) chart.getPlot();
+//        XYPlot plot = (XYPlot) chart.getPlot();
 //        final IntervalMarker target = new IntervalMarker(1.0, 4.0);
 //        target.setLabel("Target Range");
 //        target.setLabelFont(new Font("SansSerif", Font.ITALIC, 11));
