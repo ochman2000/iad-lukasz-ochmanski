@@ -18,11 +18,11 @@ public class Kohonen {
 	 * będzie w warstwie ukrytej. Jeśli ma to być lattice 40x40 powinieneś
 	 * wpisać tutaj wartość 160;
 	 */
-	private static int PODZBIORY = 3;
+	private static int PODZBIORY = 8;
 	private static double LEARNING_RATE = 0.1;
-	private static int LICZBA_ITERACJI = 0;
-	private static double drawStepPercent = 10.0;
-	private static boolean writeToFile = false;
+	private static int LICZBA_ITERACJI;
+	private static double drawStepPercent = 1.0;
+	private static boolean writeToFile = true;
 	private List<Double> ksiazkaKodowa;
 	private Voronoi2 voronoi;
 
@@ -158,10 +158,10 @@ public class Kohonen {
 							neuron.setCoordinate(wymiar, nowaWaga);
 						}
 						//W PRZECIWNYM PRZYPADKU ODSUWANY OD WEKTORA X
-						else { 
-							nowaWaga = waga - alpha;	
-							neuron.setCoordinate(wymiar, nowaWaga);
-						}
+//						else { 
+//							nowaWaga = waga - alpha;	
+//							neuron.setCoordinate(wymiar, nowaWaga);
+//						}
 					}
 				}
 			}
