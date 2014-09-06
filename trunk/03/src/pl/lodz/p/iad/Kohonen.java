@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import pl.lodz.p.iad.diagram.Voronoi2;
+import pl.lodz.p.iad.diagram.Voronoi3;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -27,8 +28,6 @@ public class Kohonen {
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
-//		hydra = hydra.getNormalized();
-//		hydra = hydra.getScaled(0.02);
 		if (LICZBA_ITERACJI == 0)
 			LICZBA_ITERACJI = hydra.size();
 		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
@@ -39,8 +38,9 @@ public class Kohonen {
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		while (neurony.size() < PODZBIORY) {
 			int indeks = rnd.nextInt(hydra.size());
-			Point centroid = hydra.get(indeks);
-			centroid.setColor(Optional.of(Color.getHSBColor((float) Math.random(), .7f, .7f)));
+			Point centroid = hydra.get(indeks).getNormalized();
+			centroid.setColor(Optional.of(Color.getHSBColor(
+					(float) Math.random(), .7f, .7f)));
 			if (!neurony.contains(centroid)) {
 				neurony.add(centroid);
 			}
@@ -53,19 +53,14 @@ public class Kohonen {
 
 		// ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
 		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
-		int counter = 0;
 
-		// while (!pozycjeSaTakieSame(neurony, noweNeurony)) {
-		// System.out.println("Iteracja:\t"+ ++counter);
-		// neurony = noweNeurony;
-		// noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
-		// System.out.println("Współrzędne neuronów: \t"+noweNeurony);
-		// }
-		// rysujDiagramVoronoia(noweNeurony, hydra);
 	}
-
-	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+	
+	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
 		voronoi.clear();
+		for (Point point : mapa) {
+			voronoi.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
+		}
 		for (Point centroid : centroidy) {
 			voronoi.dodajCentroid(
 					centroid.getCoordinate(0),
@@ -73,14 +68,27 @@ public class Kohonen {
 					centroid.getColor().orElseThrow(
 							IllegalArgumentException::new));
 		}
-
-		for (Point point : mapa) {
-			voronoi.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-
 		voronoi.drawMe();
 		if (writeToFile) {
 			voronoi.saveVornoiToFile();
+		}
+	}
+
+	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+		Voronoi3 voronoi3= new Voronoi3();
+		for (Point point : mapa) {
+			voronoi3.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
+		}
+		for (Point centroid : centroidy) {
+			voronoi3.dodajCentroid(
+					centroid.getCoordinate(0),
+					centroid.getCoordinate(1),
+					centroid.getColor().orElseThrow(
+							IllegalArgumentException::new));
+		}
+		voronoi3.drawMe();
+		if (writeToFile) {
+			voronoi3.saveVornoiToFile();
 		}
 	}
 
@@ -106,20 +114,25 @@ public class Kohonen {
 			List<Point> neurony) {
 		// ZRÓB DEEP COPY OF THE ARRAYLIST
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
+		
 		// RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
+		
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
 			Point input = trainingSet.get(i);
+			input = input.getNormalized();
 			Point zwyciezca = getZwyciezca(noweNeurony, input);
 			double lambda = getPromienSasiedztwa(i);
 			double learnRate = LEARNING_RATE
 					* Math.exp(-(i / (double) LICZBA_ITERACJI));
 			if (!Double.isFinite(learnRate))
 				throw new ArithmeticException("Learning rate się sypnął.");
+			
 			for (Point neuron : noweNeurony) {
-				// stopień uaktywnienia neuronów z sąsiedztwa zależy od
-				// odległości
-				// ich wektorów wagowych od wag neuronu wygrywającego.
+				boolean nalezyDoKlasyZwyciezcy = zwyciezca==klasyfikuj(noweNeurony, neuron);
+				
+				// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
+				// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
 				double dist = neuron.getEuclideanDistanceFrom(zwyciezca);
 				if (dist < lambda) {
 					for (int wymiar = 0; wymiar < neuron.getCoordinates()
@@ -129,23 +142,38 @@ public class Kohonen {
 						if (!Double.isFinite(gauss))
 							throw new ArithmeticException("gauss się sypnął.");
 						double waga = neuron.getCoordinate(wymiar);
-						double nowaWaga = waga + gauss * learnRate
-								* (input.getCoordinate(wymiar) - waga);
-						neuron.setCoordinate(wymiar, nowaWaga);
+						
+						//ZGODNIE Z ZASADĄ W PUNKCIE 2 NA STRONIE 32 KSIĄŻKI STANISŁAWA
+						//OSOWSKIEGO "SIECI NEURONOWE W UJĘCIU ALGORYTMICZNYM"
+						if (0>(gauss*learnRate) || (gauss*learnRate)>1)
+							throw new RuntimeException("Współczynnik poza zakresem (0,1): "
+									+ gauss*learnRate);
+						double alpha = gauss*learnRate*(input.getCoordinate(wymiar)-waga);
+						
+						//JEŚLI KLASA, DO KTÓREJ PRZYNALEŻY WEKTOR X, JEST ZGODNA Z KLASĄ 
+						//ZWYCIĘSKIEGO WEKTORA W, TO W JEST PRZESUWANY W STRONĘ X
+						double nowaWaga;
+						if (nalezyDoKlasyZwyciezcy) { 
+							nowaWaga = waga + alpha; 
+							neuron.setCoordinate(wymiar, nowaWaga);
+						}
+						//W PRZECIWNYM PRZYPADKU ODSUWANY OD WEKTORA X
+						else { 
+							nowaWaga = waga - alpha;	
+							neuron.setCoordinate(wymiar, nowaWaga);
+						}
 					}
 				}
 			}
 
 			double drawJump = LICZBA_ITERACJI * (drawStepPercent / 100);
 			if (i % drawJump == 0.0) {
-				rysujDiagramVoronoia(noweNeurony, trainingSet);
+				wizualizujObszaryVoronoia(noweNeurony, trainingSet);
 				System.out.println("" + i + "\t learnRate: "+learnRate 
-						+ "\t lambda: "+ lambda
-//						+ "\t" + "Współrzędne neuronów: \t"	+ noweNeurony
-						);
+						+ "\t lambda: "+ lambda	);
 			}
 		}
-		System.exit(0);
+		rysujDiagramVoronoia(noweNeurony, trainingSet);
 		return noweNeurony;
 	}
 
@@ -185,7 +213,25 @@ public class Kohonen {
 			}
 		}
 		winner.odnotujZwyciestwo();
-		// ksiazkaKodowa.add()
+		return winner;
+	}
+	
+	/**
+	 * Zwraca centroida (wektor Voronoia) dla danego sygnału wejściowego.
+	 * Metoda używana do testowania wektora wejściowego. W przeciwieństwie do metody
+	 * getZwyciezca(), nie uwzględnia zmęczenia neuronów i nie bierze pod uwagę ilości
+	 * zwycięstw, kar, nie faworyzuje martwych neuronow. Jest to prosty klasyfikator.
+	 */
+	private Point klasyfikuj(List<Point> neurony, Point input) {
+		double min = Double.MAX_VALUE;
+		Point winner = null;
+		for (Point point : neurony) {
+			double xyz = point.getEuclideanDistanceFrom(input);
+			if (xyz < min) {
+				min = xyz;
+				winner = point;
+			}
+		}
 		return winner;
 	}
 
