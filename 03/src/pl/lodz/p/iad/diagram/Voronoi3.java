@@ -22,7 +22,7 @@ package pl.lodz.p.iad.diagram;
 import java.awt.Color;
 
 public class Voronoi3 implements DrawListener {
-	private static final int SCALE_IN_PERCENT = 5000;
+	private static final int SCALE_IN_PERCENT = 100;
 	private static int SIZE = 512;
 	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
 														// (i, j) nearest?
@@ -44,20 +44,20 @@ public class Voronoi3 implements DrawListener {
 	public void dodajCentroid(double x1, double y1, Color color) {
 		double x = x1 * SCALE_IN_PERCENT + 256;
 		double y = y1 * SCALE_IN_PERCENT + 256;
-//		Point p = new Point(x, y);
-//
-//		// compare each pixel (i, j) and find nearest point
-//		draw.setPenColor(color);
-//		for (int i = 0; i < SIZE; i++) {
-//			for (int j = 0; j < SIZE; j++) {
-//				Point q = new Point(i, j);
-//				if ((nearest[i][j] == null)
-//						|| (q.distanceTo(p) < q.distanceTo(nearest[i][j]))) {
-//					nearest[i][j] = p;
-//					draw.filledSquare(i + 0.5, j + 0.5, 0.5);
-//				}
-//			}
-//		}
+		Point p = new Point(x, y);
+
+		// compare each pixel (i, j) and find nearest point
+		draw.setPenColor(color);
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				Point q = new Point(i, j);
+				if ((nearest[i][j] == null)
+						|| (q.distanceTo(p) < q.distanceTo(nearest[i][j]))) {
+					nearest[i][j] = p;
+					draw.filledSquare(i + 0.5, j + 0.5, 0.5);
+				}
+			}
+		}
 
 		// draw the point afterwards
 		draw.setPenColor(Color.BLACK);
@@ -67,7 +67,7 @@ public class Voronoi3 implements DrawListener {
 	}
 
 	public void dodajKropkę(double x1, double y1) {
-		draw.setPenColor(Color.GRAY);
+		draw.setPenColor(Color.WHITE);
 		double x = x1 * SCALE_IN_PERCENT + 256;
 		double y = y1 * SCALE_IN_PERCENT + 256;
 		draw.filledCircle(x, y, 1);
@@ -92,7 +92,7 @@ public class Voronoi3 implements DrawListener {
 	}
 
 	public void saveVornoiToFile() {
-		draw.save("resources/voronoi" + vornoiCounter + ".png");
+		draw.save("resources/voronoiFinal.png");
 		vornoiCounter++;
 	}
 
