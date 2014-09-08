@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import p.lodz.p.iad.functions.Function;
+
 public class Point implements Cloneable {
 
 	/**
@@ -20,11 +22,21 @@ public class Point implements Cloneable {
 	private Optional<Point> group;
 	private Optional<Color> color;
 	private int won = 0;
+	private Function activateFunction;
 
 	public Point(int size) {
 		group = Optional.empty();
 //		group = Optional.ofNullable(null);
 		coordinates = new ArrayList<Double>(size);
+	}
+	
+	public Point(Function function, double... weights){
+		for(double  weight : weights){
+			coordinates.add(weight);
+		}
+		System.out.println("class Point : Point dimensions created : " + weights.length);
+        //this.weights = weights;
+        this.activateFunction = function;
 	}
 
 	public List<Double> getCoordinates() {
