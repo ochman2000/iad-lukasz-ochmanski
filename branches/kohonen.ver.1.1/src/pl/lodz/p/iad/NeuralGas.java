@@ -1,7 +1,6 @@
 package pl.lodz.p.iad;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +9,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.TreeMap;
 
-import p.lodz.p.iad.functions.IdentityFunction;
-import p.lodz.p.iad.som.SOM;
 import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.diagram.Voronoi3;
 import pl.lodz.p.iad.structure.Mapa;
