@@ -19,8 +19,11 @@ public class Zadanie3NeuralGas {
 		//set networkMomentum
 		NeuralGas.setNetworkMomentum(0.1);
 		
-		NeuralGas.setIterLimit(2);
+		NeuralGas.setIterLimit(1000);
 		
+		
+		NeuralGas.writeToFile(false);
+		NeuralGas.setDrawStepPercent(1);
 		//load data from file
 		//select columns
 		//set trainFile
