@@ -13,7 +13,7 @@ public class Zadanie3NeuralGas {
 		//set SOM eras limit
 		NeuralGas.setErasLimit(1);
 		//set neuronsAmount		
-		NeuralGas.setNeuronsAmount(5);
+		NeuralGas.setNeuronsAmount(10);
 		//setNetworkAlpha
 		NeuralGas.setNetworkAlpha(0.01);
 		//set networkMomentum
