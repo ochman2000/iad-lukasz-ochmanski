@@ -17,7 +17,7 @@ import pl.lodz.p.iad.diagram.Voronoi3;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
-public class NeuralGas extends SOM{
+public class NeuralGas{
 
 	private List<Point> neurons = new ArrayList<Point>();
 	private List<Point> learnPattern = new ArrayList<Point>();
@@ -267,7 +267,7 @@ public class NeuralGas extends SOM{
 	public static void setDrawStepPercent(int newDrawStepPercent) {
 		drawStepPercent = newDrawStepPercent;
 	}
-	
+	/*
 	@Override
 	public void teach(int epochs) throws IOException {
 		// TODO Auto-generated method stub
@@ -283,5 +283,5 @@ public class NeuralGas extends SOM{
             neurons.add(new Point(new IdentityFunction(), weights.clone()));
         }
 		
-	}
+	}*/
 }
