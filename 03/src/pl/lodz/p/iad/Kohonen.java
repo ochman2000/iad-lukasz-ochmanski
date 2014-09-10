@@ -8,6 +8,7 @@ import java.util.Random;
 
 import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.diagram.Voronoi3;
+import pl.lodz.p.iad.structure.KsiazkaKodowa;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -21,16 +22,16 @@ public class Kohonen {
 	private static int PODZBIORY = 8;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI;
-	private static double drawStepPercent = 1.0;
+	private static double drawStepPercent = 10.0;
 	private static boolean writeToFile = true;
-	private List<Double> ksiazkaKodowa;
+	private KsiazkaKodowa ksiazkaKodowa;
 	private Voronoi2 voronoi;
 
 	public Kohonen(List<Integer> kolumny) {
 		Mapa hydra = new Mapa(kolumny);
 		if (LICZBA_ITERACJI == 0)
 			LICZBA_ITERACJI = hydra.size();
-		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
+		ksiazkaKodowa = new KsiazkaKodowa(LICZBA_ITERACJI);
 		Random rnd = new Random();
 		List<Point> neurony = new ArrayList<Point>(PODZBIORY);
 		voronoi = new Voronoi2(512, 512, 0);
@@ -90,15 +91,6 @@ public class Kohonen {
 		if (writeToFile) {
 			voronoi3.saveVornoiToFile();
 		}
-	}
-
-	private boolean pozycjeSaTakieSame(List<Point> centroidy,
-			List<Point> noweCentroidy) {
-		for (int i = 0; i < centroidy.size(); i++) {
-			if (!centroidy.get(i).equals(noweCentroidy.get(i)))
-				return false;
-		}
-		return true;
 	}
 
 	/**
@@ -249,25 +241,6 @@ public class Kohonen {
 		return lambda;
 	}
 
-	// private double subtractVectors(Point a, Point b) {
-	// if (a==null || b==null || a.getCoordinates()==null ||
-	// b.getCoordinates()==null) {
-	// throw new IllegalArgumentException();
-	// }
-	// if (a.getCoordinates().size()!= b.getCoordinates().size()) {
-	// throw new RuntimeException("Niezgodna ilość wymiarów wektorów: "+
-	// a.getCoordinates().size()+"!="+b.getCoordinates().size());
-	// }
-	// for (int wymiar=0; wymiar<a.getCoordinates().size(); wymiar++) {
-	// a.getCoordinate(wymiar) - b.getCoordinate(wymiar);
-	// }
-	// }
-
-	private double getBladKwantyzacji() {
-		// double sum = ksiazkaKodowa.parallelStream().reduce(0.0, Double::sum);
-		double sum = ksiazkaKodowa.parallelStream().mapToDouble(x -> x).sum();
-		return sum / ksiazkaKodowa.size();
-	}
 
 	public static void setIterLimit(int limit) {
 		LICZBA_ITERACJI = limit;
