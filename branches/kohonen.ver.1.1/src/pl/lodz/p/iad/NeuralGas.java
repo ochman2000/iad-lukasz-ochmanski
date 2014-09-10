@@ -199,20 +199,19 @@ public class NeuralGas{
 	
 	public List<Point> sortNeuronsByDistanceAscending(Point inputVector){
 		List<Point> sortedNeurons = new ArrayList<Point>();	
-		Map<Double, Point> neuronsWithDistances = new HashMap<Double, Point>();
+		Map<Double, Point> neuronsWithDistances = new TreeMap<Double, Point>();
 		
 		for(Point neuron : neurons){
 			Double distance = calculateDistance(neuron,inputVector);
 			neuronsWithDistances.put(distance, neuron);
 		}
-		//sorting
-		Map<Double, Point> treeMap = new TreeMap<Double, Point>(neuronsWithDistances);
 		System.out.println("want to get sorted distance list : ");
-		for (Double str : treeMap.keySet()) {
+		for (Double str : neuronsWithDistances.keySet()) {
 		    System.out.print(str + " / ");
 		    sortedNeurons.add(neuronsWithDistances.get(str));
 		}
 		System.out.println(" ");
+		
 		return sortedNeurons;
 	}
 	
