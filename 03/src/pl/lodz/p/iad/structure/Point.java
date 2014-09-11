@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Point implements Cloneable {
@@ -119,6 +120,7 @@ public class Point implements Cloneable {
 	 * @return
 	 */
 	public double getDistanceFrom(Point p) {
+		if (p==null) throw new NoSuchElementException("Punkt jest null.");
 		if (this.getCoordinates().size() != p.getCoordinates().size()) {
 			throw new IllegalArgumentException("Punkty mają niezgodną ilość"
 					+ " wymiarów.");
