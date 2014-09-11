@@ -22,7 +22,7 @@ public class Kohonen {
 	private static int PODZBIORY = 8;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI;
-	private static double drawStepPercent = 10.0;
+	private static double drawStepPercent = 0.01;
 	private static boolean writeToFile = true;
 	private KsiazkaKodowa ksiazkaKodowa;
 	private Voronoi2 voronoi;
@@ -113,7 +113,9 @@ public class Kohonen {
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
 			Point input = trainingSet.get(i);
 			input = input.getNormalized();
-			Point zwyciezca = getZwyciezca(noweNeurony, input);
+			Point uprawnionyZwyciezca = getZwyciezca(noweNeurony, input);
+			Point teoretycznyZwyciezca = klasyfikuj(noweNeurony, input);
+			ksiazkaKodowa.put(input, teoretycznyZwyciezca);
 			double lambda = getPromienSasiedztwa(i);
 			double learnRate = LEARNING_RATE
 					* Math.exp(-(i / (double) LICZBA_ITERACJI));
@@ -121,11 +123,10 @@ public class Kohonen {
 				throw new ArithmeticException("Learning rate się sypnął.");
 			
 			for (Point neuron : noweNeurony) {
-				boolean nalezyDoKlasyZwyciezcy = zwyciezca==klasyfikuj(noweNeurony, neuron);
-				
+//				boolean nalezyDoKlasyZwyciezcy = uprawnionyZwyciezca==teoretycznyZwyciezca;
 				// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
 				// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
-				double dist = neuron.getEuclideanDistanceFrom(zwyciezca);
+				double dist = neuron.getEuclideanDistanceFrom(uprawnionyZwyciezca);
 				if (dist < lambda) {
 					for (int wymiar = 0; wymiar < neuron.getCoordinates()
 							.size(); wymiar++) {
@@ -145,10 +146,10 @@ public class Kohonen {
 						//JEŚLI KLASA, DO KTÓREJ PRZYNALEŻY WEKTOR X, JEST ZGODNA Z KLASĄ 
 						//ZWYCIĘSKIEGO WEKTORA W, TO W JEST PRZESUWANY W STRONĘ X
 						double nowaWaga;
-						if (nalezyDoKlasyZwyciezcy) { 
+//						if (nalezyDoKlasyZwyciezcy) { 
 							nowaWaga = waga + alpha; 
 							neuron.setCoordinate(wymiar, nowaWaga);
-						}
+//						}
 						//W PRZECIWNYM PRZYPADKU ODSUWANY OD WEKTORA X
 //						else { 
 //							nowaWaga = waga - alpha;	
@@ -162,7 +163,8 @@ public class Kohonen {
 			if (i % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(noweNeurony, trainingSet);
 				System.out.println("" + i + "\t learnRate: "+learnRate 
-						+ "\t lambda: "+ lambda	);
+						+ "\t lambda: "+ lambda	
+						+ "\t error: "+ ksiazkaKodowa.getBladKwantyzacji());
 			}
 		}
 		rysujDiagramVoronoia(noweNeurony, trainingSet);
@@ -191,16 +193,16 @@ public class Kohonen {
 	private Point getZwyciezca(List<Point> neurony, Point input) {
 		double min = Double.MAX_VALUE;
 		Point winner = null;
-		for (Point point : neurony) {
-			if (point.getWon() < 0) {
+		for (Point n : neurony) {
+			if (n.getWon() < 0) {
 				// PRZYWRÓĆ NEURON DO RYWALIZACJI, ALE TYM RAZEM MUSI PAUZOWAĆ
-				point.odnotujZwyciestwo();
+				n.odnotujZwyciestwo();
 			} else {
-				double xyz = point.getEuclideanDistanceFrom(input);
-				xyz = (double) (point.getWon() + 1) * xyz;
+				double xyz = n.getEuclideanDistanceFrom(input);
+				xyz = (double) (n.getWon() + 1) * xyz;
 				if (xyz < min) {
 					min = xyz;
-					winner = point;
+					winner = n;
 				}
 			}
 		}
@@ -214,20 +216,20 @@ public class Kohonen {
 	 * getZwyciezca(), nie uwzględnia zmęczenia neuronów i nie bierze pod uwagę ilości
 	 * zwycięstw, kar, nie faworyzuje martwych neuronow. Jest to prosty klasyfikator.
 	 */
-	private Point klasyfikuj(List<Point> neurony, Point input) {
+	public static Point klasyfikuj(List<Point> neurony, Point input) {
 		double min = Double.MAX_VALUE;
 		Point winner = null;
-		for (Point point : neurony) {
-			double xyz = point.getEuclideanDistanceFrom(input);
+		for (Point n : neurony) {
+			double xyz = n.getEuclideanDistanceFrom(input);
 			if (xyz < min) {
 				min = xyz;
-				winner = point;
+				winner = n;
 			}
 		}
 		return winner;
 	}
 
-	private double getPromienSasiedztwa(int iteracja) {
+	public static double getPromienSasiedztwa(int iteracja) {
 		double radius = Math.sqrt(PODZBIORY)/2;
 //		 if (radius<1) radius=1.1;
 		double wspolczynnik = (double) LICZBA_ITERACJI / (Math.log(radius));
