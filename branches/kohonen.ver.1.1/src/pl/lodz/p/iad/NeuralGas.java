@@ -85,12 +85,13 @@ public class NeuralGas{
 			neurons = sortNeuronsByDistanceAscending(inputVector);
 			
 			modifyNeuronsWeights(i,inputVector);
-			System.out.println("iter  "+ i +" end");
+			ksiazkaKodowa.add(inputVector.getEuclideanDistanceFrom(neurons.get(0)));
+			//System.out.println("iter  "+ i +" end");
 			
 			double drawJump = LICZBA_ITERACJI * (drawStepPercent / 100);
-			System.out.println("drawJump : " + drawJump);
-			System.out.println("iter : " + i);
-			System.out.println("mod  : " + i % drawJump);
+			//System.out.println("drawJump : " + drawJump);
+			//System.out.println("iter : " + i);
+			//System.out.println("mod  : " + i % drawJump);
 			if (i % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(neurons, hydra);
 				/*System.out.println("" + i + "\t learnRate: "+learnRate 
@@ -101,6 +102,15 @@ public class NeuralGas{
 		}
 		//for end
 		//rysujDiagramVoronoia(neurons, hydra);
+	}
+	
+	public double getVectorQuantizationError(){
+		Double sum = 0.0;
+		for(Double err : ksiazkaKodowa){
+			sum += err;
+		}
+		double vqError = sum / ksiazkaKodowa.size();
+		return vqError;
 	}
 	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
 		voronoi.clear();
@@ -202,19 +212,23 @@ public class NeuralGas{
 		Map<Double, Point> neuronsWithDistances = new TreeMap<Double, Point>();
 		
 		for(Point neuron : neurons){
-			Double distance = calculateDistance(neuron,inputVector);
+			//Double distance = calculateDistance(neuron,inputVector);
+			Double distance = calculateDistanceEuclides(neuron,inputVector);
 			neuronsWithDistances.put(distance, neuron);
 		}
-		System.out.println("want to get sorted distance list : ");
+		//System.out.println("want to get sorted distance list : ");
 		for (Double str : neuronsWithDistances.keySet()) {
-		    System.out.print(str + " / ");
+		  //  System.out.print(str + " / ");
 		    sortedNeurons.add(neuronsWithDistances.get(str));
 		}
-		System.out.println(" ");
+		//System.out.println(" ");
 		
 		return sortedNeurons;
 	}
 	
+	private double calculateDistanceEuclides(Point neuron, Point inputVector){
+		return neuron.getEuclideanDistanceFrom(inputVector);
+	}
 	private double calculateDistance(Point neuron, Point inputVector){		
 		double[] wieghtsDiff = new double[inputVector.getCoordinates().size()];
 		
