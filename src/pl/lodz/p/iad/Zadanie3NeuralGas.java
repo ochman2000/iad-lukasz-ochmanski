@@ -19,7 +19,7 @@ public class Zadanie3NeuralGas {
 		//set networkMomentum
 		NeuralGas.setNetworkMomentum(0.1);
 		
-		NeuralGas.setIterLimit(1000);
+		//NeuralGas.setIterLimit(100);
 		
 		
 		NeuralGas.writeToFile(false);
@@ -28,8 +28,11 @@ public class Zadanie3NeuralGas {
 		//select columns
 		//set trainFile
 		NeuralGas neuralGas = new NeuralGas(Arrays.asList(0, 1));
+		for(int i=0;i<5;i++){
 		
 		neuralGas.startTeachAlgorithm();
+		System.out.println("VQerror : " + neuralGas.getVectorQuantizationError());
+		}
 		//set testFile
 		
 		//Kohonen.setNeuronsAmount(10);
