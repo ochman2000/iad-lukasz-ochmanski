@@ -79,7 +79,7 @@ public class NeuralGas{
 	public void startTeachAlgorithm(){
 		
 		hydra.shuffle();
-		
+		ksiazkaKodowa = new ArrayList<Double>(LICZBA_ITERACJI);
 		for(int i = 0 ; i< LICZBA_ITERACJI; i++){
 			Point inputVector = hydra.get(i);
 			neurons = sortNeuronsByDistanceAscending(inputVector);
