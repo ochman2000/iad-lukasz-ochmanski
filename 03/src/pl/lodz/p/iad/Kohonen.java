@@ -123,24 +123,23 @@ public class Kohonen {
 				throw new ArithmeticException("Learning rate się sypnął.");
 			
 			for (Point neuron : noweNeurony) {
-//				boolean nalezyDoKlasyZwyciezcy = uprawnionyZwyciezca==teoretycznyZwyciezca;
+//				boolean nalezyDoKlasyZwyciezcy = uprawnionyZwyciezca==klasyfikuj(noweNeurony, input);
+				
 				// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
 				// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
 				double dist = neuron.getEuclideanDistanceFrom(uprawnionyZwyciezca);
 				if (dist < lambda) {
-					for (int wymiar = 0; wymiar < neuron.getCoordinates()
-							.size(); wymiar++) {
 						double gauss = Math
 								.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
 						if (!Double.isFinite(gauss))
 							throw new ArithmeticException("gauss się sypnął.");
-						double waga = neuron.getCoordinate(wymiar);
-						
-						//ZGODNIE Z ZASADĄ W PUNKCIE 2 NA STRONIE 32 KSIĄŻKI STANISŁAWA
-						//OSOWSKIEGO "SIECI NEURONOWE W UJĘCIU ALGORYTMICZNYM"
 						if (0>(gauss*learnRate) || (gauss*learnRate)>1)
 							throw new RuntimeException("Współczynnik poza zakresem (0,1): "
 									+ gauss*learnRate);
+	
+						for (int wymiar = 0; wymiar < neuron.getCoordinates()
+								.size(); wymiar++) {
+						double waga = neuron.getCoordinate(wymiar);
 						double alpha = gauss*learnRate*(input.getCoordinate(wymiar)-waga);
 						
 						//JEŚLI KLASA, DO KTÓREJ PRZYNALEŻY WEKTOR X, JEST ZGODNA Z KLASĄ 
@@ -156,6 +155,9 @@ public class Kohonen {
 //							neuron.setCoordinate(wymiar, nowaWaga);
 //						}
 					}
+				}
+				else {
+					System.out.println("neuron poza promieniem sąsiedztwa.");
 				}
 			}
 
@@ -229,18 +231,18 @@ public class Kohonen {
 		return winner;
 	}
 
-	public static double getPromienSasiedztwa(int iteracja) {
-		double radius = Math.sqrt(PODZBIORY)/2;
-//		 if (radius<1) radius=1.1;
-		double wspolczynnik = (double) LICZBA_ITERACJI / (Math.log(radius));
-		if (!Double.isFinite(wspolczynnik))
-			throw new ArithmeticException("Dzielenie się sypnęło.");
-		double lambda = radius * Math.exp(-(iteracja / wspolczynnik));
-		if (!Double.isFinite(lambda))
-			throw new ArithmeticException("lambda się sypnęła.");
-		if (lambda > radius || lambda < 0)
-			throw new RuntimeException("Lambda out of range: " + lambda);
-		return lambda;
+	public static double getPromienSasiedztwa(int iterNumber){
+		//def promienSasiedztwa(k):
+		  double wartoscPoczatkowa = 0.9;
+		  double kmax = LICZBA_ITERACJI;
+		  double wartoscMinimalna = 0.01;
+		  
+		  double result = wartoscPoczatkowa *
+				  Math.pow(
+						  (wartoscMinimalna / wartoscPoczatkowa), (iterNumber / kmax)
+						  );
+		
+		  return result;
 	}
 
 
