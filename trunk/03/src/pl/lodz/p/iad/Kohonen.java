@@ -22,7 +22,7 @@ public class Kohonen {
 	private static int PODZBIORY = 8;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI;
-	private static double drawStepPercent = 0.01;
+	private static double drawStepPercent = 0.1;
 	private static boolean writeToFile = true;
 	private KsiazkaKodowa ksiazkaKodowa;
 	private Voronoi2 voronoi;
@@ -127,8 +127,10 @@ public class Kohonen {
 				
 				// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
 				// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
+//				double dist = neuron.getEuclideanDistanceFrom(input);
+//				double dist = uprawnionyZwyciezca.getEuclideanDistanceFrom(input);
 				double dist = neuron.getEuclideanDistanceFrom(uprawnionyZwyciezca);
-				if (dist < lambda) {
+				if ((dist) < lambda) {
 						double gauss = Math
 								.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
 						if (!Double.isFinite(gauss))
@@ -141,7 +143,18 @@ public class Kohonen {
 								.size(); wymiar++) {
 						double waga = neuron.getCoordinate(wymiar);
 						double alpha = gauss*learnRate*(input.getCoordinate(wymiar)-waga);
-						
+						StringBuilder sb = new StringBuilder();
+						sb.append("wymiar ["+wymiar+"] ");
+						sb.append("waga X: "+waga);
+//						sb.append("\tNeuron x: "+neuron.getCoordinate(wymiar));
+						sb.append("\tWektor We: "+input.getCoordinate(wymiar));
+						sb.append("\tX-We: "+(input.getCoordinate(wymiar)-waga));
+						sb.append("\talpha: "+alpha);
+						sb.append("\tnowaWaga: "+(waga+alpha));
+						sb.append("\tdist: "+ dist);
+						sb.append("\tgauss: "+gauss);
+						sb.append("\tlearnRate: "+learnRate);
+						System.out.println(sb);
 						//JEŚLI KLASA, DO KTÓREJ PRZYNALEŻY WEKTOR X, JEST ZGODNA Z KLASĄ 
 						//ZWYCIĘSKIEGO WEKTORA W, TO W JEST PRZESUWANY W STRONĘ X
 						double nowaWaga;
@@ -155,9 +168,11 @@ public class Kohonen {
 //							neuron.setCoordinate(wymiar, nowaWaga);
 //						}
 					}
+						System.out.println("neuron w obrębie promienia sąsiedztwa: \t"+ dist
+								+ "\t gauss: "+gauss);
 				}
 				else {
-					System.out.println("neuron poza promieniem sąsiedztwa.");
+					System.out.println("neuron poza promieniem sąsiedztwa: \t"+ dist);
 				}
 			}
 
@@ -166,7 +181,9 @@ public class Kohonen {
 				wizualizujObszaryVoronoia(noweNeurony, trainingSet);
 				System.out.println("" + i + "\t learnRate: "+learnRate 
 						+ "\t lambda: "+ lambda	
-						+ "\t error: "+ ksiazkaKodowa.getBladKwantyzacji());
+						+ "\t error: "+ ksiazkaKodowa.getBladKwantyzacji()
+						+ "\n------------------------------------------------"
+						+ "------------------------------------------------");
 			}
 		}
 		rysujDiagramVoronoia(noweNeurony, trainingSet);
@@ -233,7 +250,7 @@ public class Kohonen {
 
 	public static double getPromienSasiedztwa(int iterNumber){
 		//def promienSasiedztwa(k):
-		  double wartoscPoczatkowa = 0.9;
+		  double wartoscPoczatkowa = 0.5;
 		  double kmax = LICZBA_ITERACJI;
 		  double wartoscMinimalna = 0.01;
 		  
