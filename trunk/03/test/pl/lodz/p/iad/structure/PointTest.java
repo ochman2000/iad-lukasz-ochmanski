@@ -522,4 +522,56 @@ public class PointTest {
 		
 		assertEquals(ksiazkaKodowa.getBladKwantyzacji(), blad/3, 0.00001);
 	}
+	
+	@Test
+	public void test30() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		assertEquals(0.0, p1.getDistanceFrom(p1), 0.00001);
+	}
+	
+	@Test
+	public void test31() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 3.0);
+		p2.addCoordinate(1, 0.0);
+		p2.addCoordinate(2, 0.0);
+		p2.setGroup(p2);
+		
+		assertEquals(0.0, p2.getDistanceFrom(p1), 0.00001);
+	}
+	
+	@Test
+	public void test32() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		assertEquals(0.0, p1.getEuclideanDistanceFrom(p1), 0.00001);
+	}
+	
+	@Test
+	public void test33() {
+		Point p1 = new Point(2);
+		p1.addCoordinate(0, 3.0);
+		p1.addCoordinate(1, 0.0);
+		p1.addCoordinate(2, 0.0);
+		
+		Point p2 = new Point(2);
+		p2.addCoordinate(0, 3.0);
+		p2.addCoordinate(1, 0.0);
+		p2.addCoordinate(2, 0.0);
+		p2.setGroup(p2);
+		
+		assertEquals(0.0, p2.getEuclideanDistanceFrom(p1), 0.00001);
+	}
 }
