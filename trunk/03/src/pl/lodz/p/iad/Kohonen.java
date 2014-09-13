@@ -22,7 +22,7 @@ public class Kohonen {
 	private static int PODZBIORY = 8;
 	private static double LEARNING_RATE = 0.1;
 	private static int LICZBA_ITERACJI;
-	private static double drawStepPercent = 0.1;
+	private static double drawStepPercent = 1.0;
 	private static boolean writeToFile = true;
 	private KsiazkaKodowa ksiazkaKodowa;
 	private Voronoi2 voronoi;
@@ -56,7 +56,7 @@ public class Kohonen {
 		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 
 	}
-	
+
 	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
 		voronoi.clear();
 		for (Point point : mapa) {
@@ -76,7 +76,7 @@ public class Kohonen {
 	}
 
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi3 voronoi3= new Voronoi3();
+		Voronoi3 voronoi3 = new Voronoi3();
 		for (Point point : mapa) {
 			voronoi3.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
 		}
@@ -106,10 +106,10 @@ public class Kohonen {
 			List<Point> neurony) {
 		// ZRÓB DEEP COPY OF THE ARRAYLIST
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
-		
+
 		// RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
-		
+
 		for (int i = 0; i < LICZBA_ITERACJI; i++) {
 			Point input = trainingSet.get(i);
 			input = input.getNormalized();
@@ -121,67 +121,69 @@ public class Kohonen {
 					* Math.exp(-(i / (double) LICZBA_ITERACJI));
 			if (!Double.isFinite(learnRate))
 				throw new ArithmeticException("Learning rate się sypnął.");
-			
+
+			// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
+			// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
+			int numer=0;
+			StringBuilder sb = new StringBuilder();
 			for (Point neuron : noweNeurony) {
-//				boolean nalezyDoKlasyZwyciezcy = uprawnionyZwyciezca==klasyfikuj(noweNeurony, input);
-				
-				// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
-				// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
-//				double dist = neuron.getEuclideanDistanceFrom(input);
-//				double dist = uprawnionyZwyciezca.getEuclideanDistanceFrom(input);
-				double dist = neuron.getEuclideanDistanceFrom(uprawnionyZwyciezca);
+				numer++;
+				// ZE WZGLĘDU NA TO W JAKI SPOSÓB JEST NAPISANY MÓJ KOD, NALEŻY
+				// UWAŻAĆ,
+				// ABY NIE LICZYĆ ODLEGŁOŚCI OD PRZESUWAJĄCEGO SIĘ ZWYCIĘZCY
+				// WIĘC ZROBIĘ GŁUPIĄ KOPIĘ
+				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();
+				double dist = neuron.getEuclideanDistanceFrom(tymczasowyZwyciezca);
+				sb.append("Odległość neuronu "+numer+" od neuronu zwycięzcy: "
+						+ dist);
 				if ((dist) < lambda) {
-						double gauss = Math
-								.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
-						if (!Double.isFinite(gauss))
-							throw new ArithmeticException("gauss się sypnął.");
-						if (0>(gauss*learnRate) || (gauss*learnRate)>1)
-							throw new RuntimeException("Współczynnik poza zakresem (0,1): "
-									+ gauss*learnRate);
-	
-						for (int wymiar = 0; wymiar < neuron.getCoordinates()
-								.size(); wymiar++) {
+					double gauss = Math
+							.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
+					if (!Double.isFinite(gauss))
+						throw new ArithmeticException("gauss się sypnął.");
+					if (0 > (gauss * learnRate) || (gauss * learnRate) > 1)
+						throw new RuntimeException(
+								"Współczynnik poza zakresem (0,1): " + gauss
+										* learnRate);
+
+					for (int wymiar = 0; wymiar < neuron.getCoordinates()
+							.size(); wymiar++) {
 						double waga = neuron.getCoordinate(wymiar);
-						double alpha = gauss*learnRate*(input.getCoordinate(wymiar)-waga);
-						StringBuilder sb = new StringBuilder();
-						sb.append("wymiar ["+wymiar+"] ");
-						sb.append("waga X: "+waga);
-//						sb.append("\tNeuron x: "+neuron.getCoordinate(wymiar));
-						sb.append("\tWektor We: "+input.getCoordinate(wymiar));
-						sb.append("\tX-We: "+(input.getCoordinate(wymiar)-waga));
-						sb.append("\talpha: "+alpha);
-						sb.append("\tnowaWaga: "+(waga+alpha));
-						sb.append("\tdist: "+ dist);
-						sb.append("\tgauss: "+gauss);
-						sb.append("\tlearnRate: "+learnRate);
-						System.out.println(sb);
-						//JEŚLI KLASA, DO KTÓREJ PRZYNALEŻY WEKTOR X, JEST ZGODNA Z KLASĄ 
-						//ZWYCIĘSKIEGO WEKTORA W, TO W JEST PRZESUWANY W STRONĘ X
-						double nowaWaga;
-//						if (nalezyDoKlasyZwyciezcy) { 
-							nowaWaga = waga + alpha; 
-							neuron.setCoordinate(wymiar, nowaWaga);
-//						}
-						//W PRZECIWNYM PRZYPADKU ODSUWANY OD WEKTORA X
-//						else { 
-//							nowaWaga = waga - alpha;	
-//							neuron.setCoordinate(wymiar, nowaWaga);
-//						}
+						// METODA SUBRAKTYWNA
+						double alpha = gauss * learnRate
+								* (input.getCoordinate(wymiar) - waga);
+						double nowaWaga = waga + alpha;
+						neuron.setCoordinate(wymiar, nowaWaga);
+
+//						sb.append("\nOdległość neuronu "+numer+" od neuronu zwycięzcy: "
+//								+ dist);
+						sb.append("\n\twymiar[" + wymiar + "] ");
+						sb.append("waga N: " + waga);
+						sb.append("\tWektor We: " + input.getCoordinate(wymiar));
+						sb.append("\tWe-N: "
+								+ (input.getCoordinate(wymiar) - waga));
+						sb.append("\talpha: " + alpha);
+						sb.append("\tnowaWaga: " + (waga + alpha));
+						sb.append("\tdist: " + dist);
+						sb.append("\tlambda: "+ lambda);
+						sb.append("\tlearnRate: " + learnRate);
+						sb.append("\tgauss: " + gauss);
 					}
-						System.out.println("neuron w obrębie promienia sąsiedztwa: \t"+ dist
-								+ "\t gauss: "+gauss);
+					sb.append("\n");
 				}
 				else {
-					System.out.println("neuron poza promieniem sąsiedztwa: \t"+ dist);
+					sb.append("\tprzekracza dopuszczalny promień sąsiedztwa: "+lambda+"\n");
 				}
 			}
+			sb.append("----------------------------------------");
+			System.out.println(sb);
 
 			double drawJump = LICZBA_ITERACJI * (drawStepPercent / 100);
 			if (i % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(noweNeurony, trainingSet);
-				System.out.println("" + i + "\t learnRate: "+learnRate 
-						+ "\t lambda: "+ lambda	
-						+ "\t error: "+ ksiazkaKodowa.getBladKwantyzacji()
+				System.out.println("" + i + "\t learnRate: " + learnRate
+						+ "\t lambda: " + lambda + "\t error: "
+						+ ksiazkaKodowa.getBladKwantyzacji()
 						+ "\n------------------------------------------------"
 						+ "------------------------------------------------");
 			}
@@ -228,12 +230,13 @@ public class Kohonen {
 		winner.odnotujZwyciestwo();
 		return winner;
 	}
-	
+
 	/**
-	 * Zwraca centroida (wektor Voronoia) dla danego sygnału wejściowego.
-	 * Metoda używana do testowania wektora wejściowego. W przeciwieństwie do metody
-	 * getZwyciezca(), nie uwzględnia zmęczenia neuronów i nie bierze pod uwagę ilości
-	 * zwycięstw, kar, nie faworyzuje martwych neuronow. Jest to prosty klasyfikator.
+	 * Zwraca centroida (wektor Voronoia) dla danego sygnału wejściowego. Metoda
+	 * używana do testowania wektora wejściowego. W przeciwieństwie do metody
+	 * getZwyciezca(), nie uwzględnia zmęczenia neuronów i nie bierze pod uwagę
+	 * ilości zwycięstw, kar, nie faworyzuje martwych neuronow. Jest to prosty
+	 * klasyfikator.
 	 */
 	public static Point klasyfikuj(List<Point> neurony, Point input) {
 		double min = Double.MAX_VALUE;
@@ -248,20 +251,18 @@ public class Kohonen {
 		return winner;
 	}
 
-	public static double getPromienSasiedztwa(int iterNumber){
-		//def promienSasiedztwa(k):
-		  double wartoscPoczatkowa = 0.5;
-		  double kmax = LICZBA_ITERACJI;
-		  double wartoscMinimalna = 0.01;
-		  
-		  double result = wartoscPoczatkowa *
-				  Math.pow(
-						  (wartoscMinimalna / wartoscPoczatkowa), (iterNumber / kmax)
-						  );
-		
-		  return result;
-	}
+	public static double getPromienSasiedztwa(int iterNumber) {
+		// def promienSasiedztwa(k):
+		double wartoscPoczatkowa = 0.5;
+		double kmax = LICZBA_ITERACJI;
+		double wartoscMinimalna = 0.1;
 
+		double result = wartoscPoczatkowa
+				* Math.pow((wartoscMinimalna / wartoscPoczatkowa),
+						(iterNumber / kmax));
+
+		return result;
+	}
 
 	public static void setIterLimit(int limit) {
 		LICZBA_ITERACJI = limit;
