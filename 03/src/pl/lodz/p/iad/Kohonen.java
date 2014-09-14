@@ -56,11 +56,11 @@ public class Kohonen {
 	}
 	
 	private void teach() {
-		if (NORMALIZATION) hydra = hydra.getNormalized();
+		if (NORMALIZATION) { hydra = hydra.getNormalized(); }
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
 		neurony = new ArrayList<Point>(NUMBER_OF_NEURONS);
-		voronoi = new Voronoi2(512, 512, 0);
+		voronoi = new Voronoi2();
 		teach(hydra);
 	}
 
@@ -70,7 +70,7 @@ public class Kohonen {
 		while (neurony.size() < NUMBER_OF_NEURONS) {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
-			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
+//			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
 			if (!neurony.contains(centroid)) {
@@ -188,7 +188,7 @@ public class Kohonen {
 
 		for (int i = 0; i < wielkoscZbioruUczacego; i++) {
 			Point input = trainingSet.get(i);
-			if (NORMALIZATION) { input = input.getNormalized(); }
+//			if (NORMALIZATION) { input = input.getNormalized(); }
 			Point uprawnionyZwyciezca = getZwyciezca(noweNeurony, input);
 			for (Point neuron : noweNeurony) {
 				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();

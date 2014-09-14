@@ -26,14 +26,19 @@ public class Voronoi2 implements DrawListener {
 	private static int SIZE = 512;
 //	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
 														// (i, j) nearest?
-	private static int vornoiCounter = 0;
-	private Draw draw = new Draw("Algorytm Kohonena");
+	protected static int vornoiCounter = 0;
+	protected Draw draw;
 
 	public Voronoi2() {
-		this(SIZE, SIZE, 0);
+		this(SIZE, SIZE, 0, "Algorytm Kohonena");
+	}
+	
+	public Voronoi2(String name) {
+		this(SIZE, SIZE, 0, name);
 	}
 
-	public Voronoi2(int w, int h, int zoom) {
+	public Voronoi2(int w, int h, int zoom, String name) {
+		draw = new Draw(name);
 		draw.setCanvasSize(w, h);
 		draw.setXscale(0, w);
 		draw.setYscale(0, h);
