@@ -12,8 +12,8 @@ public class Zadanie3 {
 		
 //		new Kmeans(Arrays.asList(5, 6, 7));
 		
-		new Kohonen(Arrays.asList(0, 1));
-//		new Kohonen(Arrays.asList(2, 3, 4));
+//		new Kohonen(Arrays.asList(0, 1));
+		new Kohonen(Arrays.asList(2, 3, 4));
 //		new Kohonen(Arrays.asList(5, 6, 7));
 	}
 }

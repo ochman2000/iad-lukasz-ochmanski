@@ -28,12 +28,11 @@ public class Kohonen {
 	 */
 	private int NUMBER_OF_NEURONS = 8;
 	private double LEARNING_RATE = 0.1;
-	private double RADIUS = 0.5;
+	private double RADIUS = 0.6;
 	private int LIMIT_EPOK = 100;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
-	private boolean DEBUG_MODE = true;
-	private boolean NORMALIZATION = false;
+	private boolean NORMALIZATION = true;
 	private Method METHOD = Method.WTM;
 	
 	private int wielkoscZbioruUczacego = 100;
@@ -44,6 +43,7 @@ public class Kohonen {
 	public Kohonen(List<Integer> kolumny) {
 		epochLog = new StringBuilder();
 		epochCSV = new StringBuilder();
+		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;błąd kwantyzacji\r\n");
 		
 		Mapa hydra = new Mapa(kolumny);
 		if (NORMALIZATION) hydra = hydra.getNormalized();
@@ -58,9 +58,12 @@ public class Kohonen {
 		Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
 		Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
 		try {
-			BufferedWriter epochLogWriter = Files.newBufferedWriter(fileOut02, charset);
-			epochLogWriter.write(epochLog.toString());
-			epochLogWriter.close();
+			BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
+			BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+			epochLogWriterTxt.write(epochLog.toString());
+			epochLogWriterCsv.write(epochCSV.toString());
+			epochLogWriterTxt.close();
+			epochLogWriterCsv.close();
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
 		}
@@ -180,20 +183,9 @@ public class Kohonen {
 			Point input = trainingSet.get(i);
 			if (NORMALIZATION) input = input.getNormalized();
 			Point uprawnionyZwyciezca = getZwyciezca(noweNeurony, input);
-
-			// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
-			// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
-//			int numer=0;
 			for (Point neuron : noweNeurony) {
-//				numer++;
-				// ZE WZGLĘDU NA TO W JAKI SPOSÓB JEST NAPISANY MÓJ KOD, NALEŻY
-				// UWAŻAĆ,
-				// ABY NIE LICZYĆ ODLEGŁOŚCI OD PRZESUWAJĄCEGO SIĘ ZWYCIĘZCY
-				// WIĘC ZROBIĘ GŁUPIĄ KOPIĘ
 				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();
 				double dist = neuron.getEuclideanDistanceFrom(tymczasowyZwyciezca);
-//				iterationLog.append("Odległość neuronu "+numer+" od neuronu zwycięzcy: "
-//						+ dist);
 				double gauss = Math.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
 				if (!Double.isFinite(gauss))
 					throw new ArithmeticException("gauss się sypnął.");
@@ -208,22 +200,8 @@ public class Kohonen {
 					double alpha = gauss * learnRate * (input.getCoordinate(wymiar) - waga);
 					double nowaWaga = waga + alpha;
 					neuron.setCoordinate(wymiar, nowaWaga);
-
-//					iterationLog.append("\n\twymiar[" + wymiar + "] ");
-//					iterationLog.append("waga N: " + waga);
-//					iterationLog.append("\tWektor We: " + input.getCoordinate(wymiar));
-//					iterationLog.append("\tWe-N: "
-//							+ (input.getCoordinate(wymiar) - waga));
-//					iterationLog.append("\talpha: " + alpha);
-//					iterationLog.append("\tnowaWaga: " + (waga + alpha));
-//					iterationLog.append("\tdist: " + dist);
-//					iterationLog.append("\tlambda: "+ lambda);
-//					iterationLog.append("\tlearnRate: " + learnRate);
-//					iterationLog.append("\tgauss: " + gauss);
 				}
-//				iterationLog.append("\n");
 			}
-//			iterationLog.append("----------------------------------------\n");
 		}
 		return noweNeurony;
 	}
@@ -288,7 +266,6 @@ public class Kohonen {
 	}
 
 	public double getPromienSasiedztwa(int epochNumber) {
-		// def promienSasiedztwa(k):
 		double wartoscPoczatkowa = RADIUS;
 		double kmax = LIMIT_EPOK;
 		double wartoscMinimalna = 0.01;
