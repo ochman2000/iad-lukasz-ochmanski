@@ -33,7 +33,7 @@ public class Kohonen {
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
 	private boolean DEBUG_MODE = true;
-	private boolean NORMALIZATION = true;
+	private boolean NORMALIZATION = false;
 	private Method METHOD = Method.WTM;
 	
 	private int liczbaIteracji;
