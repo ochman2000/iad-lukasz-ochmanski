@@ -32,10 +32,10 @@ public class Kohonen {
 	private int LIMIT_EPOK = 100;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
-	private boolean NORMALIZATION = true;
+	private boolean NORMALIZATION = false;
 	private Method METHOD = Method.WTM;
 	
-	private int wielkoscZbioruUczacego = 100;
+	private int wielkoscZbioruUczacego;
 	private Voronoi2 voronoi;
 	private StringBuilder epochLog;
 	private StringBuilder epochCSV;
@@ -92,7 +92,6 @@ public class Kohonen {
 			epochLog.append(epoka+ "\t");
 			epochCSV.append(epoka+";");
 			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony, epoka);
-			double drawJump = wielkoscZbioruUczacego * (DRAW_STEP_IN_PERCENTS / 100);
 			
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
 			KsiazkaKodowa ksiazkaKodowa = new KsiazkaKodowa(wielkoscZbioruUczacego);;
@@ -108,6 +107,7 @@ public class Kohonen {
 			epochLog.append(msg);
 			epochCSV.append(error+"\r\n");
 			
+			double drawJump = LIMIT_EPOK * (DRAW_STEP_IN_PERCENTS / 100);
 			if (epoka % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(noweNeurony, hydra);
 			}
