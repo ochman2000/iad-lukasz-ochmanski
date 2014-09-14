@@ -17,6 +17,7 @@ import java.util.TreeMap;
 
 import pl.lodz.p.iad.diagram.Voronoi5;
 import pl.lodz.p.iad.diagram.Voronoi6;
+import pl.lodz.p.iad.structure.KsiazkaKodowa;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
@@ -24,7 +25,7 @@ public class NeuralGas{
 	
 	private int NUMBER_OF_NEURONS = 10;
 	private double LEARNING_RATE = 1.0;
-	private double RADIUS = 0.9;
+	private double RADIUS = 0.6;
 	private int LIMIT_EPOK = 100;
 	private boolean LOG = true;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
@@ -34,10 +35,9 @@ public class NeuralGas{
 	private int erasLimit = 1;
 	private double networkAlpha = 0.01;
 	private double networkMomentum = 0.1;
-	private int wielkoscZbioruUczacego = 0;
-	private List<Double> ksiazkaKodowa;
-	private List<Point> neurons = new ArrayList<Point>();
 	private List<Point> learnPattern = new ArrayList<Point>();
+	private int wielkoscZbioruUczacego = 0;
+	private List<Point> neurons = new ArrayList<Point>();
 	private Mapa hydra;
 	private Voronoi5 voronoi;
 	private StringBuilder epochLog;
@@ -60,7 +60,6 @@ public class NeuralGas{
 		if (NORMALIZATION) hydra = hydra.getNormalized();
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
-		ksiazkaKodowa = new ArrayList<Double>(wielkoscZbioruUczacego);
 		voronoi = new Voronoi5();
 		
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
@@ -75,19 +74,30 @@ public class NeuralGas{
 				neurons.add(centroid);
 			}
 		}
-		hydra.shuffle();
-		ksiazkaKodowa = new ArrayList<Double>(wielkoscZbioruUczacego);
-		for(int i = 0 ; i< wielkoscZbioruUczacego; i++){
-			Point inputVector = hydra.get(i);
-			neurons = sortNeuronsByDistanceAscending(inputVector);
+		for (int epoka=0; epoka<LIMIT_EPOK; epoka++) {
+			System.out.print(epoka+ "\t");
+			epochLog.append(epoka+ "\t");
+			epochCSV.append(epoka+";");
+			hydra.shuffle();
+			for(int i = 0 ; i< wielkoscZbioruUczacego; i++){
+				Point inputVector = hydra.get(i);
+				neurons = sortNeuronsByDistanceAscending(inputVector);
+				modifyNeuronsWeights(epoka, inputVector);				
+			}
+			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
+			double error = new KsiazkaKodowa(hydra, neurons).getBladKwantyzacji();
 			
-			modifyNeuronsWeights(i,inputVector);
-			ksiazkaKodowa.add(inputVector.getEuclideanDistanceFrom(neurons.get(0)));
+			String msg = "error: " + error +"\r\n"
+					+ "------------------------------------------------"
+					+ "------------------------------------------------\r\n";
+			System.out.print(msg);
+			epochLog.append(msg);
+			epochCSV.append(error+"\r\n");
 			
-			double drawJump = wielkoscZbioruUczacego * (DRAW_STEP_IN_PERCENTS / 100);
-			if (i % drawJump == 0.0) {
+			double drawJump = LIMIT_EPOK * (DRAW_STEP_IN_PERCENTS / 100);
+			if (epoka % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(neurons, hydra);
-			}	
+			}
 		}
 		rysujDiagramVoronoia(neurons, hydra);
 		
@@ -159,7 +169,7 @@ public class NeuralGas{
 			Point inputVector){
 		Point neuron = neurons.get(neuronIndex);
 		double newCoordinate = neuron.getCoordinate(dimm) + calcLearningFactor(iterNumber) 
-				* calcNeighbourhoodFunc(iterNumber,neuronIndex) 
+				* calcNeighbourhoodFunc(iterNumber, neuronIndex) 
 				* (inputVector.getCoordinate(dimm) - neuron.getCoordinate(dimm) );
 		neuron.setCoordinate(dimm, newCoordinate);
 	}
