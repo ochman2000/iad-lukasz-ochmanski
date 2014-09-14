@@ -35,48 +35,42 @@ public class Kohonen {
 	private boolean NORMALIZATION = false;
 	private Method METHOD = Method.WTM;
 	
+	private List<Integer> kolumny;
+	private List<Point> neurony;
+	private Mapa hydra;
 	private int wielkoscZbioruUczacego;
 	private Voronoi2 voronoi;
 	private StringBuilder epochLog;
 	private StringBuilder epochCSV;
 
-	public Kohonen(List<Integer> kolumny) {
+	public Kohonen() {
 		epochLog = new StringBuilder();
 		epochCSV = new StringBuilder();
 		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;błąd kwantyzacji\r\n");
-		
-		Mapa hydra = new Mapa(kolumny);
+	}
+	
+	public Kohonen(List<Integer> kolumny) {
+		this();
+		setKolumny(kolumny);
+		teach();
+	}
+	
+	private void teach() {
 		if (NORMALIZATION) hydra = hydra.getNormalized();
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
-		List<Point> neurony = new ArrayList<Point>(NUMBER_OF_NEURONS);
+		neurony = new ArrayList<Point>(NUMBER_OF_NEURONS);
 		voronoi = new Voronoi2(512, 512, 0);
-
-		teach(hydra, neurony);
-		
-		Charset charset = StandardCharsets.UTF_8;
-		Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
-		Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
-		try {
-			BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
-			BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
-			epochLogWriterTxt.write(epochLog.toString());
-			epochLogWriterCsv.write(epochCSV.toString());
-			epochLogWriterTxt.close();
-			epochLogWriterCsv.close();
-		} catch (IOException x) {
-			System.err.format("IOException: %s%n", x);
-		}
-		System.out.println("Program terminated.");
+		teach(hydra);
 	}
 
-	private void teach(Mapa hydra, List<Point> neurony) {
+	private void teach(Mapa hydra) {
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
 		while (neurony.size() < NUMBER_OF_NEURONS) {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
-			if (NORMALIZATION) centroid = centroid.getNormalized();
+			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
 			if (!neurony.contains(centroid)) {
@@ -113,6 +107,21 @@ public class Kohonen {
 			}
 		}
 		rysujDiagramVoronoia(noweNeurony, hydra);
+		
+		Charset charset = StandardCharsets.UTF_8;
+		Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
+		Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
+		try {
+			BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
+			BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+			epochLogWriterTxt.write(epochLog.toString());
+			epochLogWriterCsv.write(epochCSV.toString());
+			epochLogWriterTxt.close();
+			epochLogWriterCsv.close();
+		} catch (IOException x) {
+			System.err.format("IOException: %s%n", x);
+		}
+		System.out.println("Program terminated.");
 	}
 
 	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
@@ -181,17 +190,12 @@ public class Kohonen {
 
 		for (int i = 0; i < wielkoscZbioruUczacego; i++) {
 			Point input = trainingSet.get(i);
-			if (NORMALIZATION) input = input.getNormalized();
+			if (NORMALIZATION) { input = input.getNormalized(); }
 			Point uprawnionyZwyciezca = getZwyciezca(noweNeurony, input);
 			for (Point neuron : noweNeurony) {
 				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();
 				double dist = neuron.getEuclideanDistanceFrom(tymczasowyZwyciezca);
 				double gauss = Math.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
-				if (!Double.isFinite(gauss))
-					throw new ArithmeticException("gauss się sypnął.");
-				if (0 > (gauss * learnRate) || (gauss * learnRate) > 1)
-					throw new RuntimeException("Współczynnik poza zakresem (0,1): "
-							+ gauss	* learnRate);
 				if (METHOD==Method.WTA) { gauss = (dist<lambda) ? 1 : 0; }
 				for (int wymiar = 0; wymiar < neuron.getCoordinates()
 						.size(); wymiar++) {
@@ -277,16 +281,41 @@ public class Kohonen {
 		return result;
 	}
 
-	public void setNeuronsAmount(int neuronsAmount) {
-		NUMBER_OF_NEURONS = neuronsAmount;
+	public void setNUMBER_OF_NEURONS(int nUMBER_OF_NEURONS) {
+		NUMBER_OF_NEURONS = nUMBER_OF_NEURONS;
 	}
 
-	public void setDrawStepPercent(int newDrawStepPercent) {
-		DRAW_STEP_IN_PERCENTS = newDrawStepPercent;
+	public void setLEARNING_RATE(double lEARNING_RATE) {
+		LEARNING_RATE = lEARNING_RATE;
 	}
 
-	public void writeToFile(boolean write) {
-		WRITE_TO_FILE = write;
+	public void setRADIUS(double rADIUS) {
+		RADIUS = rADIUS;
+	}
+
+	public void setLIMIT_EPOK(int lIMIT_EPOK) {
+		LIMIT_EPOK = lIMIT_EPOK;
+	}
+
+	public void setDRAW_STEP_IN_PERCENTS(double dRAW_STEP_IN_PERCENTS) {
+		DRAW_STEP_IN_PERCENTS = dRAW_STEP_IN_PERCENTS;
+	}
+
+	public void setWRITE_TO_FILE(boolean wRITE_TO_FILE) {
+		WRITE_TO_FILE = wRITE_TO_FILE;
+	}
+
+	public void setNORMALIZATION(boolean nORMALIZATION) {
+		NORMALIZATION = nORMALIZATION;
+	}
+
+	public void setMETHOD(Method mETHOD) {
+		METHOD = mETHOD;
+	}
+
+	public void setKolumny(List<Integer> kolumny) {
+		this.kolumny = kolumny;
+		hydra = new Mapa(this.kolumny);
 	}
 }
 
