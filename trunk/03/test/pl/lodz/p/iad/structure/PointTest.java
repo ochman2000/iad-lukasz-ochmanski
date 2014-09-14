@@ -417,7 +417,7 @@ public class PointTest {
 		Point p2 = new Point(2);
 		p2.addCoordinate(0, 3.5);
 		p2.addCoordinate(1, 3.5);
-		ksiazkaKodowa.put(p2, ksiazkaKodowa.klasyfikuj(neurony, p2));
+		ksiazkaKodowa.put(p2, KsiazkaKodowa.klasyfikuj(neurony, p2));
 
 		Point p3 = new Point(2);
 		p3.addCoordinate(0, 5.5);

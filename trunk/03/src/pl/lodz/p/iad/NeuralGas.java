@@ -32,9 +32,13 @@ public class NeuralGas{
 	private boolean WRITE_TO_FILE = true;
 	private boolean NORMALIZATION = false;
 	
+	@SuppressWarnings("unused")
 	private int erasLimit = 1;
+	@SuppressWarnings("unused")
 	private double networkAlpha = 0.01;
+	@SuppressWarnings("unused")
 	private double networkMomentum = 0.1;
+	@SuppressWarnings("unused")
 	private List<Point> learnPattern = new ArrayList<Point>();
 	private int wielkoscZbioruUczacego = 0;
 	private List<Point> neurons = new ArrayList<Point>();
