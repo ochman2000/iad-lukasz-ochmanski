@@ -36,14 +36,20 @@ public class Kohonen {
 	private boolean NORMALIZATION = false;
 	private Method METHOD = Method.WTM;
 	
-	private int liczbaIteracji;
+	private int liczbaIteracji=100;
 	private KsiazkaKodowa ksiazkaKodowa;
-	private BufferedWriter log;
 	private Voronoi2 voronoi;
-	private BufferedWriter debug;
-	private StringBuilder sb01;
+	private StringBuilder epochLog;
+	private StringBuilder epochCSV;
+	private StringBuilder iterationLog;
+	private StringBuilder iteraionCSV;
 
 	public Kohonen(List<Integer> kolumny) {
+		epochLog = new StringBuilder();
+		iterationLog = new StringBuilder();
+		epochCSV = new StringBuilder();
+		iteraionCSV = new StringBuilder();
+		
 		Mapa hydra = new Mapa(kolumny);
 		if (NORMALIZATION) hydra = hydra.getNormalized();
 		if (liczbaIteracji == 0)
@@ -64,34 +70,26 @@ public class Kohonen {
 				neurony.add(centroid);
 			}
 		}
-		sb01 = new StringBuilder();
-		sb01.append("Wylosowane neurony:\n");
-		for (Point point : neurony) { sb01.append(point + "\n"); }
-		sb01.append("\n");
+
+		// ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
+		System.out.println("Running Kohonen neural network, by Lukasz Ochmanski.");
+		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
 		
 		Charset charset = StandardCharsets.UTF_8;
-		Path fileOut01 = Paths.get("resources/kohonen_log.txt");
-		Path fileOut02 = Paths.get("resources/sprawozdanie.txt");
+		Path fileOut01 = Paths.get("resources/kohonen/iteration_log.txt");
+		Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
 		try {
-			debug = Files.newBufferedWriter(fileOut01, charset);
-			log = Files.newBufferedWriter(fileOut02, charset);
+			BufferedWriter iterationLogWriter = Files.newBufferedWriter(fileOut01, charset);
+			BufferedWriter epochLogWriter = Files.newBufferedWriter(fileOut02, charset);
+			iterationLogWriter.write(iterationLog.toString());
+			epochLogWriter.write(epochLog.toString());
+			iterationLogWriter.close();
+			epochLogWriter.close();
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
 		}
-
-		// ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
-		try {
-			debug.write("Epoka nr:\t1\n");
-			System.out.println("Epoka nr:\t1");
-		}
-		catch (IOException e) {	e.printStackTrace(); }
-		List<Point> noweNeurony = przesunNeuronyZwycieskie(hydra, neurony);
-		try { 
-			debug.close();
-			log.close();
-			System.out.println("Program terminated.");
-		} 
-		catch (IOException e) {	e.printStackTrace(); }
+		
+		System.out.println("Program terminated.");
 	}
 
 	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
@@ -141,7 +139,7 @@ public class Kohonen {
 	 */
 	private List<Point> przesunNeuronyZwycieskie(Mapa trainingSet,
 			List<Point> neurony) {
-		StringBuilder sb02 = new StringBuilder();
+		StringBuilder epochLog = new StringBuilder();
 		// ZRÓB DEEP COPY OF THE ARRAYLIST
 		List<Point> noweNeurony = Kohonen.deepCopy(neurony);
 
@@ -163,7 +161,6 @@ public class Kohonen {
 			// STOPIEŃ UAKTYWNIENIA NEURONÓW Z SĄSIEDZTWA ZALEŻY OD ODLEGŁOŚCI
 			// ICH WEKTORÓW WAGOWYCH OD WAG NEURONU WYGRYWAJĄCEGO.
 			int numer=0;
-			StringBuilder sb03 = new StringBuilder();
 			for (Point neuron : noweNeurony) {
 				numer++;
 				// ZE WZGLĘDU NA TO W JAKI SPOSÓB JEST NAPISANY MÓJ KOD, NALEŻY
@@ -172,7 +169,7 @@ public class Kohonen {
 				// WIĘC ZROBIĘ GŁUPIĄ KOPIĘ
 				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();
 				double dist = neuron.getEuclideanDistanceFrom(tymczasowyZwyciezca);
-				sb03.append("Odległość neuronu "+numer+" od neuronu zwycięzcy: "
+				iterationLog.append("Odległość neuronu "+numer+" od neuronu zwycięzcy: "
 						+ dist);
 				double gauss = Math.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
 				if (!Double.isFinite(gauss))
@@ -190,41 +187,34 @@ public class Kohonen {
 					double nowaWaga = waga + alpha;
 					neuron.setCoordinate(wymiar, nowaWaga);
 
-					sb03.append("\n\twymiar[" + wymiar + "] ");
-					sb03.append("waga N: " + waga);
-					sb03.append("\tWektor We: " + input.getCoordinate(wymiar));
-					sb03.append("\tWe-N: "
+					iterationLog.append("\n\twymiar[" + wymiar + "] ");
+					iterationLog.append("waga N: " + waga);
+					iterationLog.append("\tWektor We: " + input.getCoordinate(wymiar));
+					iterationLog.append("\tWe-N: "
 							+ (input.getCoordinate(wymiar) - waga));
-					sb03.append("\talpha: " + alpha);
-					sb03.append("\tnowaWaga: " + (waga + alpha));
-					sb03.append("\tdist: " + dist);
-					sb03.append("\tlambda: "+ lambda);
-					sb03.append("\tlearnRate: " + learnRate);
-					sb03.append("\tgauss: " + gauss);
+					iterationLog.append("\talpha: " + alpha);
+					iterationLog.append("\tnowaWaga: " + (waga + alpha));
+					iterationLog.append("\tdist: " + dist);
+					iterationLog.append("\tlambda: "+ lambda);
+					iterationLog.append("\tlearnRate: " + learnRate);
+					iterationLog.append("\tgauss: " + gauss);
 				}
-				sb03.append("\n");
+				iterationLog.append("\n");
 			}
-			sb03.append("----------------------------------------\n");
-//			System.out.print(sb03);
-			try { 
-				debug.write(sb03.toString()); 
-			}
-			catch (IOException e) {	e.printStackTrace(); }
+			iterationLog.append("----------------------------------------\n");
+			 
 
 			double drawJump = liczbaIteracji * (DRAW_STEP_IN_PERCENTS / 100);
 			if (i % drawJump == 0.0) {
 				wizualizujObszaryVoronoia(noweNeurony, trainingSet);
-				sb02.append(i);
-				sb02.append("\t learnRate: " + learnRate);
-				sb02.append("\t lambda: " + lambda);
-				sb02.append("\t error: " + ksiazkaKodowa.getBladKwantyzacji());
-				sb02.append("\n------------------------------------------------");
-				sb02.append("------------------------------------------------\n");
-//				System.out.print(sb02);
+				epochLog.append(i);
+				epochLog.append("\t learnRate: " + learnRate);
+				epochLog.append("\t lambda: " + lambda);
+				epochLog.append("\t error: " + ksiazkaKodowa.getBladKwantyzacji());
+				epochLog.append("\n------------------------------------------------");
+				epochLog.append("------------------------------------------------\n");
 			}
 		}
-		try { log.write(sb02.toString());	}
-		catch (IOException e) { e.printStackTrace();	}
 		rysujDiagramVoronoia(noweNeurony, trainingSet);
 		return noweNeurony;
 	}

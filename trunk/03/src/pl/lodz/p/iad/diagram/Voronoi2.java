@@ -88,11 +88,11 @@ public class Voronoi2 implements DrawListener {
 
 	// save the screen to a file
 	public void keyTyped(char c) {
-		draw.save("resources/voronoi" + c + ".png");
+		draw.save("resources/kohonenvoronoi" + c + ".png");
 	}
 
 	public void saveVornoiToFile() {
-		draw.save("resources/voronoi" + vornoiCounter + ".png");
+		draw.save("resources/kohonen/voronoi" + vornoiCounter + ".png");
 		vornoiCounter++;
 	}
 
