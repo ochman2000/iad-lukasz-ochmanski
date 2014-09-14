@@ -26,8 +26,8 @@ public class Voronoi3 implements DrawListener {
 	private static int SIZE = 512;
 	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
 														// (i, j) nearest?
-	private static int vornoiCounter = 0;
-	private Draw draw = new Draw();
+	protected static int vornoiCounter = 0;
+	protected Draw draw = new Draw();
 
 	public Voronoi3() {
 		this(SIZE, SIZE, 0);
