@@ -385,7 +385,7 @@ public class PointTest {
 		input.addCoordinate(0, 4.0);
 		input.addCoordinate(1, 4.0);
 		
-		Point winner = Kohonen.klasyfikuj(neurony, input);
+		Point winner = KsiazkaKodowa.klasyfikuj(neurony, input);
 		assertTrue(winner==p3);
 	}
 	
@@ -412,17 +412,17 @@ public class PointTest {
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 1.5);
 		p1.addCoordinate(1, 1.5);
-		ksiazkaKodowa.put(p1, Kohonen.klasyfikuj(neurony, p1));
+		ksiazkaKodowa.put(p1, KsiazkaKodowa.klasyfikuj(neurony, p1));
 		
 		Point p2 = new Point(2);
 		p2.addCoordinate(0, 3.5);
 		p2.addCoordinate(1, 3.5);
-		ksiazkaKodowa.put(p2, Kohonen.klasyfikuj(neurony, p2));
+		ksiazkaKodowa.put(p2, ksiazkaKodowa.klasyfikuj(neurony, p2));
 
 		Point p3 = new Point(2);
 		p3.addCoordinate(0, 5.5);
 		p3.addCoordinate(1, 5.5);
-		ksiazkaKodowa.put(p3, Kohonen.klasyfikuj(neurony, p3));
+		ksiazkaKodowa.put(p3, KsiazkaKodowa.klasyfikuj(neurony, p3));
 		
 		Point input = new Point(2);
 		input.addCoordinate(0, 3.5);
@@ -456,17 +456,17 @@ public class PointTest {
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 0.0);
 		p1.addCoordinate(1, 0.0);
-		ksiazkaKodowa.put(p1, Kohonen.klasyfikuj(neurony, p1));
+		ksiazkaKodowa.put(p1, KsiazkaKodowa.klasyfikuj(neurony, p1));
 		
 		Point p2 = new Point(2);
 		p2.addCoordinate(0, 30.5);
 		p2.addCoordinate(1, 30.5);
-		ksiazkaKodowa.put(p2, Kohonen.klasyfikuj(neurony, p2));
+		ksiazkaKodowa.put(p2, KsiazkaKodowa.klasyfikuj(neurony, p2));
 
 		Point p3 = new Point(2);
 		p3.addCoordinate(0, 50.5);
 		p3.addCoordinate(1, 50.5);
-		ksiazkaKodowa.put(p3, Kohonen.klasyfikuj(neurony, p3));
+		ksiazkaKodowa.put(p3, KsiazkaKodowa.klasyfikuj(neurony, p3));
 		
 		Point input = new Point(2);
 		input.addCoordinate(0, 0.0);
@@ -500,17 +500,17 @@ public class PointTest {
 		Point p1 = new Point(2);
 		p1.addCoordinate(0, 0.0);
 		p1.addCoordinate(1, 0.0);
-		ksiazkaKodowa.put(p1, Kohonen.klasyfikuj(neurony, p1));
+		ksiazkaKodowa.put(p1, KsiazkaKodowa.klasyfikuj(neurony, p1));
 		
 		Point p2 = new Point(2);
 		p2.addCoordinate(0, 30.5);
 		p2.addCoordinate(1, 30.5);
-		ksiazkaKodowa.put(p2, Kohonen.klasyfikuj(neurony, p2));
+		ksiazkaKodowa.put(p2, KsiazkaKodowa.klasyfikuj(neurony, p2));
 
 		Point p3 = new Point(2);
 		p3.addCoordinate(0, 50.5);
 		p3.addCoordinate(1, 50.5);
-		ksiazkaKodowa.put(p3, Kohonen.klasyfikuj(neurony, p3));
+		ksiazkaKodowa.put(p3, KsiazkaKodowa.klasyfikuj(neurony, p3));
 		
 		Point input = new Point(2);
 		input.addCoordinate(0, 0.0);
