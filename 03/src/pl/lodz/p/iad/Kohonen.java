@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-
 import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.diagram.Voronoi3;
 import pl.lodz.p.iad.structure.KsiazkaKodowa;
@@ -30,6 +29,7 @@ public class Kohonen {
 	private double LEARNING_RATE = 0.1;
 	private double RADIUS = 0.6;
 	private int LIMIT_EPOK = 100;
+	private boolean LOG = true;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
 	private boolean NORMALIZATION = false;
@@ -88,12 +88,8 @@ public class Kohonen {
 			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony, epoka);
 			
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
-			KsiazkaKodowa ksiazkaKodowa = new KsiazkaKodowa(wielkoscZbioruUczacego);;
-			for (Point input : hydra) {
-				Point teoretycznyZwyciezca = klasyfikuj(noweNeurony, input);
-				ksiazkaKodowa.put(input, teoretycznyZwyciezca); 
-			}
-			double error = ksiazkaKodowa.getBladKwantyzacji();
+			double error = new KsiazkaKodowa(hydra, noweNeurony).getBladKwantyzacji();
+
 			String msg = "error: " + error +"\r\n"
 					+ "------------------------------------------------"
 					+ "------------------------------------------------\r\n";
@@ -108,18 +104,20 @@ public class Kohonen {
 		}
 		rysujDiagramVoronoia(noweNeurony, hydra);
 		
-		Charset charset = StandardCharsets.UTF_8;
-		Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
-		Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
-		try {
-			BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
-			BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
-			epochLogWriterTxt.write(epochLog.toString());
-			epochLogWriterCsv.write(epochCSV.toString());
-			epochLogWriterTxt.close();
-			epochLogWriterCsv.close();
-		} catch (IOException x) {
-			System.err.format("IOException: %s%n", x);
+		if (LOG) {
+			Charset charset = StandardCharsets.UTF_8;
+			Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
+			Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
+			try {
+				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
+				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+				epochLogWriterTxt.write(epochLog.toString());
+				epochLogWriterCsv.write(epochCSV.toString());
+				epochLogWriterTxt.close();
+				epochLogWriterCsv.close();
+			} catch (IOException x) {
+				System.err.format("IOException: %s%n", x);
+			}
 		}
 		System.out.println("Program terminated.");
 	}
@@ -246,26 +244,6 @@ public class Kohonen {
 			}
 		}
 		winner.odnotujZwyciestwo();
-		return winner;
-	}
-
-	/**
-	 * Zwraca centroida (wektor Voronoia) dla danego sygnału wejściowego. Metoda
-	 * używana do testowania wektora wejściowego. W przeciwieństwie do metody
-	 * getZwyciezca(), nie uwzględnia zmęczenia neuronów i nie bierze pod uwagę
-	 * ilości zwycięstw, kar, nie faworyzuje martwych neuronow. Jest to prosty
-	 * klasyfikator.
-	 */
-	public static Point klasyfikuj(List<Point> neurony, Point input) {
-		double min = Double.MAX_VALUE;
-		Point winner = null;
-		for (Point n : neurony) {
-			double xyz = n.getEuclideanDistanceFrom(input);
-			if (xyz < min) {
-				min = xyz;
-				winner = n;
-			}
-		}
 		return winner;
 	}
 
