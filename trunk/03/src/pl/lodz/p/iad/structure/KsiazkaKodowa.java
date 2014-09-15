@@ -15,6 +15,11 @@ public class KsiazkaKodowa extends HashMap<Point, Point> {
 		super(size);
 	}
 	
+	/**
+	 * Wylicza średni błąd kwantyzacji sieci.
+	 * @param zbiorWejsciowy jest to zbiór wektorów wejściowych (hydra).
+	 * @param neurony jest to zbiór neuronów (centroidów).
+	 */
 	public KsiazkaKodowa(Mapa zbiorWejsciowy, List<Point> neurony) {
 		this(zbiorWejsciowy.size());
 		for (Point input : zbiorWejsciowy) {

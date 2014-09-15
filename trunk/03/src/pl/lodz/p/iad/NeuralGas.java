@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +21,14 @@ import pl.lodz.p.iad.structure.Point;
 
 public class NeuralGas{
 	
-	private int NUMBER_OF_NEURONS = 10;
-	private double LEARNING_RATE = 1.0;
+	private int NUMBER_OF_NEURONS = 8;
+	private double LEARNING_RATE = 2.0;
 	private double RADIUS = 0.6;
 	private int LIMIT_EPOK = 100;
 	private boolean LOG = true;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
-	private boolean NORMALIZATION = false;
+	private boolean NORMALIZATION = true;
 	
 	@SuppressWarnings("unused")
 	private int erasLimit = 1;
@@ -48,7 +47,8 @@ public class NeuralGas{
 	public NeuralGas() {
 		epochLog = new StringBuilder();
 		epochCSV = new StringBuilder();
-		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;błąd kwantyzacji\r\n");
+		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;"
+				+ "błąd kwantyzacji\r\n");
 	}
 	
 	public NeuralGas(List<Integer> kolumny) {
@@ -113,11 +113,11 @@ public class NeuralGas{
 		
 		if (LOG) {
 			Charset charset = StandardCharsets.UTF_8;
-			Path fileOut02 = Paths.get("resources/neuralgas/epoch_log.txt");
-			Path fileOut04 = Paths.get("resources/neuralgas/epoch_log.csv");
 			try {
-				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
-				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
+						Paths.get("resources/neuralgas/epoch_log.txt"), charset);
+				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
+						Paths.get("resources/neuralgas/epoch_log.csv"), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();
@@ -178,7 +178,8 @@ public class NeuralGas{
 	public void modifySingleNeuronWeight(int neuronIndex, int dimm, int iterNumber, 
 			Point inputVector){
 		Point neuron = neurons.get(neuronIndex);
-		double newCoordinate = neuron.getCoordinate(dimm) + calcLearningFactor(iterNumber) 
+		double newCoordinate = neuron.getCoordinate(dimm)
+				+ calcLearningFactor(iterNumber) 
 				* calcNeighbourhoodFunc(iterNumber, neuronIndex) 
 				* (inputVector.getCoordinate(dimm) - neuron.getCoordinate(dimm) );
 		neuron.setCoordinate(dimm, newCoordinate);
@@ -191,10 +192,8 @@ public class NeuralGas{
 		double wartoscMinimalna = 0.01;
 		
 		double learningFactor = wartoscPoczatkowa * 
-				Math.pow(
-						(wartoscMinimalna / wartoscPoczatkowa), (iterNumber / kmax)
-						);
-		
+			Math.pow( (wartoscMinimalna/wartoscPoczatkowa),
+					(iterNumber/kmax) );
 		return learningFactor;
 	}
 	
@@ -203,21 +202,21 @@ public class NeuralGas{
 	}
 	
 	private double promienSasiedztwa(int iterNumber){
-		  double wartoscPoczatkowa = RADIUS;
-		  double kmax = LIMIT_EPOK;
-		  double wartoscMinimalna = 0.01;
-		  double result = wartoscPoczatkowa *
-				  Math.pow(	(wartoscMinimalna/wartoscPoczatkowa),
-						  (iterNumber/kmax) );
-		  return result;
+		double wartoscPoczatkowa = RADIUS;
+		double kmax = LIMIT_EPOK;
+		double wartoscMinimalna = 0.01;
+		double result = wartoscPoczatkowa *
+			Math.pow( (wartoscMinimalna/wartoscPoczatkowa),
+					(iterNumber/kmax) );
+		return result;
 	}
 	
 	
 	public List<Point> sortNeuronsByDistanceAscending(Point inputVector){	
 		List<Point> sortedNeurons = neurons.parallelStream().sorted((n1, n2)
-				-> Double.compare(n1.getEuclideanDistanceFrom(inputVector),
-						n2.getEuclideanDistanceFrom(inputVector)))
-	            .collect(Collectors.toList());
+			-> Double.compare(n1.getEuclideanDistanceFrom(inputVector),
+							n2.getEuclideanDistanceFrom(inputVector)))
+            .collect(Collectors.toList());
 		return sortedNeurons;
 	}
 	
