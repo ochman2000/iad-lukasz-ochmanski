@@ -14,8 +14,8 @@ public class Zadanie3 {
 //		new Kohonen(Arrays.asList(2, 3, 4));
 //		new Kohonen(Arrays.asList(5, 6, 7));
 		
-		new NeuralGas(Arrays.asList(0, 1));
-//		new NeuralGas(Arrays.asList(2, 3, 4));
+//		new NeuralGas(Arrays.asList(0, 1));
+		new NeuralGas(Arrays.asList(2, 3, 4));
 //		new NeuralGas(Arrays.asList(5, 6, 7));
 	}
 }
