@@ -182,8 +182,8 @@ public class Kohonen {
 		epochLog.append("Promień sąsiedztwa: "+ lambda+"\t");
 		System.out.print("Promień sąsiedztwa: "+ lambda+"\t");
 		epochCSV.append(lambda+";");
-		epochLog.append("Learn rate: "+learnRate+"\t");
-		System.out.print("Learn rate: "+learnRate+"\t");
+		epochLog.append("Wsp. uczenia: "+learnRate+"\t");
+		System.out.print("Wsp. uczenia: "+learnRate+"\t");
 		epochCSV.append(learnRate+";");
 
 		for (int i = 0; i < wielkoscZbioruUczacego; i++) {

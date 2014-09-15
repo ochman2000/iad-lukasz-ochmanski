@@ -10,10 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import pl.lodz.p.iad.diagram.Voronoi5;
 import pl.lodz.p.iad.diagram.Voronoi6;
@@ -38,10 +37,8 @@ public class NeuralGas{
 	private double networkAlpha = 0.01;
 	@SuppressWarnings("unused")
 	private double networkMomentum = 0.1;
-	@SuppressWarnings("unused")
-	private List<Point> learnPattern = new ArrayList<Point>();
 	private int wielkoscZbioruUczacego = 0;
-	private List<Point> neurons = new ArrayList<Point>();
+	private List<Point> neurons;
 	private Mapa hydra;
 	private Voronoi5 voronoi;
 	private StringBuilder epochLog;
@@ -60,18 +57,22 @@ public class NeuralGas{
 		teach();
 	}
 	
-	public void teach(){
+	public void teach() {
 		if (NORMALIZATION) hydra = hydra.getNormalized();
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
+		neurons = new ArrayList<Point>(NUMBER_OF_NEURONS);
 		voronoi = new Voronoi5();
-		
+		teach(hydra);
+	}
+	
+	public void teach(Mapa map){
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
 		while (neurons.size() < NUMBER_OF_NEURONS) {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
-//					if (NORMALIZATION) { centroid = centroid.getNormalized(); }
+//			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
 			if (!neurons.contains(centroid)) {
@@ -79,9 +80,14 @@ public class NeuralGas{
 			}
 		}
 		for (int epoka=0; epoka<LIMIT_EPOK; epoka++) {
-			System.out.print(epoka+ "\t");
-			epochLog.append(epoka+ "\t");
+			String msg = epoka + "\t"
+					+ "Promień sąsiedztwa: "+ promienSasiedztwa(epoka)+"\t"
+					+ "Wsp. uczenia:" + calcLearningFactor(epoka) +"\t";
+			System.out.print(msg);
+			epochLog.append(msg);
 			epochCSV.append(epoka+";");
+			epochCSV.append(promienSasiedztwa(epoka)+";");
+			epochCSV.append(calcLearningFactor(epoka)+";");
 			hydra.shuffle();
 			for(int i = 0 ; i< wielkoscZbioruUczacego; i++){
 				Point inputVector = hydra.get(i);
@@ -91,7 +97,7 @@ public class NeuralGas{
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
 			double error = new KsiazkaKodowa(hydra, neurons).getBladKwantyzacji();
 			
-			String msg = "error: " + error +"\r\n"
+			msg = "error: " + error +"\r\n"
 					+ "------------------------------------------------"
 					+ "------------------------------------------------\r\n";
 			System.out.print(msg);
@@ -181,7 +187,7 @@ public class NeuralGas{
 	public double calcLearningFactor(int iterNumber) {
 		
 		double wartoscPoczatkowa = LEARNING_RATE;
-		double kmax = wielkoscZbioruUczacego;
+		double kmax = LIMIT_EPOK;
 		double wartoscMinimalna = 0.01;
 		
 		double learningFactor = wartoscPoczatkowa * 
@@ -193,39 +199,26 @@ public class NeuralGas{
 	}
 	
 	public double calcNeighbourhoodFunc(int iterNumber, int neuronIndex) {
-		return Math.exp(-1 * neuronIndex / promienSasiedztwa(iterNumber));
+		return Math.exp(-1 * neuronIndex/promienSasiedztwa(iterNumber));
 	}
 	
 	private double promienSasiedztwa(int iterNumber){
-		//def promienSasiedztwa(k):
 		  double wartoscPoczatkowa = RADIUS;
-		  double kmax = wielkoscZbioruUczacego;
+		  double kmax = LIMIT_EPOK;
 		  double wartoscMinimalna = 0.01;
-		  
 		  double result = wartoscPoczatkowa *
-				  Math.pow(
-						  (wartoscMinimalna / wartoscPoczatkowa), (iterNumber / kmax)
-						  );
+				  Math.pow(	(wartoscMinimalna/wartoscPoczatkowa),
+						  (iterNumber/kmax) );
 		  return result;
 	}
 	
 	
-	public List<Point> sortNeuronsByDistanceAscending(Point inputVector){
-		List<Point> sortedNeurons = new ArrayList<Point>();	
-		Map<Double, Point> neuronsWithDistances = new TreeMap<Double, Point>();
-		
-		for(Point neuron : neurons){
-			Double distance = calculateDistanceEuclides(neuron,inputVector);
-			neuronsWithDistances.put(distance, neuron);
-		}
-		for (Double str : neuronsWithDistances.keySet()) {
-		    sortedNeurons.add(neuronsWithDistances.get(str));
-		}		
+	public List<Point> sortNeuronsByDistanceAscending(Point inputVector){	
+		List<Point> sortedNeurons = neurons.parallelStream().sorted((n1, n2)
+				-> Double.compare(n1.getEuclideanDistanceFrom(inputVector),
+						n2.getEuclideanDistanceFrom(inputVector)))
+	            .collect(Collectors.toList());
 		return sortedNeurons;
-	}
-	
-	private double calculateDistanceEuclides(Point neuron, Point inputVector){
-		return neuron.getEuclideanDistanceFrom(inputVector);
 	}
 	
 	public void setErasLimit(int newErasLimit){
