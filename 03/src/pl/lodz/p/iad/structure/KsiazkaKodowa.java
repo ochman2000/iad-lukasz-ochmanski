@@ -6,9 +6,6 @@ import java.util.NoSuchElementException;
 
 public class KsiazkaKodowa extends HashMap<Point, Point> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6526246833472874969L;
 
 	public KsiazkaKodowa(int size) {
@@ -23,8 +20,7 @@ public class KsiazkaKodowa extends HashMap<Point, Point> {
 	public KsiazkaKodowa(Mapa zbiorWejsciowy, List<Point> neurony) {
 		this(zbiorWejsciowy.size());
 		for (Point input : zbiorWejsciowy) {
-			Point teoretycznyZwyciezca = klasyfikuj(neurony, input);
-			this.put(input, teoretycznyZwyciezca); 
+			this.put(input, klasyfikuj(neurony, input));
 		}
 	}
 	
@@ -41,10 +37,9 @@ public class KsiazkaKodowa extends HashMap<Point, Point> {
 	}
 
 	public double getBladKwantyzacji() {
-		double sum = this.keySet().parallelStream()
-				.mapToDouble(x -> this.getBlad(x))
-				.sum();
-		return sum / this.size();
+		return this.keySet().parallelStream()
+			.mapToDouble(this::getBlad)
+			.average().getAsDouble();
 	}
 	
 	/**
@@ -55,15 +50,6 @@ public class KsiazkaKodowa extends HashMap<Point, Point> {
 	 * klasyfikator.
 	 */
 	public static Point klasyfikuj(List<Point> neurony, Point input) {
-		double min = Double.MAX_VALUE;
-		Point winner = null;
-		for (Point n : neurony) {
-			double xyz = n.getEuclideanDistanceFrom(input);
-			if (xyz < min) {
-				min = xyz;
-				winner = n;
-			}
-		}
-		return winner;
+		return neurony.parallelStream().min(input::compare).get();
 	}
 }

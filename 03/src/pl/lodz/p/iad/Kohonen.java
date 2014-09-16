@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
 import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.diagram.Voronoi3;
 import pl.lodz.p.iad.structure.KsiazkaKodowa;
@@ -46,7 +46,8 @@ public class Kohonen {
 	public Kohonen() {
 		epochLog = new StringBuilder();
 		epochCSV = new StringBuilder();
-		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;błąd kwantyzacji\r\n");
+		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;"
+				+ "błąd kwantyzacji\r\n");
 	}
 	
 	public Kohonen(List<Integer> kolumny) {
@@ -106,11 +107,11 @@ public class Kohonen {
 		
 		if (LOG) {
 			Charset charset = StandardCharsets.UTF_8;
-			Path fileOut02 = Paths.get("resources/kohonen/epoch_log.txt");
-			Path fileOut04 = Paths.get("resources/kohonen/epoch_log.csv");
 			try {
-				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
-				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
+					Paths.get("resources/kohonen/epoch_log.txt"), charset);
+				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
+					Paths.get("resources/kohonen/epoch_log.csv"), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();
