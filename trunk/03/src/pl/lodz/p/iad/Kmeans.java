@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,11 +91,11 @@ public class Kmeans {
 		
 		if (LOG) {
 			Charset charset = StandardCharsets.UTF_8;
-			Path fileOut02 = Paths.get("resources/kmeans/epoch_log.txt");
-			Path fileOut04 = Paths.get("resources/kmeans/epoch_log.csv");
 			try {
-				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(fileOut02, charset);
-				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(fileOut04, charset);
+				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
+					Paths.get("resources/kmeans/epoch_log.txt"), charset);
+				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
+					Paths.get("resources/kmeans/epoch_log.csv"), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();

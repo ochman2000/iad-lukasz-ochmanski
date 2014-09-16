@@ -1,9 +1,12 @@
 package pl.lodz.p.iad.structure;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -573,5 +576,43 @@ public class PointTest {
 		p2.setGroup(p2);
 		
 		assertEquals(0.0, p2.getEuclideanDistanceFrom(p1), 0.00001);
+	}
+	
+	@Test
+	public void test34() {
+		Point n1 = new Point(2);
+		n1.addCoordinate(0, 1.0);
+		n1.addCoordinate(1, 1.0);
+		
+		Point n2 = new Point(2);
+		n2.addCoordinate(0, 3.0);
+		n2.addCoordinate(1, 3.0);
+
+		Point n3 = new Point(2);
+		n3.addCoordinate(0, 5.0);
+		n3.addCoordinate(1, 5.0);
+		
+		Point inputVector = new Point(2);
+		inputVector.addCoordinate(0, 4.4);
+		inputVector.addCoordinate(1, 4.4);
+		
+		List<Point> neurony = new ArrayList<Point>(3);
+		neurony.add(n1);
+		neurony.add(n2);
+		neurony.add(n3);
+		List<Point> sorted2 = new ArrayList<Point>(3);
+		sorted2.add(n1);
+		sorted2.add(n2);
+		sorted2.add(n3);
+		
+		List<Point> sorted1 = neurony.parallelStream()
+				.sorted((x1, x2) -> Double.compare(x1.getEuclideanDistanceFrom(inputVector),
+						x2.getEuclideanDistanceFrom(inputVector)))
+        .collect(Collectors.toList());
+		
+		sorted2.sort((x1, x2) -> Double.compare(x1.getEuclideanDistanceFrom(inputVector),
+				x2.getEuclideanDistanceFrom(inputVector)));
+		
+		assertTrue(sorted1.equals(sorted2));
 	}
 }

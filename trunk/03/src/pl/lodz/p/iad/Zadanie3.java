@@ -1,21 +1,20 @@
 package pl.lodz.p.iad;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import java.util.List;
 
 public class Zadanie3 {
 
 	public static void main(String[] args) {
 
-//		new Kmeans(Arrays.asList(0, 1));
-//		new Kmeans(Arrays.asList(2, 3, 4));
-//		new Kmeans(Arrays.asList(5, 6, 7));
-		
-//		new Kohonen(Arrays.asList(0, 1));
-//		new Kohonen(Arrays.asList(2, 3, 4));
-//		new Kohonen(Arrays.asList(5, 6, 7));
-		
-//		new NeuralGas(Arrays.asList(0, 1));
-		new NeuralGas(Arrays.asList(2, 3, 4));
-//		new NeuralGas(Arrays.asList(5, 6, 7));
+		List<List<Integer>> wariant = new ArrayList<>(asList(
+						asList(0, 1),
+						asList(2, 3, 4), 
+						asList(5, 6, 7)));
+
+//		 new Kmeans(wariant.get(0));
+//		 new Kohonen(wariant.get(0));
+		 new NeuralGas(wariant.get(0));
 	}
 }

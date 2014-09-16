@@ -28,7 +28,7 @@ public class NeuralGas{
 	private boolean LOG = true;
 	private double DRAW_STEP_IN_PERCENTS = 1.0;
 	private boolean WRITE_TO_FILE = true;
-	private boolean NORMALIZATION = true;
+	private boolean NORMALIZATION = false;
 	
 	@SuppressWarnings("unused")
 	private int erasLimit = 1;
@@ -115,9 +115,9 @@ public class NeuralGas{
 			Charset charset = StandardCharsets.UTF_8;
 			try {
 				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
-						Paths.get("resources/neuralgas/epoch_log.txt"), charset);
+					Paths.get("resources/neuralgas/epoch_log.txt"), charset);
 				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
-						Paths.get("resources/neuralgas/epoch_log.csv"), charset);
+					Paths.get("resources/neuralgas/epoch_log.csv"), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();
@@ -212,11 +212,10 @@ public class NeuralGas{
 	}
 	
 	
-	public List<Point> sortNeuronsByDistanceAscending(Point inputVector){	
-		List<Point> sortedNeurons = neurons.parallelStream().sorted((n1, n2)
-			-> Double.compare(n1.getEuclideanDistanceFrom(inputVector),
-							n2.getEuclideanDistanceFrom(inputVector)))
-            .collect(Collectors.toList());
+	public List<Point> sortNeuronsByDistanceAscending(Point inputVector) {	
+		List<Point> sortedNeurons = neurons.parallelStream()
+				.sorted(inputVector::compare)
+	            .collect(Collectors.toList());
 		return sortedNeurons;
 	}
 	
