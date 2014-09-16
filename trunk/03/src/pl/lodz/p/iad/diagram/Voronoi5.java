@@ -1,6 +1,6 @@
 package pl.lodz.p.iad.diagram;
 
-public class Voronoi5 extends Voronoi2 {
+public class Voronoi5 extends Voronoi3 {
 	
 	public Voronoi5() {
 		super("Algorytm gazu neuronowego");

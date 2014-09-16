@@ -22,94 +22,72 @@ package pl.lodz.p.iad.diagram;
 import java.awt.Color;
 
 public class Voronoi2 implements DrawListener {
-	private static final int SCALE_IN_PERCENT = 100;
-	private static int SIZE = 512;
-//	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
-														// (i, j) nearest?
-	protected static int vornoiCounter = 0;
-	protected Draw draw;
+    private static int SIZE = 512;
+    private Point[][] nearest = new Point[SIZE][SIZE];  // which point is pixel (i, j) nearest?
+    private static int vornoiCounter = 0;
+    private Draw draw = new Draw("Algorytm k-średnich");
 
-	public Voronoi2() {
-		this(SIZE, SIZE, 0, "Algorytm Kohonena");
-	}
-	
-	public Voronoi2(String name) {
-		this(SIZE, SIZE, 0, name);
-	}
+    public Voronoi2() {
+    	this(SIZE, SIZE, 0);
+    }
+    
+    public Voronoi2(int w, int h, int zoom) {
+    	draw.setCanvasSize(w, h);
+    	draw.setXscale(0, w);
+    	draw.setYscale(0, h);
+    	draw.addListener(this);
+    	draw.show(0);    	
+    }
+    
+    public void dodajCentroid(double x1, double y1) {
+    	double x = x1*100+256;
+    	double y = y1*100+256;
+    	mousePressed(x, y);
+    }
+    
+    public void dodajKropkę(double x1, double y1) {
+    	draw.setPenColor(Color.WHITE);
+    	double x = x1*100+256;
+    	double y = y1*100+256;
+    	draw.filledCircle(x, y, 1);
+     //   draw.show(0);
+    }
+    public void drawMe(){
+    	draw.show(0);
+    }
 
-	public Voronoi2(int w, int h, int zoom, String name) {
-		draw = new Draw(name);
-		draw.setCanvasSize(w, h);
-		draw.setXscale(0, w);
-		draw.setYscale(0, h);
-		draw.addListener(this);
-		draw.show(0);
-	}
+    public void mousePressed(double x, double y) {
+        Point p = new Point(x, y);
+//        System.out.println("Inserting:       " + p);
 
-	public void dodajCentroid(double x1, double y1, Color color) {
-		double x = x1 * SCALE_IN_PERCENT + 256;
-		double y = y1 * SCALE_IN_PERCENT + 256;
-//		Point p = new Point(x, y);
-//
-//		// compare each pixel (i, j) and find nearest point
-//		draw.setPenColor(color);
-//		for (int i = 0; i < SIZE; i++) {
-//			for (int j = 0; j < SIZE; j++) {
-//				Point q = new Point(i, j);
-//				if ((nearest[i][j] == null)
-//						|| (q.distanceTo(p) < q.distanceTo(nearest[i][j]))) {
-//					nearest[i][j] = p;
-//					draw.filledSquare(i + 0.5, j + 0.5, 0.5);
-//				}
-//			}
-//		}
+        // compare each pixel (i, j) and find nearest point
+        draw.setPenColor(Color.getHSBColor((float) Math.random(), .7f, .7f));
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                Point q = new Point(i, j);
+                if ((nearest[i][j] == null) || (q.distanceTo(p) < q.distanceTo(nearest[i][j]))) {
+                    nearest[i][j] = p;
+                    draw.filledSquare(i+0.5, j+0.5, 0.5);
+                }
+            }
+        }
 
-		// draw the point afterwards
-		draw.setPenColor(Color.BLACK);
-		draw.filledCircle(x, y, 4);
-		draw.show(0);
+        // draw the point afterwards
+        draw.setPenColor(Color.BLACK);
+        draw.filledCircle(x, y, 4);
+        draw.show(0);
+//        System.out.println("Done processing: " + p);
+    }
 
-	}
 
-	public void dodajKropkę(double x1, double y1) {
-		draw.setPenColor(Color.GRAY);
-		double x = x1 * SCALE_IN_PERCENT + 256;
-		double y = y1 * SCALE_IN_PERCENT + 256;
-		draw.filledCircle(x, y, 1);
-		// draw.show(0);
-	}
-
-	public void drawMe() {
-		draw.show(0);
-	}
-
-	public void clear() {
-		draw.clear();
-	}
-
-	public void mousePressed(double x, double y) {
-		dodajCentroid(x, y, Color.WHITE);
-	}
-
-	// save the screen to a file
-	public void keyTyped(char c) {
-		draw.save("resources/kohonenvoronoi" + c + ".png");
-	}
-
-	public void saveVornoiToFile() {
-		draw.save("resources/kohonen/voronoi" + vornoiCounter + ".png");
-		vornoiCounter++;
-	}
-
-	// must implement these since they're part of the interface
-	public void mouseDragged(double x, double y) {
-	}
-
-	public void mouseReleased(double x, double y) {
-	}
-
-	public void kill() {
-		draw.kill();
-	}
+    // save the screen to a file
+    public void keyTyped(char c) { draw.save("resources/kmeans/voronoi" + c + ".png"); }
+    public void saveVornoiToFile() { 
+    	draw.save("resources/kmeans/voronoi" + vornoiCounter + ".png"); 
+    	vornoiCounter++;
+    	}
+    // must implement these since they're part of the interface
+    public void mouseDragged(double x, double y)  { }
+    public void mouseReleased(double x, double y) { }
 
 }

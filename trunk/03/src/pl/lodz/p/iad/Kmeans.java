@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pl.lodz.p.iad.diagram.Voronoi1;
+import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.structure.KsiazkaKodowa;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
@@ -27,7 +27,7 @@ public class Kmeans {
 	private List<Integer> kolumny;
 	private List<Point> centroidy;
 	private Mapa hydra;
-	private Voronoi1 voronoi;
+	private Voronoi2 voronoi;
 	private StringBuilder epochLog;
 	private StringBuilder epochCSV;
 
@@ -45,7 +45,7 @@ public class Kmeans {
 	
 	public void run() {
 		centroidy = new ArrayList<Point>(PODZBIORY);
-		voronoi = new Voronoi1(512, 512, 0);
+		voronoi = new Voronoi2(512, 512, 0);
 		run(hydra);
 	}
 

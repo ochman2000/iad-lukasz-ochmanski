@@ -1,47 +1,36 @@
 package pl.lodz.p.iad;
 
 import java.awt.Color;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import pl.lodz.p.iad.diagram.Voronoi2;
 import pl.lodz.p.iad.diagram.Voronoi3;
+import pl.lodz.p.iad.diagram.Voronoi4;
 import pl.lodz.p.iad.structure.KsiazkaKodowa;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
-public class Kohonen {
+public class Kohonen extends Diagram {
 
 	/**
 	 * Określa liczbę K centroidów, czyli liczbę klastrów. Tyle właśnie neuronów
 	 * będzie w warstwie ukrytej. Jeśli ma to być lattice 40x40 powinieneś
 	 * wpisać tutaj wartość 160;
 	 */
-	private int NUMBER_OF_NEURONS = 8;
-	private double LEARNING_RATE = 0.1;
-	private double RADIUS = 0.6;
-	private int LIMIT_EPOK = 100;
-	private boolean LOG = true;
-	private double DRAW_STEP_IN_PERCENTS = 1.0;
-	private boolean WRITE_TO_FILE = true;
-	private boolean NORMALIZATION = false;
-	private Method METHOD = Method.WTM;
-	
-	private List<Integer> kolumny;
-	private List<Point> neurony;
-	private Mapa hydra;
-	private int wielkoscZbioruUczacego;
-	private Voronoi2 voronoi;
-	private StringBuilder epochLog;
-	private StringBuilder epochCSV;
+
+	protected String EPOCH_LOG_CSV = "resources/kohonen/epoch_log.csv";
+	protected String EPOCH_LOG_TXT = "resources/kohonen/epoch_log.txt";
+	protected int NUMBER_OF_NEURONS = 8;
+	protected double LEARNING_RATE = 0.1;
+	protected double RADIUS = 0.6;
+	protected int LIMIT_EPOK = 100;
+	protected boolean LOG = true;
+	protected double DRAW_STEP_IN_PERCENTS = 1.0;
+	protected boolean NORMALIZATION = false;
+	protected boolean WRITE_TO_FILE = true;
+	protected Method METHOD = Method.WTM;
 
 	public Kohonen() {
 		epochLog = new StringBuilder();
@@ -56,26 +45,26 @@ public class Kohonen {
 		teach();
 	}
 	
-	private void teach() {
+	public void teach() {
 		if (NORMALIZATION) { hydra = hydra.getNormalized(); }
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
-		neurony = new ArrayList<Point>(NUMBER_OF_NEURONS);
-		voronoi = new Voronoi2();
+		neurons = new ArrayList<Point>(NUMBER_OF_NEURONS);
+		voronoiBlackWhite = new Voronoi3();
 		teach(hydra);
 	}
 
 	private void teach(Mapa hydra) {
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
-		while (neurony.size() < NUMBER_OF_NEURONS) {
+		while (neurons.size() < NUMBER_OF_NEURONS) {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
 //			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
-			if (!neurony.contains(centroid)) {
-				neurony.add(centroid);
+			if (!neurons.contains(centroid)) {
+				neurons.add(centroid);
 			}
 		}
 
@@ -86,7 +75,7 @@ public class Kohonen {
 			System.out.print(epoka+ "\t");
 			epochLog.append(epoka+ "\t");
 			epochCSV.append(epoka+";");
-			noweNeurony = przesunNeuronyZwycieskie(hydra, neurony, epoka);
+			noweNeurony = przesunNeuronyZwycieskie(hydra, neurons, epoka);
 			
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
 			double error = new KsiazkaKodowa(hydra, noweNeurony).getBladKwantyzacji();
@@ -104,59 +93,7 @@ public class Kohonen {
 			}
 		}
 		rysujDiagramVoronoia(noweNeurony, hydra);
-		
-		if (LOG) {
-			Charset charset = StandardCharsets.UTF_8;
-			try {
-				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
-					Paths.get("resources/kohonen/epoch_log.txt"), charset);
-				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
-					Paths.get("resources/kohonen/epoch_log.csv"), charset);
-				epochLogWriterTxt.write(epochLog.toString());
-				epochLogWriterCsv.write(epochCSV.toString());
-				epochLogWriterTxt.close();
-				epochLogWriterCsv.close();
-			} catch (IOException x) {
-				System.err.format("IOException: %s%n", x);
-			}
-		}
-		System.out.println("Program terminated.");
-	}
-
-	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
-		voronoi.clear();
-		for (Point point : mapa) {
-			voronoi.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-		for (Point centroid : centroidy) {
-			voronoi.dodajCentroid(
-					centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-		}
-		voronoi.drawMe();
-		if (WRITE_TO_FILE) {
-			voronoi.saveVornoiToFile();
-		}
-	}
-
-	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi3 voronoi3 = new Voronoi3();
-		for (Point point : mapa) {
-			voronoi3.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-		for (Point centroid : centroidy) {
-			voronoi3.dodajCentroid(
-					centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-		}
-		voronoi3.drawMe();
-		if (WRITE_TO_FILE) {
-			voronoi3.saveVornoiToFile();
-		}
+		saveAndClose();
 	}
 
 	/**
@@ -259,42 +196,10 @@ public class Kohonen {
 
 		return result;
 	}
-
-	public void setNUMBER_OF_NEURONS(int nUMBER_OF_NEURONS) {
-		NUMBER_OF_NEURONS = nUMBER_OF_NEURONS;
-	}
-
-	public void setLEARNING_RATE(double lEARNING_RATE) {
-		LEARNING_RATE = lEARNING_RATE;
-	}
-
-	public void setRADIUS(double rADIUS) {
-		RADIUS = rADIUS;
-	}
-
-	public void setLIMIT_EPOK(int lIMIT_EPOK) {
-		LIMIT_EPOK = lIMIT_EPOK;
-	}
-
-	public void setDRAW_STEP_IN_PERCENTS(double dRAW_STEP_IN_PERCENTS) {
-		DRAW_STEP_IN_PERCENTS = dRAW_STEP_IN_PERCENTS;
-	}
-
-	public void setWRITE_TO_FILE(boolean wRITE_TO_FILE) {
-		WRITE_TO_FILE = wRITE_TO_FILE;
-	}
-
-	public void setNORMALIZATION(boolean nORMALIZATION) {
-		NORMALIZATION = nORMALIZATION;
-	}
-
-	public void setMETHOD(Method mETHOD) {
-		METHOD = mETHOD;
-	}
-
-	public void setKolumny(List<Integer> kolumny) {
-		this.kolumny = kolumny;
-		hydra = new Mapa(this.kolumny);
+	
+	protected void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+		voronoiColor = new Voronoi4();
+		super.rysujDiagramVoronoia(centroidy, mapa);
 	}
 }
 
