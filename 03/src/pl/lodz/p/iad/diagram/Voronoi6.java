@@ -1,6 +1,6 @@
 package pl.lodz.p.iad.diagram;
 
-public class Voronoi6 extends Voronoi3 {
+public class Voronoi6 extends Voronoi4 {
 
 	public void keyTyped(char c) {
 		draw.save("resources/neuralgas/voronoi" + c + ".png");

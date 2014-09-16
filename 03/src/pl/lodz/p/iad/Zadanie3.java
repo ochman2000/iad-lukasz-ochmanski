@@ -14,7 +14,7 @@ public class Zadanie3 {
 						asList(5, 6, 7)));
 
 //		 new Kmeans(wariant.get(0));
-//		 new Kohonen(wariant.get(0));
-		 new NeuralGas(wariant.get(0));
+		 new Kohonen(wariant.get(0));
+//		 new NeuralGas(wariant.get(0));
 	}
 }

@@ -1,12 +1,6 @@
 package pl.lodz.p.iad;
 
 import java.awt.Color;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,30 +13,18 @@ import pl.lodz.p.iad.structure.KsiazkaKodowa;
 import pl.lodz.p.iad.structure.Mapa;
 import pl.lodz.p.iad.structure.Point;
 
-public class NeuralGas{
+public class NeuralGas extends Diagram {
 	
-	private int NUMBER_OF_NEURONS = 8;
-	private double LEARNING_RATE = 2.0;
-	private double RADIUS = 0.6;
-	private int LIMIT_EPOK = 100;
-	private boolean LOG = true;
-	private double DRAW_STEP_IN_PERCENTS = 1.0;
-	private boolean WRITE_TO_FILE = true;
-	private boolean NORMALIZATION = false;
-	
-	@SuppressWarnings("unused")
-	private int erasLimit = 1;
-	@SuppressWarnings("unused")
-	private double networkAlpha = 0.01;
-	@SuppressWarnings("unused")
-	private double networkMomentum = 0.1;
-	private int wielkoscZbioruUczacego = 0;
-	private List<Point> neurons;
-	private Mapa hydra;
-	private Voronoi5 voronoi;
-	private StringBuilder epochLog;
-	private StringBuilder epochCSV;
-	private List<Integer> kolumny;
+	protected String EPOCH_LOG_CSV = "resources/neuralgas/epoch_csv.txt";
+	protected String EPOCH_LOG_TXT = "resources/neuralgas/epoch_log.txt";
+	protected int NUMBER_OF_NEURONS = 8;
+	protected double LEARNING_RATE = 2.0;
+	protected double RADIUS = 0.6;
+	protected int LIMIT_EPOK = 100;
+	protected boolean LOG = true;
+	protected double DRAW_STEP_IN_PERCENTS = 1.0;
+	protected boolean NORMALIZATION = false;
+	protected boolean WRITE_TO_FILE = true;
 	
 	public NeuralGas() {
 		epochLog = new StringBuilder();
@@ -62,11 +44,11 @@ public class NeuralGas{
 		if (wielkoscZbioruUczacego==0)
 			wielkoscZbioruUczacego = hydra.size();
 		neurons = new ArrayList<Point>(NUMBER_OF_NEURONS);
-		voronoi = new Voronoi5();
+		voronoiBlackWhite = new Voronoi5();
 		teach(hydra);
 	}
 	
-	public void teach(Mapa map){
+	private void teach(Mapa map){
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
 		while (neurons.size() < NUMBER_OF_NEURONS) {
@@ -110,65 +92,11 @@ public class NeuralGas{
 			}
 		}
 		rysujDiagramVoronoia(neurons, hydra);
-		
-		if (LOG) {
-			Charset charset = StandardCharsets.UTF_8;
-			try {
-				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
-					Paths.get("resources/neuralgas/epoch_log.txt"), charset);
-				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
-					Paths.get("resources/neuralgas/epoch_log.csv"), charset);
-				epochLogWriterTxt.write(epochLog.toString());
-				epochLogWriterCsv.write(epochCSV.toString());
-				epochLogWriterTxt.close();
-				epochLogWriterCsv.close();
-			} catch (IOException x) {
-				System.err.format("IOException: %s%n", x);
-			}
-		}
-		System.out.println("Program terminated.");
+		saveAndClose();
 	}
 	
-	private void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
-		voronoi.clear();
-		for (Point point : mapa) {
-			voronoi.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-		for (Point centroid : centroidy) {
-			voronoi.dodajCentroid(
-					centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-		}
-		voronoi.drawMe();
-		if (WRITE_TO_FILE) {
-			voronoi.saveVornoiToFile();
-		}
-	}
-	
-	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		Voronoi6 voronoi6 = new Voronoi6();
-		for (Point point : mapa) {
-			voronoi6.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
-		}
-		for (Point centroid : centroidy) {
-			voronoi6.dodajCentroid(
-					centroid.getCoordinate(0),
-					centroid.getCoordinate(1),
-					centroid.getColor().orElseThrow(
-							IllegalArgumentException::new));
-		}
-		voronoi6.drawMe();
-		if (WRITE_TO_FILE) {
-			voronoi6.saveVornoiToFile();
-		}
-	}
 	private void modifyNeuronsWeights(int iterNumber, Point inputVector){
-		//modify weights of each neuron
-		//for each dimension
 		for(int dimm = 0 ; dimm<neurons.get(0).getCoordinates().size();dimm++){
-			//for each neuron
 			for(int i=0;i<neurons.size();i++){
 				modifySingleNeuronWeight(i, dimm, iterNumber, inputVector);
 			}
@@ -211,7 +139,6 @@ public class NeuralGas{
 		return result;
 	}
 	
-	
 	public List<Point> sortNeuronsByDistanceAscending(Point inputVector) {	
 		List<Point> sortedNeurons = neurons.parallelStream()
 				.sorted(inputVector::compare)
@@ -219,31 +146,8 @@ public class NeuralGas{
 		return sortedNeurons;
 	}
 	
-	public void setErasLimit(int newErasLimit){
-		erasLimit = newErasLimit;
-	}
-	
-	public void setNeuronsAmount(int neuronsAmount) {
-		NUMBER_OF_NEURONS = neuronsAmount;
-	}
-	
-	public void setNetworkAlpha(double newNetworkAlpha) {
-		networkAlpha = newNetworkAlpha;		
-	}
-	
-	public void setNetworkMomentum(double newNetworkMomentum) {
-		networkMomentum = newNetworkMomentum;
-	}
-	
-	public void writeToFile(boolean write) {
-		WRITE_TO_FILE= write;
-	}
-	public void setDRAW_STEP_IN_PERCENT(int newDRAW_STEP_IN_PERCENT) {
-		DRAW_STEP_IN_PERCENTS = newDRAW_STEP_IN_PERCENT;
-	}
-	
-	public void setKolumny(List<Integer> kolumny) {
-		this.kolumny = kolumny;
-		hydra = new Mapa(this.kolumny);
+	protected void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+		voronoiColor = new Voronoi6();
+		super.rysujDiagramVoronoia(centroidy, mapa);
 	}
 }
