@@ -4,12 +4,11 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class Point implements Cloneable, Comparator<Point> {
+public class Point implements Cloneable, Functional<Point> {
 
 	/**
 	 * Used in hashCode(). Determines how precise should two points be.
@@ -234,7 +233,7 @@ public class Point implements Cloneable, Comparator<Point> {
 	}
 
 	@Override
-	public int compare(Point o1, Point o2) {
+	public int compareByEuclideanDistance(Point o1, Point o2) {
 		if (this.getEuclideanDistanceFrom(o1) > this.getEuclideanDistanceFrom(o2))
 			return 1;
 		else if (this.getEuclideanDistanceFrom(o1) < this.getEuclideanDistanceFrom(o2))

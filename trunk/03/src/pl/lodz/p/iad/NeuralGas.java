@@ -15,21 +15,31 @@ import pl.lodz.p.iad.structure.Point;
 
 public class NeuralGas extends Diagram {
 	
-	protected String EPOCH_LOG_CSV = "resources/neuralgas/epoch_csv.txt";
-	protected String EPOCH_LOG_TXT = "resources/neuralgas/epoch_log.txt";
-	protected int NUMBER_OF_NEURONS = 8;
-	protected double LEARNING_RATE = 2.0;
-	protected double RADIUS = 0.6;
-	protected int LIMIT_EPOK = 100;
-	protected boolean LOG = true;
-	protected double DRAW_STEP_IN_PERCENTS = 1.0;
-	protected boolean NORMALIZATION = false;
-	protected boolean WRITE_TO_FILE = true;
+	private static final String EPOCH_LOG_CSV = "resources/neuralgas/epoch_csv.txt";
+	private static final String EPOCH_LOG_TXT = "resources/neuralgas/epoch_log.txt";
+	private static final int NUMBER_OF_NEURONS = 8;
+	private static final double LEARNING_RATE = 2.0;
+	private static final double RADIUS = 0.6;
+	private static final int LIMIT_EPOK = 100;
+	private static final boolean LOG = true;
+	private static final double DRAW_STEP_IN_PERCENTS = 1.0;
+	private static final boolean NORMALIZATION = false;
+	private static final boolean WRITE_TO_FILE = true;
 	
 	public NeuralGas() {
-		epochLog = new StringBuilder();
-		epochCSV = new StringBuilder();
-		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;"
+		setEpochLogCSV(EPOCH_LOG_CSV);
+		setEpochLogTxt(EPOCH_LOG_TXT);
+		setNumberOfNeurons(NUMBER_OF_NEURONS);
+		setLearningRate(LEARNING_RATE);
+		setRadius(RADIUS);
+		setLimitEpok(LIMIT_EPOK);
+		setLog(LOG);
+		setDrawStepInPercents(DRAW_STEP_IN_PERCENTS);
+		setNormalization(NORMALIZATION);
+		setWriteToFile(WRITE_TO_FILE);
+		setEpochLog(new StringBuilder());
+		setEpochCSV(new StringBuilder());
+		getEpochCSV().append("epoka;promień sąsiedztwa;współczynnik uczenia;"
 				+ "błąd kwantyzacji\r\n");
 	}
 	
@@ -40,64 +50,64 @@ public class NeuralGas extends Diagram {
 	}
 	
 	public void teach() {
-		if (NORMALIZATION) hydra = hydra.getNormalized();
-		if (wielkoscZbioruUczacego==0)
-			wielkoscZbioruUczacego = hydra.size();
-		neurons = new ArrayList<Point>(NUMBER_OF_NEURONS);
-		voronoiBlackWhite = new Voronoi5();
-		teach(hydra);
+		if (isNormalization()) setHydra(getHydra().getNormalized());
+		if (getWielkoscZbioruUczacego()==0)
+			setWielkoscZbioruUczacego(getHydra().size());
+		setNeurons(new ArrayList<Point>(getNumberOfNeurons()));
+		setVoronoiBlackWhite(new Voronoi5());
+		teach(getHydra());
 	}
 	
-	private void teach(Mapa map){
+	private void teach(Mapa zbiorWejsciowy){
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
-		while (neurons.size() < NUMBER_OF_NEURONS) {
-			int indeks = rnd.nextInt(hydra.size());
-			Point centroid = hydra.get(indeks);
-//			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
+		while (getNeurons().size() < getNumberOfNeurons()) {
+			int indeks = rnd.nextInt(zbiorWejsciowy.size());
+			Point centroid = zbiorWejsciowy.get(indeks);
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
-			if (!neurons.contains(centroid)) {
-				neurons.add(centroid);
+			if (!getNeurons().contains(centroid)) {
+				getNeurons().add(centroid);
 			}
 		}
-		for (int epoka=0; epoka<LIMIT_EPOK; epoka++) {
+		for (int epoka=0; epoka<getLimitEpok(); epoka++) {
 			String msg = epoka + "\t"
 					+ "Promień sąsiedztwa: "+ promienSasiedztwa(epoka)+"\t"
 					+ "Wsp. uczenia:" + calcLearningFactor(epoka) +"\t";
 			System.out.print(msg);
-			epochLog.append(msg);
-			epochCSV.append(epoka+";");
-			epochCSV.append(promienSasiedztwa(epoka)+";");
-			epochCSV.append(calcLearningFactor(epoka)+";");
-			hydra.shuffle();
-			for(int i = 0 ; i< wielkoscZbioruUczacego; i++){
-				Point inputVector = hydra.get(i);
-				neurons = sortNeuronsByDistanceAscending(inputVector);
+			getEpochLog().append(msg);
+			getEpochCSV().append(epoka+";");
+			getEpochCSV().append(promienSasiedztwa(epoka)+";");
+			getEpochCSV().append(calcLearningFactor(epoka)+";");
+			zbiorWejsciowy.shuffle();
+			for(int i = 0 ; i< getWielkoscZbioruUczacego(); i++){
+				Point inputVector = zbiorWejsciowy.get(i);
+				setNeurons(sortNeuronsByDistanceAscending(inputVector));
 				modifyNeuronsWeights(epoka, inputVector);				
 			}
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
-			double error = new KsiazkaKodowa(hydra, neurons).getBladKwantyzacji();
+			double error = new KsiazkaKodowa(zbiorWejsciowy, getNeurons())
+							.getBladKwantyzacji();
 			
 			msg = "error: " + error +"\r\n"
 					+ "------------------------------------------------"
 					+ "------------------------------------------------\r\n";
 			System.out.print(msg);
-			epochLog.append(msg);
-			epochCSV.append(error+"\r\n");
+			getEpochLog().append(msg);
+			getEpochCSV().append(error+"\r\n");
 			
-			double drawJump = LIMIT_EPOK * (DRAW_STEP_IN_PERCENTS / 100);
+			double drawJump = getLimitEpok() * (getDrawStepInPercents() / 100);
 			if (epoka % drawJump == 0.0) {
-				wizualizujObszaryVoronoia(neurons, hydra);
+				wizualizujObszaryVoronoia(getNeurons(), zbiorWejsciowy);
 			}
 		}
-		rysujDiagramVoronoia(neurons, hydra);
+		rysujDiagramVoronoia(getNeurons(), zbiorWejsciowy);
 		saveAndClose();
 	}
 	
 	private void modifyNeuronsWeights(int iterNumber, Point inputVector){
-		for(int dimm = 0 ; dimm<neurons.get(0).getCoordinates().size();dimm++){
-			for(int i=0;i<neurons.size();i++){
+		for(int dimm = 0 ; dimm<getNeurons().get(0).getCoordinates().size();dimm++){
+			for(int i=0;i<getNeurons().size();i++){
 				modifySingleNeuronWeight(i, dimm, iterNumber, inputVector);
 			}
 		}
@@ -105,7 +115,7 @@ public class NeuralGas extends Diagram {
 	
 	public void modifySingleNeuronWeight(int neuronIndex, int dimm, int iterNumber, 
 			Point inputVector){
-		Point neuron = neurons.get(neuronIndex);
+		Point neuron = getNeurons().get(neuronIndex);
 		double newCoordinate = neuron.getCoordinate(dimm)
 				+ calcLearningFactor(iterNumber) 
 				* calcNeighbourhoodFunc(iterNumber, neuronIndex) 
@@ -115,8 +125,8 @@ public class NeuralGas extends Diagram {
 	
 	public double calcLearningFactor(int iterNumber) {
 		
-		double wartoscPoczatkowa = LEARNING_RATE;
-		double kmax = LIMIT_EPOK;
+		double wartoscPoczatkowa = getLearningRate();
+		double kmax = getLimitEpok();
 		double wartoscMinimalna = 0.01;
 		
 		double learningFactor = wartoscPoczatkowa * 
@@ -130,8 +140,8 @@ public class NeuralGas extends Diagram {
 	}
 	
 	private double promienSasiedztwa(int iterNumber){
-		double wartoscPoczatkowa = RADIUS;
-		double kmax = LIMIT_EPOK;
+		double wartoscPoczatkowa = getRadius();
+		double kmax = getLimitEpok();
 		double wartoscMinimalna = 0.01;
 		double result = wartoscPoczatkowa *
 			Math.pow( (wartoscMinimalna/wartoscPoczatkowa),
@@ -140,14 +150,13 @@ public class NeuralGas extends Diagram {
 	}
 	
 	public List<Point> sortNeuronsByDistanceAscending(Point inputVector) {	
-		List<Point> sortedNeurons = neurons.parallelStream()
-				.sorted(inputVector::compare)
+		return getNeurons().parallelStream()
+				.sorted(inputVector::compareByEuclideanDistance)
 	            .collect(Collectors.toList());
-		return sortedNeurons;
 	}
 	
 	protected void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		voronoiColor = new Voronoi6();
+		setVoronoiColor(new Voronoi6());
 		super.rysujDiagramVoronoia(centroidy, mapa);
 	}
 }

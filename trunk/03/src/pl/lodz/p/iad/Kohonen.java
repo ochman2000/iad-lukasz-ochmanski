@@ -20,22 +20,33 @@ public class Kohonen extends Diagram {
 	 * wpisać tutaj wartość 160;
 	 */
 
-	protected String EPOCH_LOG_CSV = "resources/kohonen/epoch_log.csv";
-	protected String EPOCH_LOG_TXT = "resources/kohonen/epoch_log.txt";
-	protected int NUMBER_OF_NEURONS = 8;
-	protected double LEARNING_RATE = 0.1;
-	protected double RADIUS = 0.6;
-	protected int LIMIT_EPOK = 100;
-	protected boolean LOG = true;
-	protected double DRAW_STEP_IN_PERCENTS = 1.0;
-	protected boolean NORMALIZATION = false;
-	protected boolean WRITE_TO_FILE = true;
-	protected Method METHOD = Method.WTM;
+	private static final String EPOCH_LOG_CSV = "resources/kohonen/epoch_log.csv";
+	private static final String EPOCH_LOG_TXT = "resources/kohonen/epoch_log.txt";
+	private static final int NUMBER_OF_NEURONS = 8;
+	private static final double LEARNING_RATE = 0.1;
+	private static final double RADIUS = 0.6;
+	private static final int LIMIT_EPOK = 100;
+	private static final boolean LOG = true;
+	private static final double DRAW_STEP_IN_PERCENTS = 1.0;
+	private static final boolean NORMALIZATION = false;
+	private static final boolean WRITE_TO_FILE = true;
+	private static final Method METHOD = Method.WTM;
 
 	public Kohonen() {
-		epochLog = new StringBuilder();
-		epochCSV = new StringBuilder();
-		epochCSV.append("epoka;promień sąsiedztwa;współczynnik uczenia;"
+		setEpochLogCSV(EPOCH_LOG_CSV);
+		setEpochLogTxt(EPOCH_LOG_TXT);
+		setNumberOfNeurons(NUMBER_OF_NEURONS);
+		setLearningRate(LEARNING_RATE);
+		setRadius(RADIUS);
+		setLimitEpok(LIMIT_EPOK);
+		setLog(LOG);
+		setDrawStepInPercents(DRAW_STEP_IN_PERCENTS);
+		setNormalization(NORMALIZATION);
+		setWriteToFile(WRITE_TO_FILE);
+		setMethod(METHOD);
+		setEpochLog(new StringBuilder());
+		setEpochCSV(new StringBuilder());
+		getEpochCSV().append("epoka;promień sąsiedztwa;współczynnik uczenia;"
 				+ "błąd kwantyzacji\r\n");
 	}
 	
@@ -46,53 +57,53 @@ public class Kohonen extends Diagram {
 	}
 	
 	public void teach() {
-		if (NORMALIZATION) { hydra = hydra.getNormalized(); }
-		if (wielkoscZbioruUczacego==0)
-			wielkoscZbioruUczacego = hydra.size();
-		neurons = new ArrayList<Point>(NUMBER_OF_NEURONS);
-		voronoiBlackWhite = new Voronoi3();
-		teach(hydra);
+		if (isNormalization()) setHydra(getHydra().getNormalized());
+		if (getWielkoscZbioruUczacego()==0)
+			setWielkoscZbioruUczacego(getHydra().size());
+		setNeurons(new ArrayList<Point>(getNumberOfNeurons()));
+		setVoronoiBlackWhite(new Voronoi3());
+		teach(getHydra());
 	}
 
-	private void teach(Mapa hydra) {
+	private void teach(Mapa zbiorWejsciowy) {
 		// LOSUJ K NEURONÓW (ZAMIAST INICJALIZOWAĆ PRZYPADKOWYMI WARTOŚCIAMI)
 		Random rnd = new Random();
-		while (neurons.size() < NUMBER_OF_NEURONS) {
-			int indeks = rnd.nextInt(hydra.size());
-			Point centroid = hydra.get(indeks);
-//			if (NORMALIZATION) { centroid = centroid.getNormalized(); }
+		while (getNeurons().size() < getNumberOfNeurons()) {
+			int indeks = rnd.nextInt(zbiorWejsciowy.size());
+			Point centroid = zbiorWejsciowy.get(indeks);
 			centroid.setColor(Optional.of(Color.getHSBColor(
 					(float) Math.random(), .7f, .7f)));
-			if (!neurons.contains(centroid)) {
-				neurons.add(centroid);
+			if (!getNeurons().contains(centroid)) {
+				getNeurons().add(centroid);
 			}
 		}
 
 		// ROZPOCZNIJ PROCES PRZESUWANIA NEURONÓW
 		System.out.println("Running Kohonen neural network, by Lukasz Ochmanski.");
 		List<Point> noweNeurony = null;
-		for (int epoka=0; epoka<LIMIT_EPOK; epoka++) {
+		for (int epoka=0; epoka<getLimitEpok(); epoka++) {
 			System.out.print(epoka+ "\t");
-			epochLog.append(epoka+ "\t");
-			epochCSV.append(epoka+";");
-			noweNeurony = przesunNeuronyZwycieskie(hydra, neurons, epoka);
+			getEpochLog().append(epoka+ "\t");
+			getEpochCSV().append(epoka+";");
+			noweNeurony = przesunNeuronyZwycieskie(zbiorWejsciowy, getNeurons(), epoka);
 			
 			//ZBUDUJ KSIĄŻKĘ KODOWĄ i WYLICZ BŁĄD
-			double error = new KsiazkaKodowa(hydra, noweNeurony).getBladKwantyzacji();
+			double error = new KsiazkaKodowa(zbiorWejsciowy, noweNeurony)
+								.getBladKwantyzacji();
 
 			String msg = "error: " + error +"\r\n"
 					+ "------------------------------------------------"
 					+ "------------------------------------------------\r\n";
 			System.out.print(msg);
-			epochLog.append(msg);
-			epochCSV.append(error+"\r\n");
+			getEpochLog().append(msg);
+			getEpochCSV().append(error+"\r\n");
 			
-			double drawJump = LIMIT_EPOK * (DRAW_STEP_IN_PERCENTS / 100);
+			double drawJump = getLimitEpok() * (getDrawStepInPercents() / 100);
 			if (epoka % drawJump == 0.0) {
-				wizualizujObszaryVoronoia(noweNeurony, hydra);
+				wizualizujObszaryVoronoia(noweNeurony, zbiorWejsciowy);
 			}
 		}
-		rysujDiagramVoronoia(noweNeurony, hydra);
+		rysujDiagramVoronoia(noweNeurony, zbiorWejsciowy);
 		saveAndClose();
 	}
 
@@ -113,18 +124,18 @@ public class Kohonen extends Diagram {
 		// RANDOMIZE TRAINING SET
 		trainingSet.shuffle();
 		double lambda = getPromienSasiedztwa(epoka);
-		double learnRate = LEARNING_RATE
-				* Math.exp(-(epoka / (double) LIMIT_EPOK));
+		double learnRate = getLearningRate()
+				* Math.exp(-(epoka / (double) getLimitEpok()));
 		if (!Double.isFinite(learnRate))
 			throw new ArithmeticException("Learning rate się sypnął.");
-		epochLog.append("Promień sąsiedztwa: "+ lambda+"\t");
+		getEpochLog().append("Promień sąsiedztwa: "+ lambda+"\t");
 		System.out.print("Promień sąsiedztwa: "+ lambda+"\t");
-		epochCSV.append(lambda+";");
-		epochLog.append("Wsp. uczenia: "+learnRate+"\t");
+		getEpochCSV().append(lambda+";");
+		getEpochLog().append("Wsp. uczenia: "+learnRate+"\t");
 		System.out.print("Wsp. uczenia: "+learnRate+"\t");
-		epochCSV.append(learnRate+";");
+		getEpochCSV().append(learnRate+";");
 
-		for (int i = 0; i < wielkoscZbioruUczacego; i++) {
+		for (int i = 0; i < getWielkoscZbioruUczacego(); i++) {
 			Point input = trainingSet.get(i);
 //			if (NORMALIZATION) { input = input.getNormalized(); }
 			Point uprawnionyZwyciezca = getZwyciezca(noweNeurony, input);
@@ -132,7 +143,7 @@ public class Kohonen extends Diagram {
 				Point tymczasowyZwyciezca = uprawnionyZwyciezca.clone();
 				double dist = neuron.getEuclideanDistanceFrom(tymczasowyZwyciezca);
 				double gauss = Math.exp(-((dist * dist) / (2.0 * (lambda * lambda))));
-				if (METHOD==Method.WTA) { gauss = (dist<lambda) ? 1 : 0; }
+				if (getMethod()==Method.WTA) { gauss = (dist<lambda) ? 1 : 0; }
 				for (int wymiar = 0; wymiar < neuron.getCoordinates()
 						.size(); wymiar++) {
 					double waga = neuron.getCoordinate(wymiar);
@@ -186,8 +197,8 @@ public class Kohonen extends Diagram {
 	}
 
 	public double getPromienSasiedztwa(int epochNumber) {
-		double wartoscPoczatkowa = RADIUS;
-		double kmax = LIMIT_EPOK;
+		double wartoscPoczatkowa = getRadius();
+		double kmax = getLimitEpok();
 		double wartoscMinimalna = 0.01;
 
 		double result = wartoscPoczatkowa
@@ -198,7 +209,7 @@ public class Kohonen extends Diagram {
 	}
 	
 	protected void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
-		voronoiColor = new Voronoi4();
+		setVoronoiColor(new Voronoi4());
 		super.rysujDiagramVoronoia(centroidy, mapa);
 	}
 }

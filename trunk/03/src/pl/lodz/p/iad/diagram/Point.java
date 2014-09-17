@@ -95,11 +95,11 @@ public class Point {
 
 
    // test client
-   public static void main(String[] args) {
-      Point p = new Point();
-      System.out.println("p  = " + p);
-      Point q = new Point(0.5, 0.5);
-      System.out.println("q  = " + q);
-      System.out.println("dist(p, q) = " + p.distanceTo(q) + " = " + q.distanceTo(p));
-   }
+//   public static void main(String[] args) {
+//      Point p = new Point();
+//      System.out.println("p  = " + p);
+//      Point q = new Point(0.5, 0.5);
+//      System.out.println("q  = " + q);
+//      System.out.println("dist(p, q) = " + p.distanceTo(q) + " = " + q.distanceTo(p));
+//   }
 }
