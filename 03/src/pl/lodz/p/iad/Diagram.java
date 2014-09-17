@@ -15,46 +15,46 @@ import pl.lodz.p.iad.structure.Point;
 
 public class Diagram {
 
-	protected String EPOCH_LOG_CSV;
-	protected String EPOCH_LOG_TXT;
-	protected int NUMBER_OF_NEURONS = 8;
-	protected double LEARNING_RATE = 0.1;
-	protected double RADIUS = 0.6;
-	protected int LIMIT_EPOK = 100;
-	protected boolean LOG = true;
-	protected double DRAW_STEP_IN_PERCENTS = 1.0;
-	protected boolean NORMALIZATION = false;
-	protected boolean WRITE_TO_FILE = true;
-	protected Method METHOD = Method.WTM;
-	protected VoronoiColor voronoiColor;
-	protected VoronoiBlackAndWhite voronoiBlackWhite;
-	protected StringBuilder epochLog;
-	protected StringBuilder epochCSV;
-	protected Mapa hydra;
-	protected List<Integer> kolumny;
-	protected List<Point> neurons;
-	protected int wielkoscZbioruUczacego = 0;
-	
-	
+	private String epochLogCSV;
+	private String epochLogTxt;
+	private int numberOfNeurons;
+	private double learningRate;
+	private double radius;
+	private int limitEpok;
+	private boolean log;
+	private double drawStepInPercents;
+	private boolean normalization;
+	private boolean writeToFile;
+	private Method method;
+	private VoronoiColor voronoiColor;
+	private VoronoiBlackAndWhite voronoiBlackWhite;
+	private StringBuilder epochLog;
+	private StringBuilder epochCSV;
+	private Mapa hydra;
+	private List<Integer> kolumny;
+	private List<Point> neurons;
+	private int wielkoscZbioruUczacego;
+
 	protected void wizualizujObszaryVoronoia(List<Point> centroidy, Mapa mapa) {
 		voronoiBlackWhite.clear();
 		for (Point point : mapa) {
-			voronoiBlackWhite.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
+			voronoiBlackWhite.dodajKropkę(point.getCoordinate(0),
+					point.getCoordinate(1));
 		}
 		for (Point centroid : centroidy) {
-			voronoiBlackWhite.dodajCentroid(
-					centroid.getCoordinate(0),
+			voronoiBlackWhite.dodajCentroid(centroid.getCoordinate(0),
 					centroid.getCoordinate(1));
 		}
 		voronoiBlackWhite.drawMe();
-		if (WRITE_TO_FILE) {
+		if (isWriteToFile()) {
 			voronoiBlackWhite.saveVornoiToFile();
 		}
 	}
-	
+
 	protected void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
 		for (Point point : mapa) {
-			voronoiColor.dodajKropkę(point.getCoordinate(0), point.getCoordinate(1));
+			voronoiColor.dodajKropkę(point.getCoordinate(0),
+					point.getCoordinate(1));
 		}
 		for (Point centroid : centroidy) {
 			voronoiColor.dodajCentroid(
@@ -64,19 +64,19 @@ public class Diagram {
 							IllegalArgumentException::new));
 		}
 		voronoiColor.drawMe();
-		if (WRITE_TO_FILE) {
+		if (isWriteToFile()) {
 			voronoiColor.saveVornoiToFile();
 		}
 	}
-	
+
 	protected void saveAndClose() {
-		if (LOG) {
+		if (isLog()) {
 			Charset charset = StandardCharsets.UTF_8;
 			try {
 				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
-					Paths.get(EPOCH_LOG_TXT), charset);
+						Paths.get(getEpochLogTxt()), charset);
 				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
-					Paths.get(EPOCH_LOG_CSV), charset);
+						Paths.get(getEpochLogCSV()), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();
@@ -87,21 +87,157 @@ public class Diagram {
 		}
 		System.out.println("Program terminated.");
 	}
-	
-	public void setNeuronsAmount(int neuronsAmount) {
-		NUMBER_OF_NEURONS = neuronsAmount;
-	}
-	
-	public void writeToFile(boolean write) {
-		WRITE_TO_FILE= write;
-	}
-	
-	public void setDRAW_STEP_IN_PERCENT(int newDRAW_STEP_IN_PERCENT) {
-		DRAW_STEP_IN_PERCENTS = newDRAW_STEP_IN_PERCENT;
-	}
-	
+
 	public void setKolumny(List<Integer> kolumny) {
 		this.kolumny = kolumny;
 		hydra = new Mapa(this.kolumny);
+	}
+
+	public String getEpochLogCSV() {
+		return epochLogCSV;
+	}
+
+	public void setEpochLogCSV(String epochLogCSV) {
+		this.epochLogCSV = epochLogCSV;
+	}
+
+	public String getEpochLogTxt() {
+		return epochLogTxt;
+	}
+
+	public void setEpochLogTxt(String epochLogTxt) {
+		this.epochLogTxt = epochLogTxt;
+	}
+
+	public int getNumberOfNeurons() {
+		return numberOfNeurons;
+	}
+
+	public void setNumberOfNeurons(int numberOfNeurons) {
+		this.numberOfNeurons = numberOfNeurons;
+	}
+
+	public double getLearningRate() {
+		return learningRate;
+	}
+
+	public void setLearningRate(double learningRate) {
+		this.learningRate = learningRate;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public int getLimitEpok() {
+		return limitEpok;
+	}
+
+	public void setLimitEpok(int limitEpok) {
+		this.limitEpok = limitEpok;
+	}
+
+	public boolean isLog() {
+		return log;
+	}
+
+	public void setLog(boolean log) {
+		this.log = log;
+	}
+
+	public double getDrawStepInPercents() {
+		return drawStepInPercents;
+	}
+
+	public void setDrawStepInPercents(double drawStepInPercents) {
+		this.drawStepInPercents = drawStepInPercents;
+	}
+
+	public boolean isNormalization() {
+		return normalization;
+	}
+
+	public void setNormalization(boolean normalization) {
+		this.normalization = normalization;
+	}
+
+	public boolean isWriteToFile() {
+		return writeToFile;
+	}
+
+	public void setWriteToFile(boolean writeToFile) {
+		this.writeToFile = writeToFile;
+	}
+
+	public Method getMethod() {
+		return method;
+	}
+
+	public void setMethod(Method method) {
+		this.method = method;
+	}
+
+	public VoronoiColor getVoronoiColor() {
+		return voronoiColor;
+	}
+
+	public void setVoronoiColor(VoronoiColor voronoiColor) {
+		this.voronoiColor = voronoiColor;
+	}
+
+	public VoronoiBlackAndWhite getVoronoiBlackWhite() {
+		return voronoiBlackWhite;
+	}
+
+	public void setVoronoiBlackWhite(VoronoiBlackAndWhite voronoiBlackWhite) {
+		this.voronoiBlackWhite = voronoiBlackWhite;
+	}
+
+	public StringBuilder getEpochLog() {
+		return epochLog;
+	}
+
+	public void setEpochLog(StringBuilder epochLog) {
+		this.epochLog = epochLog;
+	}
+
+	public StringBuilder getEpochCSV() {
+		return epochCSV;
+	}
+
+	public void setEpochCSV(StringBuilder epochCSV) {
+		this.epochCSV = epochCSV;
+	}
+
+	public List<Point> getNeurons() {
+		return neurons;
+	}
+
+	public void setNeurons(List<Point> neurons) {
+		this.neurons = neurons;
+	}
+
+	public int getWielkoscZbioruUczacego() {
+		return wielkoscZbioruUczacego;
+	}
+
+	public void setWielkoscZbioruUczacego(int wielkoscZbioruUczacego) {
+		this.wielkoscZbioruUczacego = wielkoscZbioruUczacego;
+	}
+
+	public Mapa getHydra() {
+		return hydra;
+	}
+
+	public void setHydra(Mapa hydra) {
+		this.hydra = hydra;
+	}
+
+	public List<Integer> getKolumny() {
+		return kolumny;
 	}
 }

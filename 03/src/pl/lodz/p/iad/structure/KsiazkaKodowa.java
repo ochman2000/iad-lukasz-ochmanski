@@ -50,6 +50,6 @@ public class KsiazkaKodowa extends HashMap<Point, Point> {
 	 * klasyfikator.
 	 */
 	public static Point klasyfikuj(List<Point> neurony, Point input) {
-		return neurony.parallelStream().min(input::compare).get();
+		return neurony.parallelStream().min(input::compareByEuclideanDistance).get();
 	}
 }
