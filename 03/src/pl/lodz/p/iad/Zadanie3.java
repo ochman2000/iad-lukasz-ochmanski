@@ -133,5 +133,6 @@ public class Zadanie3 {
 		neuralGas.teach();
 		neuralGas.close();
 		
+		System.exit(0);
 	}
 }
