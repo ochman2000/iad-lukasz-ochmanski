@@ -26,7 +26,7 @@ public class Voronoi4 implements DrawListener, VoronoiColor {
 	private static int SIZE = 512;
 	private Point[][] nearest = new Point[SIZE][SIZE]; // which point is pixel
 														// (i, j) nearest?
-	protected static int vornoiCounter = 0;
+	protected int vornoiCounter = 0;
 	protected Draw draw = new Draw();
 
 	public Voronoi4() {
