@@ -15,7 +15,7 @@ import pl.lodz.p.iad.structure.Point;
 
 public class NeuralGas extends Diagram {
 	
-	private static final String EPOCH_LOG_CSV = "resources/neuralgas/epoch_csv.txt";
+	private static final String EPOCH_LOG_CSV = "resources/neuralgas/epoch_log.csv";
 	private static final String EPOCH_LOG_TXT = "resources/neuralgas/epoch_log.txt";
 	private static final int NUMBER_OF_NEURONS = 8;
 	private static final double LEARNING_RATE = 2.0;
@@ -23,7 +23,7 @@ public class NeuralGas extends Diagram {
 	private static final int LIMIT_EPOK = 100;
 	private static final boolean LOG = true;
 	private static final double DRAW_STEP_IN_PERCENTS = 1.0;
-	private static final boolean NORMALIZATION = false;
+	private static final boolean NORMALIZATION = true;
 	private static final boolean WRITE_TO_FILE = true;
 	
 	public NeuralGas() {
@@ -50,7 +50,7 @@ public class NeuralGas extends Diagram {
 	}
 	
 	public void teach() {
-		if (isNormalization()) setHydra(getHydra().getNormalized());
+		if (isNormalized()) setHydra(getHydra().getNormalized());
 		if (getWielkoscZbioruUczacego()==0)
 			setWielkoscZbioruUczacego(getHydra().size());
 		setNeurons(new ArrayList<Point>(getNumberOfNeurons()));

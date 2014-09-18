@@ -28,7 +28,7 @@ public class Kohonen extends Diagram {
 	private static final int LIMIT_EPOK = 100;
 	private static final boolean LOG = true;
 	private static final double DRAW_STEP_IN_PERCENTS = 1.0;
-	private static final boolean NORMALIZATION = false;
+	private static final boolean NORMALIZATION = true;
 	private static final boolean WRITE_TO_FILE = true;
 	private static final Method METHOD = Method.WTM;
 
@@ -57,7 +57,7 @@ public class Kohonen extends Diagram {
 	}
 	
 	public void teach() {
-		if (isNormalization()) setHydra(getHydra().getNormalized());
+		if (isNormalized()) setHydra(getHydra().getNormalized());
 		if (getWielkoscZbioruUczacego()==0)
 			setWielkoscZbioruUczacego(getHydra().size());
 		setNeurons(new ArrayList<Point>(getNumberOfNeurons()));

@@ -23,7 +23,7 @@ public class Diagram {
 	private int limitEpok;
 	private boolean log;
 	private double drawStepInPercents;
-	private boolean normalization;
+	private boolean normalized;
 	private boolean writeToFile;
 	private Method method;
 	private VoronoiColor voronoiColor;
@@ -157,12 +157,12 @@ public class Diagram {
 		this.drawStepInPercents = drawStepInPercents;
 	}
 
-	public boolean isNormalization() {
-		return normalization;
+	public boolean isNormalized() {
+		return normalized;
 	}
 
 	public void setNormalization(boolean normalization) {
-		this.normalization = normalization;
+		this.normalized = normalization;
 	}
 
 	public boolean isWriteToFile() {

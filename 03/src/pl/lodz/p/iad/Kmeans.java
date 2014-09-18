@@ -20,7 +20,7 @@ public class Kmeans {
 	/**
 	 * Określa liczbę K centroidów.
 	 */
-	private int PODZBIORY = 3;
+	private int PODZBIORY = 8;
 	private boolean WRITE_TO_FILE = true;
 	private boolean LOG = true;
 	
@@ -45,7 +45,7 @@ public class Kmeans {
 	
 	public void run() {
 		centroidy = new ArrayList<Point>(PODZBIORY);
-		voronoi = new Voronoi2(512, 512, 0);
+
 		run(hydra);
 	}
 
@@ -108,6 +108,7 @@ public class Kmeans {
 	}
 	
 	private void rysujDiagramVoronoia(List<Point> centroidy, Mapa mapa) {
+		voronoi = new Voronoi2(512, 512, 0);
 		for (Point point : mapa) {			
 			voronoi.dodajKropkę(point.getCoordinate(0),
 					point.getCoordinate(1));
