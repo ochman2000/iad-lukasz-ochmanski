@@ -103,7 +103,7 @@ public class Voronoi4 implements DrawListener, VoronoiColor {
 	public void mouseReleased(double x, double y) {
 	}
 
-	public void kill() {
+	public void close() {
 		draw.kill();
 	}
 

@@ -90,4 +90,8 @@ public class Voronoi2 implements DrawListener {
     public void mouseDragged(double x, double y)  { }
     public void mouseReleased(double x, double y) { }
 
+	public void close() {
+		draw.kill();
+	}
+
 }
