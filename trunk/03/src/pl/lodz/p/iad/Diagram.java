@@ -240,4 +240,9 @@ public class Diagram {
 	public List<Integer> getKolumny() {
 		return kolumny;
 	}
+	
+	public void close() {
+		voronoiBlackWhite.close();
+		voronoiColor.close();
+	}
 }

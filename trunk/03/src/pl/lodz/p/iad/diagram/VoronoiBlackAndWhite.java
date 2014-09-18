@@ -6,4 +6,5 @@ public interface VoronoiBlackAndWhite {
     public void clear();
     public void drawMe();
     public void saveVornoiToFile();
+    public void close();
 }

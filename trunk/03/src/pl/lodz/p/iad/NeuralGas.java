@@ -23,7 +23,7 @@ public class NeuralGas extends Diagram {
 	private static final int LIMIT_EPOK = 100;
 	private static final boolean LOG = true;
 	private static final double DRAW_STEP_IN_PERCENTS = 1.0;
-	private static final boolean NORMALIZATION = true;
+	private static final boolean NORMALIZATION = false;
 	private static final boolean WRITE_TO_FILE = true;
 	
 	public NeuralGas() {

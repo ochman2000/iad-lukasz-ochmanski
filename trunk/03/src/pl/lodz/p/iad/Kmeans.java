@@ -17,13 +17,17 @@ import pl.lodz.p.iad.structure.Point;
 
 public class Kmeans {
 	
+	private static final String EPOCH_LOG_CSV = "resources/kmeans/epoch_log.csv";
+	private static final String EPOCH_LOG_TXT = "resources/kmeans/epoch_log.txt";
+	private static final int NUMBER_OF_NEURONS = 8;
 	/**
 	 * Określa liczbę K centroidów.
 	 */
-	private int PODZBIORY = 8;
+	private int podzbiory;
 	private boolean WRITE_TO_FILE = true;
 	private boolean LOG = true;
-	
+	private String epochLogCSV;
+	private String epochLogTxt;
 	private List<Integer> kolumny;
 	private List<Point> centroidy;
 	private Mapa hydra;
@@ -32,6 +36,9 @@ public class Kmeans {
 	private StringBuilder epochCSV;
 
 	public Kmeans() {
+		setEpochLogCSV(EPOCH_LOG_CSV);
+		setEpochLogTxt(EPOCH_LOG_TXT);
+		setPodzbiory(NUMBER_OF_NEURONS);
 		epochLog = new StringBuilder();
 		epochCSV = new StringBuilder();
 		epochCSV.append("epoka;błąd kwantyzacji\r\n");
@@ -44,7 +51,7 @@ public class Kmeans {
 	}
 	
 	public void run() {
-		centroidy = new ArrayList<Point>(PODZBIORY);
+		centroidy = new ArrayList<Point>(getPodzbiory());
 
 		run(hydra);
 	}
@@ -52,7 +59,7 @@ public class Kmeans {
 	public void run(Mapa hydra) {		
 		//LOSUJ K CENTROIDÓW
 		Random rnd = new Random();
-		while (centroidy.size()<PODZBIORY) {
+		while (centroidy.size()<getPodzbiory()) {
 			int indeks = rnd.nextInt(hydra.size());
 			Point centroid = hydra.get(indeks);
 			if (!centroidy.contains(centroid)) {
@@ -93,9 +100,9 @@ public class Kmeans {
 			Charset charset = StandardCharsets.UTF_8;
 			try {
 				BufferedWriter epochLogWriterTxt = Files.newBufferedWriter(
-					Paths.get("resources/kmeans/epoch_log.txt"), charset);
+					Paths.get(epochLogTxt), charset);
 				BufferedWriter epochLogWriterCsv = Files.newBufferedWriter(
-					Paths.get("resources/kmeans/epoch_log.csv"), charset);
+					Paths.get(epochLogCSV), charset);
 				epochLogWriterTxt.write(epochLog.toString());
 				epochLogWriterCsv.write(epochCSV.toString());
 				epochLogWriterTxt.close();
@@ -158,7 +165,7 @@ public class Kmeans {
 	 * Następnie przesuń centroida w każdą z możliwych wymiarów o tą wyliczoną wartość.
 	 */
 	private List<Point> przesunCentroidy(Mapa mapa, List<Point> centroidy) {
-		List<Point> noweCentroidy = new ArrayList<Point>(PODZBIORY);
+		List<Point> noweCentroidy = new ArrayList<Point>(getPodzbiory());
 		for (Point centroid : centroidy) {
 			Point nowyCentroid = new Point(centroid.getCoordinates().size());
 			for (int i=0; i<centroid.getCoordinates().size(); i++) {
@@ -185,4 +192,33 @@ public class Kmeans {
 		this.kolumny = kolumny;
 		hydra = new Mapa(this.kolumny);
 	}
+
+	public String getEpochLogCSV() {
+		return epochLogCSV;
+	}
+
+	public void setEpochLogCSV(String epochLogCSV) {
+		this.epochLogCSV = epochLogCSV;
+	}
+	
+	public String getEpochLogTxt() {
+		return epochLogTxt;
+	}
+
+	public void setEpochLogTxt(String epochLogTxt) {
+		this.epochLogTxt = epochLogTxt;
+	}
+
+	public int getPodzbiory() {
+		return podzbiory;
+	}
+
+	public void setPodzbiory(int podzbiory) {
+		this.podzbiory = podzbiory;
+	}
+	
+	public void close()	{
+		voronoi.close();
+	}
+
 }
