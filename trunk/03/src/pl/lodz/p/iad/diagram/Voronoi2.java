@@ -24,7 +24,7 @@ import java.awt.Color;
 public class Voronoi2 implements DrawListener {
     private static int SIZE = 512;
     private Point[][] nearest = new Point[SIZE][SIZE];  // which point is pixel (i, j) nearest?
-    private static int vornoiCounter = 0;
+    private int vornoiCounter = 0;
     private Draw draw = new Draw("Algorytm k-średnich");
 
     public Voronoi2() {
@@ -93,5 +93,4 @@ public class Voronoi2 implements DrawListener {
 	public void close() {
 		draw.kill();
 	}
-
 }
