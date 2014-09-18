@@ -234,11 +234,7 @@ public class Point implements Cloneable, Functional<Point> {
 
 	@Override
 	public int compareByEuclideanDistance(Point o1, Point o2) {
-		if (this.getEuclideanDistanceFrom(o1) > this.getEuclideanDistanceFrom(o2))
-			return 1;
-		else if (this.getEuclideanDistanceFrom(o1) < this.getEuclideanDistanceFrom(o2))
-			return -1;
-		else
-			return 0;
+		return Double.compare(this.getEuclideanDistanceFrom(o1),
+				this.getEuclideanDistanceFrom(o2));
 	}
 }

@@ -11,7 +11,8 @@ import java.util.StringTokenizer;
 
 public class Mapa extends ArrayList<Point>{
 	
-	private final static int LICZBA_KOLUMN = 8;
+	private static final String SOURCE_URL = "resources/173524.dane";
+	private static final int LICZBA_KOLUMN = 8;
 	private static final long serialVersionUID = 1L;
 	private int liczbaWymiarow = 0;
 
@@ -20,7 +21,7 @@ public class Mapa extends ArrayList<Point>{
 	}
 	public Mapa(List<Integer> kolumny) {
 		setLiczbaWymiarow(kolumny.size());
-		Path file = Paths.get("resources/hydra01.dane");
+		Path file = Paths.get(SOURCE_URL);
 		List<String> lines = null;
 		try {
 			lines = Files.readAllLines(file);
