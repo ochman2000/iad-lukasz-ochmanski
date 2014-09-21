@@ -18,7 +18,7 @@ public class NeuralGas extends Diagram {
 	private static final String EPOCH_LOG_CSV = "resources/neuralgas/epoch_log.csv";
 	private static final String EPOCH_LOG_TXT = "resources/neuralgas/epoch_log.txt";
 	private static final int NUMBER_OF_NEURONS = 8;
-	private static final double LEARNING_RATE = 2.0;
+	private static final double LEARNING_RATE = 0.4;
 	private static final double RADIUS = 0.6;
 	private static final int LIMIT_EPOK = 100;
 	private static final boolean LOG = true;

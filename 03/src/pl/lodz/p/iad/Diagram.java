@@ -122,6 +122,9 @@ public class Diagram {
 	}
 
 	public void setLearningRate(double learningRate) {
+		if (learningRate<0.0 || learningRate>1.0) {
+			throw new IllegalArgumentException("Learnging rate powyżej 1 nie ma sensu!");
+		}
 		this.learningRate = learningRate;
 	}
 
